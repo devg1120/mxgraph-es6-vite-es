@@ -134,16 +134,21 @@ export class mxCodec {
     if (node != null && node.nodeType == mxConstants.NODETYPE_ELEMENT) {
       var ctor = null;
 
-      try {
-        ctor = window[node.nodeName];
-      } catch (err) {
-        /* ignore */
-      }
+//      try {
+//        ctor = window[node.nodeName];
+//      } catch (err) {
+//        /* ignore */
+//      }
+//
+//     var dec = mxCodecRegistry.getCodec(ctor);  /*  GS  BUG FIX */
+      var dec = mxCodecRegistry.getCodec(node.nodeName );
 
-      var dec = mxCodecRegistry.getCodec(ctor);
 
       if (dec != null) {
-        obj = dec.decode(this, node, into);
+         try {                                        /* try GS */
+            obj = dec.decode(this, node, into);
+         } catch (err) {
+	 }
       } else {
         obj = node.cloneNode(true);
         obj.removeAttribute('as');

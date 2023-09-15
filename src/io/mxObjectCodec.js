@@ -252,7 +252,6 @@ export class mxObjectCodec {
 
   decodeChildren(dec, node, obj) {
     var child = node.firstChild;
-
     while (child != null) {
       var tmp = child.nextSibling;
 
@@ -312,7 +311,6 @@ export class mxObjectCodec {
   processInclude(dec, node, into) {
     if (node.nodeName == 'include') {
       var name = node.getAttribute('name');
-
       if (name != null) {
         try {
           var xml = mxUtils.load(name).getDocumentElement();

@@ -3,11 +3,16 @@
  *
  * Defines the startup sequence of the application.
  */
-{
+//{
   /**
    * Constructs a new application (returns an mxEditor instance)
    */
-  function createEditor(config) {
+
+import * as m from "../../../dist/mxgraph.es.js";
+
+export  function createEditor(config) {
+
+
     var editor = null;
 
     var hideSplash = function () {
@@ -16,8 +21,8 @@
 
       if (splash != null) {
         try {
-          mxEvent.release(splash);
-          mxEffects.fadeOut(splash, 100, true);
+          m.mxEvent.release(splash);
+          m.mxEffects.fadeOut(splash, 100, true);
         } catch (e) {
           splash.parentNode.removeChild(splash);
         }
@@ -25,17 +30,18 @@
     };
 
     try {
-      if (!mxClient.isBrowserSupported()) {
-        mxUtils.error("Browser is not supported!", 200, false);
+      if (!m.mxClient.isBrowserSupported()) {
+        m.mxUtils.error("Browser is not supported!", 200, false);
       } else {
-        mxObjectCodec.allowEval = true;
-        var node = mxUtils.load(config).getDocumentElement();
-        editor = new mxEditor(node);
-        mxObjectCodec.allowEval = false;
+        m.mxObjectCodec.allowEval = true;
+        var node = m.mxUtils.load(config).getDocumentElement();
+        //var node = m.mxUtils.load(config);
+        editor = new m.mxEditor(node);
+        m.mxObjectCodec.allowEval = false;
 
         // Adds active border for panning inside the container
         editor.graph.createPanningManager = function () {
-          var pm = new mxPanningManager(this);
+          var pm = new m.mxPanningManager(this);
           pm.border = 30;
 
           return pm;
@@ -50,15 +56,15 @@
           document.title = title + " - " + sender.getTitle();
         };
 
-        editor.addListener(mxEvent.OPEN, funct);
+        editor.addListener(m.mxEvent.OPEN, funct);
 
         // Prints the current root in the window title if the
         // current root of the graph changes (drilling).
-        editor.addListener(mxEvent.ROOT, funct);
+        editor.addListener(m.mxEvent.ROOT, funct);
         funct(editor);
 
         // Displays version in statusbar
-        editor.setStatus("mxGraph " + mxClient.VERSION);
+        editor.setStatus("mxGraph " + m.mxClient.VERSION);
 
         // Shows the application
         hideSplash();
@@ -67,10 +73,10 @@
       hideSplash();
 
       // Shows an error message if the editor cannot start
-      mxUtils.alert("Cannot start application: " + e.message);
+      m.mxUtils.alert("Cannot start application: " + e.message);
       throw e; // for debugging
     }
 
     return editor;
   }
-}
+//}
