@@ -32,6 +32,7 @@ export class mxDefaultToolbarCodec extends mxObjectCodec {
             } else if (node.nodeName == 'hr') {
               into.toolbar.addLine();
             } else if (node.nodeName == 'add') {
+
               var as = node.getAttribute('as');
               as = mxResources.get(as) || as;
               var icon = node.getAttribute('icon');

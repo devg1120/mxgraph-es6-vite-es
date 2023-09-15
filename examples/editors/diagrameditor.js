@@ -36,6 +36,8 @@ var mxLanguage = urlParams["lang"];
 // overridden to invoke this global function as the
 // last step in the editor constructor.
 function onInit(editor) {
+
+ console.log("onInit");
   // Enables rotation handle
   m.mxVertexHandler.prototype.rotationEnabled = true;
 

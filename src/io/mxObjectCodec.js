@@ -266,6 +266,8 @@ export class mxObjectCodec {
   decodeChild(dec, child, obj) {
     var fieldname = this.getFieldName(child.getAttribute('as'));
 
+    console.log("as", fieldname);
+
     if (fieldname == null || !this.isExcluded(obj, fieldname, child, false)) {
       var template = this.getFieldTemplate(obj, fieldname, child);
       var value = null;

@@ -99,6 +99,7 @@ export class mxEditor extends mxEventSource {
       this.graph.swimlaneIndicatorColorAttribute = this.cycleAttributeName;
 
       if (this.onInit != null) {
+	      console.log("mxEditor onInit");
         this.onInit();
       }
     }

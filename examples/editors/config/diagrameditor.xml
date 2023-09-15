@@ -1,13 +1,15 @@
 <mxEditor defaultGroup="group" defaultEdge="connector">
 -
 	<include name="config/editor-commons.xml"/>
-	
+
 	<add as="onInit"><![CDATA[
 		function ()
 		{
+		        console.log(" -- onInit --");
 			onInit(this);
 		}
 	]]></add>
+	
 	<ui>
 		<add as="graph" element="graph"/>
 		<add as="status" element="status"/>
