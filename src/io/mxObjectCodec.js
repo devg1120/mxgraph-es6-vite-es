@@ -272,11 +272,15 @@ export class mxObjectCodec {
       var template = this.getFieldTemplate(obj, fieldname, child);
       var value = null;
 
+
       if (child.nodeName == 'add') {
         value = child.getAttribute('value');
 
         if (value == null && mxObjectCodec.allowEval) {
-          value = mxUtils.eval(mxUtils.getTextContent(child));
+              console.log("as:", fieldname);   
+              console.log("text:",mxUtils.getTextContent(child));  
+            value = mxUtils.eval(mxUtils.getTextContent(child));
+              console.log("value:", value);
         }
       } else {
         value = dec.decode(child, template);

@@ -93,17 +93,31 @@ export class mxUtils {
   static eval(expr) {
     var result = null;
 
+    let  _mxJavaScriptExpression = null;
     if (expr.indexOf('function') >= 0) {
       try {
-        eval('var _mxJavaScriptExpression=' + expr);
-        // eslint-disable-next-line no-undef
+       console.log("eval 1");
+        //result = eval(expr);
+	//Function('"use strict";return (var _mxJavaScriptExpression=' + expr + ")")();
+	//result = Function('"use strict";return (' + expr + ")");
+	//result = Function('(' + expr + ')');
+	//result = Function( expr );
+
+        //Function(' _mxJavaScriptExpression= function() { return (' + expr + ')}();')();
+
+        //eval(' _mxJavaScriptExpression= (function() { return (' + expr + ')})();');
+        eval(' _mxJavaScriptExpression= function() { return (' + expr + ')}();');
+        //eval(' function aaa() { return (' + expr + ')};  _mxJavaScriptExpression= aaa();');
+
         result = _mxJavaScriptExpression;
-        // eslint-disable-next-line no-undef
         _mxJavaScriptExpression = null;
+	
       } catch (e) {
+        console.log(e.message + ' while evaluating ' + expr);
         mxLog.warn(e.message + ' while evaluating ' + expr);
       }
     } else {
+       console.log("eval 2");
       try {
         result = eval(expr);
       } catch (e) {

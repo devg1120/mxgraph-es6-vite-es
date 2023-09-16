@@ -74,7 +74,7 @@ export  function createEditor(config) {
 
       // Shows an error message if the editor cannot start
       m.mxUtils.alert("Cannot start application: " + e.message);
-      throw e; // for debugging
+      //throw e; // for debugging
     }
 
     return editor;

@@ -6,7 +6,7 @@
 		function ()
 		{
 		        console.log(" -- onInit --");
-			onInit(this);
+		onInit(this);
 		}
 	]]></add>
 	

@@ -7,9 +7,9 @@ import { createEditor } from "./js/app.js";
 //};
 
 document.addEventListener('DOMContentLoaded', function() {
-  //createEditor("config/diagrameditor.xml");
-  let e = createEditor("config/diagrameditor.xml");
-  onInit(e);
+  createEditor("config/diagrameditor.xml");
+  //let e = createEditor("config/diagrameditor.xml");
+  //onInit(e);
 });
 
 
