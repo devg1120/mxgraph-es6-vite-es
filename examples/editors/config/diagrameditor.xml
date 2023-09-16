@@ -6,7 +6,7 @@
 		function ()
 		{
 		        console.log(" -- onInit --");
-		onInit(this);
+		        g_onInit(this);
 		}
 	]]></add>
 	
@@ -296,7 +296,7 @@
 			{
 				if (editor.defaultEdge != null)
 				{
-					editor.defaultEdge.style = null;
+			//editor.defaultEdge.style = null;
 				}
 			}
 		]]></add>
@@ -309,21 +309,40 @@
 				}
 			}
 		]]></add>
+	
 		<add as="connect" mode="connect" icon="images/arrow.gif"><![CDATA[
 			function (editor)
 			{
 				if (editor.defaultEdge != null)
 				{
-					editor.defaultEdge.style = 'arrowConnector';
+				editor.defaultEdge.style = 'arrowConnector';
 				}
 			}
 		]]></add>
+	
 		<br/><br/>
+		
 		<add as="Text" template="text" icon="images/text.gif"/>
 		<add as="Container" template="container" icon="images/swimlane.gif"/>
 		<add as="Rectangle" template="rectangle" icon="images/rectangle.gif"/>
 		<add as="Rounded" template="rounded" icon="images/rounded.gif"/>
-		<add as="Ellipse" template="shape" style="ellipse" icon="images/ellipse.gif"/>
+		
+		<add as="Ellipse" template="shape"  icon="images/ellipse.gif"/> 
+		<add as="Double Ellipse" template="shape"  icon="images/doubleellipse.gif"/>
+		<add as="Rhombus" template="shape"  icon="images/rhombus.gif"/>
+		<add as="Triangle" template="actor"  icon="images/triangle.gif"/>
+		<add as="Hexagon" template="cloud"  icon="images/hexagon.gif"/>
+		<add as="Actor" template="actor"  icon="images/actor.gif"/>
+		<add as="Cylinder" template="shape"  icon="images/cylinder.gif"/>
+		<add as="Cloud" template="cloud"  icon="images/cloud.gif"/>
+		<add as="Line" template="hline"  icon="images/hline.gif"/>
+		<add as="Image" template="image" icon="images/image.gif"/>
+		<!--
+		<add as="Text" template="text" icon="images/text.gif"/>
+		<add as="Container" template="container" icon="images/swimlane.gif"/>
+		<add as="Rectangle" template="rectangle" icon="images/rectangle.gif"/>
+		<add as="Rounded" template="rounded" icon="images/rounded.gif"/>
+		<add as="Ellipse" template="shape" style="ellipse" icon="images/ellipse.gif"/> 
 		<add as="Double Ellipse" template="shape" style="doubleEllipse" icon="images/doubleellipse.gif"/>
 		<add as="Rhombus" template="shape" style="rhombus" icon="images/rhombus.gif"/>
 		<add as="Triangle" template="actor" style="triangle" icon="images/triangle.gif"/>
@@ -333,5 +352,6 @@
 		<add as="Cloud" template="cloud" style="cloud" icon="images/cloud.gif"/>
 		<add as="Line" template="hline" style="hline" icon="images/hline.gif"/>
 		<add as="Image" template="image" icon="images/image.gif"/>
+		-->
 	</mxDefaultToolbar>
 </mxEditor>

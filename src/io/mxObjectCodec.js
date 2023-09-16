@@ -251,6 +251,7 @@ export class mxObjectCodec {
   }
 
   decodeChildren(dec, node, obj) {
+    console.log("decodeChildren");
     var child = node.firstChild;
     while (child != null) {
       var tmp = child.nextSibling;
@@ -265,25 +266,22 @@ export class mxObjectCodec {
 
   decodeChild(dec, child, obj) {
     var fieldname = this.getFieldName(child.getAttribute('as'));
-
     console.log("as", fieldname);
 
     if (fieldname == null || !this.isExcluded(obj, fieldname, child, false)) {
       var template = this.getFieldTemplate(obj, fieldname, child);
       var value = null;
-
+   
 
       if (child.nodeName == 'add') {
         value = child.getAttribute('value');
 
         if (value == null && mxObjectCodec.allowEval) {
-              console.log("as:", fieldname);   
-              console.log("text:",mxUtils.getTextContent(child));  
             value = mxUtils.eval(mxUtils.getTextContent(child));
-              console.log("value:", value);
         }
       } else {
         value = dec.decode(child, template);
+console.log(value);
       }
 
       try {

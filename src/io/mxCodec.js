@@ -128,6 +128,7 @@ export class mxCodec {
   }
 
   decode(node, into) {
+    console.log("decode");
     this.updateElements();
     var obj = null;
 
@@ -141,13 +142,33 @@ export class mxCodec {
 //      }
 //
 //     var dec = mxCodecRegistry.getCodec(ctor);  /*  GS  BUG FIX */
+	   
+//      var dec = mxCodecRegistry.getCodec(node.nodeName );
+
+/*
+      var dec = null;
+      try {
+        //ctor = window[node.nodeName];
+        ctor = globalThis[node.nodeName];
+      } catch (err) {
+      }
+      console.log("ctor", ctor);
+      if (ctor != null) {
+          dec = mxCodecRegistry.getCodec(ctor);  
+
+      } else {
+          dec = mxCodecRegistry.getCodec(node.nodeName );
+      }
+*/
       var dec = mxCodecRegistry.getCodec(node.nodeName );
-
-
+      console.log("dec",dec);
       if (dec != null) {
          try {                                        /* try GS */
-            obj = dec.decode(this, node, into);
+            //obj = dec.decode(this, node, into);
+console.log("-------------------------------------------");
+            obj = dec.decode( this, node, into);
          } catch (err) {
+		 console.log("dec.decode err", err);
 	 }
       } else {
         obj = node.cloneNode(true);

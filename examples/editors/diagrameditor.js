@@ -1,15 +1,19 @@
 import * as m from "../../dist/mxgraph.es.js";
 import { createEditor } from "./js/app.js";
 
-//window.onload = function () {
-//  console.log("start");
-//  createEditor("config/diagrameditor.xml");
-//};
+/*
+window.onload = function () {
+  console.log("onload start");
+  createEditor("config/diagrameditor.xml");
+};
+*/
+
 
 document.addEventListener('DOMContentLoaded', function() {
+
   createEditor("config/diagrameditor.xml");
   //let e = createEditor("config/diagrameditor.xml");
-  //onInit(e);
+  //g_onInit(e);
 });
 
 
@@ -35,9 +39,11 @@ var mxLanguage = urlParams["lang"];
 // In the config file, the mxEditor.onInit method is
 // overridden to invoke this global function as the
 // last step in the editor constructor.
-function onInit(editor) {
+//export function g_onInit(editor) {
 
- console.log("onInit");
+globalThis.g_onInit = function (editor) {
+
+ console.log("g_onInit");
   // Enables rotation handle
   m.mxVertexHandler.prototype.rotationEnabled = true;
 
@@ -52,8 +58,11 @@ function onInit(editor) {
   // Enables snapping waypoints to terminals
   m.mxEdgeHandler.prototype.snapToTerminals = true;
 
+  
+
   // Defines an icon for creating new connections in the connection handler.
   // This will automatically disable the highlighting of the source vertex.
+
   m.mxConnectionHandler.prototype.connectImage = new m.mxImage(
     "images/connector.gif",
     16,
@@ -159,6 +168,7 @@ function onInit(editor) {
 
   // Only adds image and SVG export if backend is available
   // NOTE: The old image export in mxEditor is not used, the urlImage is used for the new export.
+
 
   if (editor.urlImage != null) {
     // Client-side code for image export
@@ -319,6 +329,8 @@ function onInit(editor) {
   m.mxUtils.linkAction(node, "Actual", editor, "actualSize");
   m.mxUtils.write(node, ", ");
   m.mxUtils.linkAction(node, "Fit", editor, "fit");
+
+
 }
 
 window.onbeforeunload = function () {
