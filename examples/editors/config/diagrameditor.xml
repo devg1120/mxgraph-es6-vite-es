@@ -320,13 +320,12 @@
 			}
 		]]></add>
 	
-		<br/><br/>
-		
+	<br/><br/>
+	<!--
 		<add as="Text" template="text" icon="images/text.gif"/>
 		<add as="Container" template="container" icon="images/swimlane.gif"/>
 		<add as="Rectangle" template="rectangle" icon="images/rectangle.gif"/>
 		<add as="Rounded" template="rounded" icon="images/rounded.gif"/>
-		
 		<add as="Ellipse" template="shape"  icon="images/ellipse.gif"/> 
 		<add as="Double Ellipse" template="shape"  icon="images/doubleellipse.gif"/>
 		<add as="Rhombus" template="shape"  icon="images/rhombus.gif"/>
@@ -337,7 +336,8 @@
 		<add as="Cloud" template="cloud"  icon="images/cloud.gif"/>
 		<add as="Line" template="hline"  icon="images/hline.gif"/>
 		<add as="Image" template="image" icon="images/image.gif"/>
-		<!--
+	-->
+		
 		<add as="Text" template="text" icon="images/text.gif"/>
 		<add as="Container" template="container" icon="images/swimlane.gif"/>
 		<add as="Rectangle" template="rectangle" icon="images/rectangle.gif"/>
@@ -352,6 +352,6 @@
 		<add as="Cloud" template="cloud" style="cloud" icon="images/cloud.gif"/>
 		<add as="Line" template="hline" style="hline" icon="images/hline.gif"/>
 		<add as="Image" template="image" icon="images/image.gif"/>
-		-->
+		
 	</mxDefaultToolbar>
 </mxEditor>
