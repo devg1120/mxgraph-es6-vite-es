@@ -81,4 +81,10 @@ export class mxCellPath {
 
     return comp;
   }
+  clone() {
+    let  clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this);    
+    return clone;
+
+  }
+
 }

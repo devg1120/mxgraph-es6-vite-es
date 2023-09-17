@@ -22,6 +22,7 @@ export class mxCell {
     this.setGeometry(geometry);
     this.setStyle(style);
 
+    
     if (this.onInit != null) {
       this.onInit();
     }
@@ -264,6 +265,9 @@ export class mxCell {
     var clone = mxUtils.clone(this, this.mxTransient);
     clone.setValue(this.cloneValue());
     return clone;
+//    console.log("mxCell clone...");
+//    let  clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this);
+//    return clone;
   }
 
   cloneValue() {
@@ -279,4 +283,5 @@ export class mxCell {
 
     return value;
   }
+
 }

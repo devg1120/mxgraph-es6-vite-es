@@ -57,7 +57,6 @@ export class mxDefaultToolbarCodec extends mxObjectCodec {
                   cell = editor.graph.cloneCell(cell);
                   cell.setStyle(style);
                 }
-
                 var insertFunction = null;
 
                 if (text != null && text.length > 0 && mxDefaultToolbarCodec.allowEval) {

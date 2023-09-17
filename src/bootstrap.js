@@ -43,6 +43,8 @@ import { mxRectangleShape } from '@mxgraph/shape/mxRectangleShape';
 import { mxConnector } from '@mxgraph/shape/mxConnector';
 import { mxImageShape } from '@mxgraph/shape/mxImageShape';
 
+//import { mxGeometry } from '@mxgraph/model/mxGeometry';  /*GS*/
+
 export function bootstrap() {
   // mxClient
   if (typeof window.mxLoadResources == 'undefined') {
@@ -206,6 +208,8 @@ export function bootstrap() {
   mxCodecRegistry.register(new mxRootChangeCodec());
   mxCodecRegistry.register(new mxStylesheetCodec());
   mxCodecRegistry.register(new mxTerminalChangeCodec());
+
+//  mxCodecRegistry.register(new mxGeometry());   /*GS*/
 
   // mxStyleRegistry
   mxStyleRegistry.putValue(mxConstants.EDGESTYLE_ELBOW, mxEdgeStyle.ElbowConnector);

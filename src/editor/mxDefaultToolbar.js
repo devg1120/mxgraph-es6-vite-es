@@ -107,7 +107,9 @@ export class mxDefaultToolbar {
       if (typeof insert == 'function') {
         insert(this.editor, factory(), evt, cell);
       } else {
-        this.drop(factory(), evt, cell);
+          let fac = factory();
+        //this.drop(factory(), evt, cell);
+        this.drop(fac, evt, cell);
       }
 
       this.toolbar.resetMode();

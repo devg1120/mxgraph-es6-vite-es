@@ -100,7 +100,7 @@ export class mxUtils {
         //Function(' _mxJavaScriptExpression= function() { return (' + expr + ')}();')();
 
         //eval(' _mxJavaScriptExpression= (function() { return (' + expr + ')})();');
-	console.log(expr);
+	//console.log(expr);
         eval(' _mxJavaScriptExpression= function() { return (' + expr + ')}();');
 
         result = _mxJavaScriptExpression;
@@ -795,12 +795,13 @@ export class mxUtils {
     return value;
   }
 
-  static clone(obj, transients, shallow) {
+  static clone_org(obj, transients, shallow) {
     shallow = shallow != null ? shallow : false;
     var clone = null;
 
+    console.log("clone obj type of:", typeof obj);
     if (obj != null && typeof obj.constructor == 'function') {
-      clone = new obj.constructor();
+      clone = new obj.constructor(); /**/
 
       for (var i in obj) {
         if (i != mxObjectIdentity.FIELD_NAME && (transients == null || mxUtils.indexOf(transients, i) < 0)) {
@@ -813,6 +814,16 @@ export class mxUtils {
       }
     }
 
+    return clone;
+  }
+
+  static clone(obj, transients, shallow) {
+    shallow = shallow != null ? shallow : false;
+    var clone = null;
+    if (!shallow && typeof obj == 'object') {
+      clone = Object.assign(Object.create(Object.getPrototypeOf(obj)), obj);
+      
+    }
     return clone;
   }
 

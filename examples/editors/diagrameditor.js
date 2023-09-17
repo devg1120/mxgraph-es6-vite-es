@@ -3,7 +3,6 @@ import { createEditor } from "./js/app.js";
 
 /*
 window.onload = function () {
-  console.log("onload start");
   createEditor("config/diagrameditor.xml");
 };
 */
@@ -43,7 +42,6 @@ var mxLanguage = urlParams["lang"];
 
 globalThis.g_onInit = function (editor) {
 
- console.log("g_onInit");
   // Enables rotation handle
   m.mxVertexHandler.prototype.rotationEnabled = true;
 

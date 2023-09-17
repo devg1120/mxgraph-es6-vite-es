@@ -251,7 +251,6 @@ export class mxObjectCodec {
   }
 
   decodeChildren(dec, node, obj) {
-    console.log("decodeChildren");
     var child = node.firstChild;
     while (child != null) {
       var tmp = child.nextSibling;
@@ -266,7 +265,6 @@ export class mxObjectCodec {
 
   decodeChild(dec, child, obj) {
     var fieldname = this.getFieldName(child.getAttribute('as'));
-    console.log("as", fieldname);
 
     if (fieldname == null || !this.isExcluded(obj, fieldname, child, false)) {
       var template = this.getFieldTemplate(obj, fieldname, child);
@@ -281,7 +279,6 @@ export class mxObjectCodec {
         }
       } else {
         value = dec.decode(child, template);
-console.log(value);
       }
 
       try {

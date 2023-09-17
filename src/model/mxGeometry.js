@@ -14,7 +14,11 @@ export class mxGeometry extends mxRectangle {
   constructor(x, y, width, height) {
     super(x, y, width, height);
   }
-
+	/*
+  getName() {
+	  return("geo");
+  }
+  */
   swap() {
     if (this.alternateBounds != null) {
       var old = new mxRectangle(this.x, this.y, this.width, this.height);
@@ -155,4 +159,11 @@ export class mxGeometry extends mxRectangle {
       ((this.offset == null && obj.offset == null) || (this.offset != null && this.offset.equals(obj.offset)))
     );
   }
+/*
+  clone() {
+    let  clone = Object.assign(Object.create(Object.getPrototypeOf(this)), this);    
+    return clone;
+
+  }
+*/
 }

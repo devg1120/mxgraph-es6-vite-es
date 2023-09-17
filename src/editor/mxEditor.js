@@ -1155,7 +1155,10 @@ export class mxEditor extends mxEventSource {
       }
     }
 
-    geo = geo.clone();
+
+    //geo = geo.clone();   /*GSFX*/
+    geo = Object.assign(Object.create(Object.getPrototypeOf(geo)), geo);
+
     geo.x = this.graph.snap(x / scale - this.graph.getView().translate.x - this.graph.gridSize / 2);
     geo.y = this.graph.snap(y / scale - this.graph.getView().translate.y - this.graph.gridSize / 2);
     vertex.setGeometry(geo);
@@ -1170,7 +1173,6 @@ export class mxEditor extends mxEventSource {
 
     try {
       vertex = this.graph.addCell(vertex, parent);
-
       if (vertex != null) {
         this.graph.constrainChild(vertex);
         this.fireEvent(new mxEventObject(mxEvent.ADD_VERTEX, 'vertex', vertex));

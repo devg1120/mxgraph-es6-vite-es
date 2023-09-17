@@ -4,6 +4,7 @@ import { mxCellPath } from '@mxgraph/model/mxCellPath';
 import { mxCell } from '@mxgraph/model/mxCell';
 import { mxConstants } from '@mxgraph/util/mxConstants';
 import { mxUtils } from '@mxgraph/util/mxUtils';
+import { mxGeometry } from '@mxgraph/model/mxGeometry';  /*GS*/
 
 export class mxCodec {
   elements = null;
@@ -128,7 +129,6 @@ export class mxCodec {
   }
 
   decode(node, into) {
-    console.log("decode");
     this.updateElements();
     var obj = null;
 
@@ -145,37 +145,35 @@ export class mxCodec {
 	   
 //      var dec = mxCodecRegistry.getCodec(node.nodeName );
 
-/*
+
       var dec = null;
       try {
-        //ctor = window[node.nodeName];
-        ctor = globalThis[node.nodeName];
+        ctor = window[node.nodeName];
+        //ctor = globalThis[node.nodeName];
       } catch (err) {
       }
-      console.log("ctor", ctor);
       if (ctor != null) {
           dec = mxCodecRegistry.getCodec(ctor);  
 
       } else {
           dec = mxCodecRegistry.getCodec(node.nodeName );
       }
-*/
-      var dec = mxCodecRegistry.getCodec(node.nodeName );
-      console.log("dec",dec);
+
+      //var dec = mxCodecRegistry.getCodec(node.nodeName );
       if (dec != null) {
          try {                                        /* try GS */
-            //obj = dec.decode(this, node, into);
-console.log("-------------------------------------------");
             obj = dec.decode( this, node, into);
          } catch (err) {
 		 console.log("dec.decode err", err);
 	 }
       } else {
-        obj = node.cloneNode(true);
-        obj.removeAttribute('as');
+        //obj = node.cloneNode(true);
+        //obj.removeAttribute('as');
+	 if ( node.nodeName == 'mxGeometry') {      /* GS */
+                  obj = new mxGeometry(0,0, 100,100);
+	 }
       }
     }
-
     return obj;
   }
 
