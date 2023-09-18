@@ -4,7 +4,8 @@
 /**
  * Constructs a new open dialog.
  */
-var OpenDialog = function () {
+//export var OpenDialog = function () {
+export  function OpenDialog() {
   var iframe = document.createElement("iframe");
   iframe.style.backgroundColor = "transparent";
   iframe.allowTransparency = "true";

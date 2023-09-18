@@ -4,7 +4,7 @@
 /**
  * Construcs a new sidebar for the given editor.
  */
-function Sidebar(editorUi, container) {
+export function Sidebar(editorUi, container) {
   this.editorUi = editorUi;
   this.container = container;
   this.palettes = new Object();

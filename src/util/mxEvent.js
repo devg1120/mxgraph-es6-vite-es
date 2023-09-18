@@ -379,7 +379,7 @@ export class mxEvent {
           evt.stopPropagation();
         }
         //console.dir(evt.type);
-        if (evt.type != 'wheel' ) {
+        if (evt.type != 'wheel' ) {   /*GS*/
              evt.preventDefault();
 	}
       } else if (stopPropagation) {

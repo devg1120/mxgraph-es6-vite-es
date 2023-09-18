@@ -4,8 +4,11 @@
 /**
  * Editor constructor executed on page load.
  */
-Editor = function (chromeless, themes, model, graph, editable) {
-  mxEventSource.call(this);
+import * as m   from "../../../../../dist/mxgraph.es.js";
+
+//Editor = function (chromeless, themes, model, graph, editable) {
+export  function Editor(chromeless, themes, model, graph, editable) {
+  m.mxEventSource.call(this);
   this.chromeless = chromeless != null ? chromeless : this.chromeless;
   this.initStencilRegistry();
   this.graph = graph || this.createGraph(themes, model);
@@ -15,7 +18,7 @@ Editor = function (chromeless, themes, model, graph, editable) {
 
   this.getOrCreateFilename = function () {
     return (
-      this.filename || mxResources.get("drawing", [Editor.pageCounter]) + ".xml"
+      this.filename || m.mxResources.get("drawing", [Editor.pageCounter]) + ".xml"
     );
   };
 
@@ -26,7 +29,7 @@ Editor = function (chromeless, themes, model, graph, editable) {
   // Sets the status and fires a statusChanged event
   this.setStatus = function (value) {
     this.status = value;
-    this.fireEvent(new mxEventObject("statusChanged"));
+    this.fireEvent(new m.mxEventObject("statusChanged"));
   };
 
   // Returns the current status
@@ -44,8 +47,8 @@ Editor = function (chromeless, themes, model, graph, editable) {
   };
 
   this.graph.getModel().addListener(
-    mxEvent.CHANGE,
-    mxUtils.bind(this, function () {
+    m.mxEvent.CHANGE,
+    m.mxUtils.bind(this, function () {
       this.graphChangeListener.apply(this, arguments);
     }),
   );
@@ -89,33 +92,33 @@ Editor.pageCounter = 0;
 /**
  * Specifies if local storage should be used (eg. on the iPad which has no filesystem)
  */
-Editor.useLocalStorage = typeof Storage != "undefined" && mxClient.IS_IOS;
+Editor.useLocalStorage = typeof Storage != "undefined" && m.mxClient.IS_IOS;
 
 /**
  *
  */
-Editor.moveImage = mxClient.IS_SVG
+Editor.moveImage = m.mxClient.IS_SVG
   ? "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI4cHgiIGhlaWdodD0iMjhweCI+PGc+PC9nPjxnPjxnPjxnPjxwYXRoIHRyYW5zZm9ybT0idHJhbnNsYXRlKDIuNCwyLjQpc2NhbGUoMC44KXJvdGF0ZSg0NSwxMiwxMikiIHN0cm9rZT0iIzI5YjZmMiIgZmlsbD0iIzI5YjZmMiIgZD0iTTE1LDNsMi4zLDIuM2wtMi44OSwyLjg3bDEuNDIsMS40MkwxOC43LDYuN0wyMSw5VjNIMTV6IE0zLDlsMi4zLTIuM2wyLjg3LDIuODlsMS40Mi0xLjQyTDYuNyw1LjNMOSwzSDNWOXogTTksMjEgbC0yLjMtMi4zbDIuODktMi44N2wtMS40Mi0xLjQyTDUuMywxNy4zTDMsMTV2Nkg5eiBNMjEsMTVsLTIuMywyLjNsLTIuODctMi44OWwtMS40MiwxLjQybDIuODksMi44N0wxNSwyMWg2VjE1eiIvPjwvZz48L2c+PC9nPjwvc3ZnPgo="
   : IMAGE_PATH + "/move.png";
 
 /**
  *
  */
-Editor.rowMoveImage = mxClient.IS_SVG
+Editor.rowMoveImage = m.mxClient.IS_SVG
   ? "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAcAAAAEBAMAAACw6DhOAAAAGFBMVEUzMzP///9tbW1QUFCKiopBQUF8fHxfX1/IXlmXAAAAFElEQVQImWNgNVdzYBAUFBRggLMAEzYBy29kEPgAAAAASUVORK5CYII="
   : IMAGE_PATH + "/thumb_horz.png";
 
 /**
  * Images below are for lightbox and embedding toolbars.
  */
-Editor.helpImage = mxClient.IS_SVG
+Editor.helpImage = m.mxClient.IS_SVG
   ? "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0Ij48cGF0aCBmaWxsPSJub25lIiBkPSJNMCAwaDI0djI0SDB6Ii8+PHBhdGggZD0iTTExIDE4aDJ2LTJoLTJ2MnptMS0xNkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnptMCAxOGMtNC40MSAwLTgtMy41OS04LThzMy41OS04IDgtOCA4IDMuNTkgOCA4LTMuNTkgOC04IDh6bTAtMTRjLTIuMjEgMC00IDEuNzktNCA0aDJjMC0xLjEuOS0yIDItMnMyIC45IDIgMmMwIDItMyAxLjc1LTMgNWgyYzAtMi4yNSAzLTIuNSAzLTUgMC0yLjIxLTEuNzktNC00LTR6Ii8+PC9zdmc+"
   : IMAGE_PATH + "/help.png";
 
 /**
  * Sets the default font size.
  */
-Editor.checkmarkImage = mxClient.IS_SVG
+Editor.checkmarkImage = m.mxClient.IS_SVG
   ? "data:image/gif;base64,R0lGODlhFQAVAMQfAGxsbHx8fIqKioaGhvb29nJycvr6+sDAwJqamltbW5OTk+np6YGBgeTk5Ly8vJiYmP39/fLy8qWlpa6ursjIyOLi4vj4+N/f3+3t7fT09LCwsHZ2dubm5r6+vmZmZv///yH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS4wLWMwNjAgNjEuMTM0Nzc3LCAyMDEwLzAyLzEyLTE3OjMyOjAwICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IFdpbmRvd3MiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OEY4NTZERTQ5QUFBMTFFMUE5MTVDOTM5MUZGMTE3M0QiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OEY4NTZERTU5QUFBMTFFMUE5MTVDOTM5MUZGMTE3M0QiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4Rjg1NkRFMjlBQUExMUUxQTkxNUM5MzkxRkYxMTczRCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4Rjg1NkRFMzlBQUExMUUxQTkxNUM5MzkxRkYxMTczRCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PgH//v38+/r5+Pf29fTz8vHw7+7t7Ovq6ejn5uXk4+Lh4N/e3dzb2tnY19bV1NPS0dDPzs3My8rJyMfGxcTDwsHAv769vLu6ubi3trW0s7KxsK+urayrqqmop6alpKOioaCfnp2cm5qZmJeWlZSTkpGQj46NjIuKiYiHhoWEg4KBgH9+fXx7enl4d3Z1dHNycXBvbm1sa2ppaGdmZWRjYmFgX15dXFtaWVhXVlVUU1JRUE9OTUxLSklIR0ZFRENCQUA/Pj08Ozo5ODc2NTQzMjEwLy4tLCsqKSgnJiUkIyIhIB8eHRwbGhkYFxYVFBMSERAPDg0MCwoJCAcGBQQDAgEAACH5BAEAAB8ALAAAAAAVABUAAAVI4CeOZGmeaKqubKtylktSgCOLRyLd3+QJEJnh4VHcMoOfYQXQLBcBD4PA6ngGlIInEHEhPOANRkaIFhq8SuHCE1Hb8Lh8LgsBADs="
   : IMAGE_PATH + "/checkmark.gif";
 
@@ -164,7 +167,7 @@ Editor.nextImage =
 /**
  * Specifies the image URL to be used for the transparent background.
  */
-Editor.editImage = mxClient.IS_SVG
+Editor.editImage = m.mxClient.IS_SVG
   ? "data:image/gif;base64,R0lGODlhCwALAIABAFdXV////yH5BAEAAAEALAAAAAALAAsAAAIZjB8AiKuc4jvLOGqzrjX6zmkWyChXaUJBAQA7"
   : IMAGE_PATH + "/edit.gif";
 
@@ -262,7 +265,7 @@ Editor.themes = null;
 /**
  * Specifies the image URL to be used for the transparent background.
  */
-Editor.ctrlKey = mxClient.IS_MAC ? "Cmd" : "Ctrl";
+Editor.ctrlKey = m.mxClient.IS_MAC ? "Cmd" : "Ctrl";
 
 /**
  * Specifies the image URL to be used for the transparent background.
@@ -278,17 +281,17 @@ Editor.popupsAllowed = true;
 /**
  * Editor inherits from mxEventSource
  */
-mxUtils.extend(Editor, mxEventSource);
+m.mxUtils.extend(Editor, m.mxEventSource);
 
 /**
  * Stores initial state of mxClient.NO_FO.
  */
-Editor.prototype.originalNoForeignObject = mxClient.NO_FO;
+Editor.prototype.originalNoForeignObject = m.mxClient.NO_FO;
 
 /**
  * Specifies the image URL to be used for the transparent background.
  */
-Editor.prototype.transparentImage = mxClient.IS_SVG
+Editor.prototype.transparentImage = m.mxClient.IS_SVG
   ? "data:image/gif;base64,R0lGODlhMAAwAIAAAP///wAAACH5BAEAAAAALAAAAAAwADAAAAIxhI+py+0Po5y02ouz3rz7D4biSJbmiabqyrbuC8fyTNf2jef6zvf+DwwKh8Si8egpAAA7"
   : IMAGE_PATH + "/transparent.gif";
 
@@ -369,7 +372,7 @@ Editor.prototype.isChromelessView = function () {
  */
 Editor.prototype.setAutosave = function (value) {
   this.autosave = value;
-  this.fireEvent(new mxEventObject("autosaveChanged"));
+  this.fireEvent(new m.mxEventObject("autosaveChanged"));
 };
 
 /**
@@ -395,14 +398,14 @@ Editor.prototype.editAsNew = function (xml, title) {
   ) {
     var wnd = null;
 
-    var l = mxUtils.bind(this, function (evt) {
+    var l = m.mxUtils.bind(this, function (evt) {
       if (evt.data == "ready" && evt.source == wnd) {
-        mxEvent.removeListener(window, "message", l);
+        m.mxEvent.removeListener(window, "message", l);
         wnd.postMessage(xml, "*");
       }
     });
 
-    mxEvent.addListener(window, "message", l);
+    m.mxEvent.addListener(window, "message", l);
     wnd = this.graph.openLink(
       this.getEditBlankUrl(p + (p.length > 0 ? "&" : "?") + "client=1"),
       null,
@@ -446,8 +449,8 @@ Editor.prototype.resetGraph = function () {
   this.graph.pageBreaksVisible = this.graph.pageVisible;
   this.graph.preferPageSize = this.graph.pageBreaksVisible;
   this.graph.background = null;
-  this.graph.pageScale = mxGraph.prototype.pageScale;
-  this.graph.pageFormat = mxGraph.prototype.pageFormat;
+  this.graph.pageScale = m.mxGraph.prototype.pageScale;
+  this.graph.pageFormat = m.mxGraph.prototype.pageFormat;
   this.graph.currentScale = 1;
   this.graph.currentTranslate.x = 0;
   this.graph.currentTranslate.y = 0;
@@ -463,7 +466,7 @@ Editor.prototype.readGraphState = function (node) {
     node.getAttribute("grid") != "0" &&
     (!this.isChromelessView() || urlParams["grid"] == "1");
   this.graph.gridSize =
-    parseFloat(node.getAttribute("gridSize")) || mxGraph.prototype.gridSize;
+    parseFloat(node.getAttribute("gridSize")) || m.mxGraph.prototype.gridSize;
   this.graph.graphHandler.guidesEnabled = node.getAttribute("guides") != "0";
   this.graph.setTooltips(node.getAttribute("tooltips") != "0");
   this.graph.setConnectable(node.getAttribute("connect") != "0");
@@ -481,7 +484,7 @@ Editor.prototype.readGraphState = function (node) {
   if (!isNaN(ps) && ps > 0) {
     this.graph.pageScale = ps;
   } else {
-    this.graph.pageScale = mxGraph.prototype.pageScale;
+    this.graph.pageScale = m.mxGraph.prototype.pageScale;
   }
 
   if (!this.graph.isLightboxView() && !this.graph.isViewer()) {
@@ -503,7 +506,7 @@ Editor.prototype.readGraphState = function (node) {
   var ph = parseFloat(node.getAttribute("pageHeight"));
 
   if (!isNaN(pw) && !isNaN(ph)) {
-    this.graph.pageFormat = new mxRectangle(0, 0, pw, ph);
+    this.graph.pageFormat = new m.mxRectangle(0, 0, pw, ph);
   }
 
   // Loads the persistent state settings
@@ -521,7 +524,7 @@ Editor.prototype.readGraphState = function (node) {
  */
 Editor.prototype.setGraphXml = function (node) {
   if (node != null) {
-    var dec = new mxCodec(node.ownerDocument);
+    var dec = new m.mxCodec(node.ownerDocument);
 
     if (node.nodeName == "mxGraphModel") {
       this.graph.model.beginUpdate();
@@ -536,7 +539,7 @@ Editor.prototype.setGraphXml = function (node) {
         this.graph.model.endUpdate();
       }
 
-      this.fireEvent(new mxEventObject("resetGraphView"));
+      this.fireEvent(new m.mxEventObject("resetGraphView"));
     } else if (node.nodeName == "root") {
       this.resetGraph();
 
@@ -546,10 +549,10 @@ Editor.prototype.setGraphXml = function (node) {
 
       dec.decode(wrapper, this.graph.getModel());
       this.updateGraphComponents();
-      this.fireEvent(new mxEventObject("resetGraphView"));
+      this.fireEvent(new m.mxEventObject("resetGraphView"));
     } else {
       throw {
-        message: mxResources.get("cannotOpenFile"),
+        message: m.mxResources.get("cannotOpenFile"),
         node: node,
         toString: function () {
           return this.message;
@@ -559,7 +562,7 @@ Editor.prototype.setGraphXml = function (node) {
   } else {
     this.resetGraph();
     this.graph.model.clear();
-    this.fireEvent(new mxEventObject("resetGraphView"));
+    this.fireEvent(new m.mxEventObject("resetGraphView"));
   }
 };
 
@@ -571,11 +574,11 @@ Editor.prototype.getGraphXml = function (ignoreSelection) {
   var node = null;
 
   if (ignoreSelection) {
-    var enc = new mxCodec(mxUtils.createXmlDocument());
+    var enc = new m.mxCodec(m.mxUtils.createXmlDocument());
     node = enc.encode(this.graph.getModel());
   } else {
     node = this.graph.encodeCells(
-      mxUtils.sortCells(
+      m.mxUtils.sortCells(
         this.graph.model.getTopmostCells(this.graph.getSelectionCells()),
       ),
     );
@@ -632,7 +635,7 @@ Editor.prototype.updateGraphComponents = function () {
       ? "auto"
       : this.defaultGraphOverflow;
 
-    this.fireEvent(new mxEventObject("updateGraphComponents"));
+    this.fireEvent(new m.mxEventObject("updateGraphComponents"));
   }
 };
 
@@ -655,19 +658,19 @@ Editor.prototype.setFilename = function (value) {
  */
 Editor.prototype.createUndoManager = function () {
   var graph = this.graph;
-  var undoMgr = new mxUndoManager();
+  var undoMgr = new m.mxUndoManager();
 
   this.undoListener = function (sender, evt) {
     undoMgr.undoableEditHappened(evt.getProperty("edit"));
   };
 
   // Installs the command history
-  var listener = mxUtils.bind(this, function (sender, evt) {
+  var listener = m.mxUtils.bind(this, function (sender, evt) {
     this.undoListener.apply(this, arguments);
   });
 
-  graph.getModel().addListener(mxEvent.UNDO, listener);
-  graph.getView().addListener(mxEvent.UNDO, listener);
+  graph.getModel().addListener(m.mxEvent.UNDO, listener);
+  graph.getView().addListener(m.mxEvent.UNDO, listener);
 
   // Keeps the selection in sync with the history
   var undoHandler = function (sender, evt) {
@@ -675,7 +678,7 @@ Editor.prototype.createUndoManager = function () {
       evt.getProperty("edit").changes,
       function (change) {
         // Only selects changes to the cell hierarchy
-        return !(change instanceof mxChildChange);
+        return !(change instanceof m.mxChildChange);
       },
     );
 
@@ -693,8 +696,8 @@ Editor.prototype.createUndoManager = function () {
     }
   };
 
-  undoMgr.addListener(mxEvent.UNDO, undoHandler);
-  undoMgr.addListener(mxEvent.REDO, undoHandler);
+  undoMgr.addListener(m.mxEvent.UNDO, undoHandler);
+  undoMgr.addListener(m.mxEvent.REDO, undoHandler);
 
   return undoMgr;
 };
@@ -718,7 +721,8 @@ Editor.prototype.destroy = function () {
  * Class for asynchronously opening a new window and loading a file at the same
  * time. This acts as a bridge between the open dialog and the new editor.
  */
-OpenFile = function (done) {
+//OpenFile = function (done) {
+export function OpenFile(done) {
   this.producer = null;
   this.consumer = null;
   this.done = done;
@@ -746,7 +750,7 @@ OpenFile.prototype.setData = function () {
  */
 OpenFile.prototype.error = function (msg) {
   this.cancel(true);
-  mxUtils.alert(msg);
+  m.mxUtils.alert(msg);
 };
 
 /**
@@ -787,7 +791,7 @@ function Dialog(
   var dx = 0;
 
   if (
-    mxClient.IS_VML &&
+    m.mxClient.IS_VML &&
     (document.documentMode == null || document.documentMode < 8)
   ) {
     // Adds padding as a workaround for box model in older IE versions
@@ -801,7 +805,7 @@ function Dialog(
   var w0 = w;
   var h0 = h;
 
-  var ds = mxUtils.getDocumentSize();
+  var ds = m.mxUtils.getDocumentSize();
 
   // Workaround for print dialog offset in viewer lightbox
   if (window.innerHeight != null) {
@@ -813,7 +817,7 @@ function Dialog(
   var top = Math.max(1, Math.round((dh - h - editorUi.footerHeight) / 3));
 
   // Keeps window size inside available space
-  if (!mxClient.IS_QUIRKS) {
+  if (!m.mxClient.IS_QUIRKS) {
     elt.style.maxHeight = "100%";
   }
 
@@ -833,14 +837,14 @@ function Dialog(
     this.bg.style.right = "0px";
     this.bg.style.zIndex = this.zIndex - 2;
 
-    mxUtils.setOpacity(this.bg, this.bgOpacity);
+    m.mxUtils.setOpacity(this.bg, this.bgOpacity);
 
-    if (mxClient.IS_QUIRKS) {
-      new mxDivResizer(this.bg);
+    if (m.mxClient.IS_QUIRKS) {
+      new m.mxDivResizer(this.bg);
     }
   }
 
-  var origin = mxUtils.getDocumentScrollOrigin(document);
+  var origin = m.mxUtils.getDocumentScrollOrigin(document);
   this.bg.style.left = origin.x + "px";
   this.bg.style.top = origin.y + "px";
   left += origin.x;
@@ -873,16 +877,16 @@ function Dialog(
     var img = document.createElement("img");
 
     img.setAttribute("src", Dialog.prototype.closeImage);
-    img.setAttribute("title", mxResources.get("close"));
+    img.setAttribute("title", m.mxResources.get("close"));
     img.className = "geDialogClose";
     img.style.top = top + 14 + "px";
     img.style.left = left + w + 38 - dx + "px";
     img.style.zIndex = this.zIndex;
 
-    mxEvent.addListener(
+    m.mxEvent.addListener(
       img,
       "click",
-      mxUtils.bind(this, function () {
+      m.mxUtils.bind(this, function () {
         editorUi.hideDialog(true);
       }),
     );
@@ -893,13 +897,13 @@ function Dialog(
     if (!ignoreBgClick) {
       var mouseDownSeen = false;
 
-      mxEvent.addGestureListeners(
+      m.mxEvent.addGestureListeners(
         this.bg,
-        mxUtils.bind(this, function (evt) {
+        m.mxUtils.bind(this, function (evt) {
           mouseDownSeen = true;
         }),
         null,
-        mxUtils.bind(this, function (evt) {
+        m.mxUtils.bind(this, function (evt) {
           if (mouseDownSeen) {
             editorUi.hideDialog(true);
             mouseDownSeen = false;
@@ -909,7 +913,7 @@ function Dialog(
     }
   }
 
-  this.resizeListener = mxUtils.bind(this, function () {
+  this.resizeListener = m.mxUtils.bind(this, function () {
     if (onResize != null) {
       var newWH = onResize();
 
@@ -919,7 +923,7 @@ function Dialog(
       }
     }
 
-    var ds = mxUtils.getDocumentSize();
+    var ds = m.mxUtils.getDocumentSize();
     dh = ds.height;
     this.bg.style.height = dh + "px";
 
@@ -949,12 +953,12 @@ function Dialog(
     }
   });
 
-  mxEvent.addListener(window, "resize", this.resizeListener);
+  m.mxEvent.addListener(window, "resize", this.resizeListener);
 
   this.onDialogClose = onClose;
   this.container = div;
 
-  editorUi.editor.fireEvent(new mxEventObject("showDialog"));
+  editorUi.editor.fireEvent(new m.mxEventObject("showDialog"));
 }
 
 /**
@@ -965,40 +969,40 @@ Dialog.backdropColor = "white";
 /**
  *
  */
-Dialog.prototype.zIndex = mxPopupMenu.prototype.zIndex - 1;
+Dialog.prototype.zIndex = m.mxPopupMenu.prototype.zIndex - 1;
 
 /**
  *
  */
-Dialog.prototype.noColorImage = !mxClient.IS_SVG
+Dialog.prototype.noColorImage = !m.mxClient.IS_SVG
   ? IMAGE_PATH + "/nocolor.png"
   : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkEzRDlBMUUwODYxMTExRTFCMzA4RDdDMjJBMEMxRDM3IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkEzRDlBMUUxODYxMTExRTFCMzA4RDdDMjJBMEMxRDM3Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6QTNEOUExREU4NjExMTFFMUIzMDhEN0MyMkEwQzFEMzciIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6QTNEOUExREY4NjExMTFFMUIzMDhEN0MyMkEwQzFEMzciLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5xh3fmAAAABlBMVEX////MzMw46qqDAAAAGElEQVR42mJggAJGKGAYIIGBth8KAAIMAEUQAIElnLuQAAAAAElFTkSuQmCC";
 
 /**
  *
  */
-Dialog.prototype.closeImage = !mxClient.IS_SVG
+Dialog.prototype.closeImage = !m.mxClient.IS_SVG
   ? IMAGE_PATH + "/close.png"
   : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJAQMAAADaX5RTAAAABlBMVEV7mr3///+wksspAAAAAnRSTlP/AOW3MEoAAAAdSURBVAgdY9jXwCDDwNDRwHCwgeExmASygSL7GgB12QiqNHZZIwAAAABJRU5ErkJggg==";
 
 /**
  *
  */
-Dialog.prototype.clearImage = !mxClient.IS_SVG
+Dialog.prototype.clearImage = !m.mxClient.IS_SVG
   ? IMAGE_PATH + "/clear.gif"
   : "data:image/gif;base64,R0lGODlhDQAKAIABAMDAwP///yH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS4wLWMwNjAgNjEuMTM0Nzc3LCAyMDEwLzAyLzEyLTE3OjMyOjAwICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IFdpbmRvd3MiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OUIzOEM1NzI4NjEyMTFFMUEzMkNDMUE3NjZERDE2QjIiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OUIzOEM1NzM4NjEyMTFFMUEzMkNDMUE3NjZERDE2QjIiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5QjM4QzU3MDg2MTIxMUUxQTMyQ0MxQTc2NkREMTZCMiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5QjM4QzU3MTg2MTIxMUUxQTMyQ0MxQTc2NkREMTZCMiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PgH//v38+/r5+Pf29fTz8vHw7+7t7Ovq6ejn5uXk4+Lh4N/e3dzb2tnY19bV1NPS0dDPzs3My8rJyMfGxcTDwsHAv769vLu6ubi3trW0s7KxsK+urayrqqmop6alpKOioaCfnp2cm5qZmJeWlZSTkpGQj46NjIuKiYiHhoWEg4KBgH9+fXx7enl4d3Z1dHNycXBvbm1sa2ppaGdmZWRjYmFgX15dXFtaWVhXVlVUU1JRUE9OTUxLSklIR0ZFRENCQUA/Pj08Ozo5ODc2NTQzMjEwLy4tLCsqKSgnJiUkIyIhIB8eHRwbGhkYFxYVFBMSERAPDg0MCwoJCAcGBQQDAgEAACH5BAEAAAEALAAAAAANAAoAAAIXTGCJebD9jEOTqRlttXdrB32PJ2ncyRQAOw==";
 
 /**
  *
  */
-Dialog.prototype.lockedImage = !mxClient.IS_SVG
+Dialog.prototype.lockedImage = !m.mxClient.IS_SVG
   ? IMAGE_PATH + "/locked.png"
   : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAMAAABhq6zVAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MzdDMDZCODExNzIxMTFFNUI0RTk5NTg4OTcyMUUyODEiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MzdDMDZCODIxNzIxMTFFNUI0RTk5NTg4OTcyMUUyODEiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDozN0MwNkI3RjE3MjExMUU1QjRFOTk1ODg5NzIxRTI4MSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDozN0MwNkI4MDE3MjExMUU1QjRFOTk1ODg5NzIxRTI4MSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PvqMCFYAAAAVUExURZmZmb+/v7KysqysrMzMzLGxsf///4g8N1cAAAAHdFJOU////////wAaSwNGAAAAPElEQVR42lTMQQ4AIQgEwUa0//9kTQirOweYOgDqAMbZUr10AGlAwx4/BJ2QJ4U0L5brYjovvpv32xZgAHZaATFtMbu4AAAAAElFTkSuQmCC";
 
 /**
  *
  */
-Dialog.prototype.unlockedImage = !mxClient.IS_SVG
+Dialog.prototype.unlockedImage = !m.mxClient.IS_SVG
   ? IMAGE_PATH + "/unlocked.png"
   : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAMAAABhq6zVAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MzdDMDZCN0QxNzIxMTFFNUI0RTk5NTg4OTcyMUUyODEiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MzdDMDZCN0UxNzIxMTFFNUI0RTk5NTg4OTcyMUUyODEiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDozN0MwNkI3QjE3MjExMUU1QjRFOTk1ODg5NzIxRTI4MSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDozN0MwNkI3QzE3MjExMUU1QjRFOTk1ODg5NzIxRTI4MSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PkKMpVwAAAAYUExURZmZmbKysr+/v6ysrOXl5czMzLGxsf///zHN5lwAAAAIdFJOU/////////8A3oO9WQAAADxJREFUeNpUzFESACAEBNBVsfe/cZJU+8Mzs8CIABCidtfGOndnYsT40HDSiCcbPdoJo10o9aI677cpwACRoAF3dFNlswAAAABJRU5ErkJggg==";
 
@@ -1011,7 +1015,7 @@ Dialog.prototype.bgOpacity = 80;
  * Removes the dialog from the DOM.
  */
 Dialog.prototype.getPosition = function (left, top) {
-  return new mxPoint(left, top);
+  return new m.mxPoint(left, top);
 };
 
 /**
@@ -1035,7 +1039,7 @@ Dialog.prototype.close = function (cancel, isEsc) {
     this.bg.parentNode.removeChild(this.bg);
   }
 
-  mxEvent.removeListener(window, "resize", this.resizeListener);
+  m.mxEvent.removeListener(window, "resize", this.resizeListener);
   this.container.parentNode.removeChild(this.container);
 };
 
@@ -1072,7 +1076,7 @@ var ErrorDialog = function (
     hd.style.whiteSpace = "nowrap";
     hd.style.textOverflow = "ellipsis";
     hd.style.overflow = "hidden";
-    mxUtils.write(hd, title);
+    m.mxUtils.write(hd, title);
     hd.setAttribute("title", title);
     div.appendChild(hd);
   }
@@ -1088,7 +1092,7 @@ var ErrorDialog = function (
   btns.style.textAlign = "center";
 
   if (retry != null) {
-    var retryBtn = mxUtils.button(mxResources.get("tryAgain"), function () {
+    var retryBtn = m.mxUtils.button(m.mxResources.get("tryAgain"), function () {
       editorUi.hideDialog();
       retry();
     });
@@ -1099,7 +1103,7 @@ var ErrorDialog = function (
   }
 
   if (buttonText3 != null) {
-    var btn3 = mxUtils.button(buttonText3, function () {
+    var btn3 = m.mxUtils.button(buttonText3, function () {
       if (fn3 != null) {
         fn3();
       }
@@ -1109,7 +1113,7 @@ var ErrorDialog = function (
     btns.appendChild(btn3);
   }
 
-  var btn = mxUtils.button(buttonText, function () {
+  var btn = m.mxUtils.button(buttonText, function () {
     if (hide) {
       editorUi.hideDialog();
     }
@@ -1123,7 +1127,7 @@ var ErrorDialog = function (
   btns.appendChild(btn);
 
   if (buttonText2 != null) {
-    var mainBtn = mxUtils.button(buttonText2, function () {
+    var mainBtn = m.mxUtils.button(buttonText2, function () {
       if (hide) {
         editorUi.hideDialog();
       }
@@ -1175,16 +1179,16 @@ PrintDialog.prototype.create = function (editorUi) {
   td.appendChild(onePageCheckBox);
 
   var span = document.createElement("span");
-  mxUtils.write(span, " " + mxResources.get("fitPage"));
+  m.mxUtils.write(span, " " + m.mxResources.get("fitPage"));
   td.appendChild(span);
 
-  mxEvent.addListener(span, "click", function (evt) {
+  m.mxEvent.addListener(span, "click", function (evt) {
     onePageCheckBox.checked = !onePageCheckBox.checked;
     pageCountCheckBox.checked = !onePageCheckBox.checked;
-    mxEvent.consume(evt);
+    m.mxEvent.consume(evt);
   });
 
-  mxEvent.addListener(onePageCheckBox, "change", function () {
+  m.mxEvent.addListener(onePageCheckBox, "change", function () {
     pageCountCheckBox.checked = !onePageCheckBox.checked;
   });
 
@@ -1200,13 +1204,13 @@ PrintDialog.prototype.create = function (editorUi) {
   td.appendChild(pageCountCheckBox);
 
   var span = document.createElement("span");
-  mxUtils.write(span, " " + mxResources.get("posterPrint") + ":");
+  m.mxUtils.write(span, " " + m.mxResources.get("posterPrint") + ":");
   td.appendChild(span);
 
-  mxEvent.addListener(span, "click", function (evt) {
+  m.mxEvent.addListener(span, "click", function (evt) {
     pageCountCheckBox.checked = !pageCountCheckBox.checked;
     onePageCheckBox.checked = !pageCountCheckBox.checked;
-    mxEvent.consume(evt);
+    m.mxEvent.consume(evt);
   });
 
   row.appendChild(td);
@@ -1222,11 +1226,11 @@ PrintDialog.prototype.create = function (editorUi) {
   td = document.createElement("td");
   td.style.fontSize = "10pt";
   td.appendChild(pageCountInput);
-  mxUtils.write(td, " " + mxResources.get("pages") + " (max)");
+  m.mxUtils.write(td, " " + m.mxResources.get("pages") + " (max)");
   row.appendChild(td);
   tbody.appendChild(row);
 
-  mxEvent.addListener(pageCountCheckBox, "change", function () {
+  m.mxEvent.addListener(pageCountCheckBox, "change", function () {
     if (pageCountCheckBox.checked) {
       pageCountInput.removeAttribute("disabled");
     } else {
@@ -1239,7 +1243,7 @@ PrintDialog.prototype.create = function (editorUi) {
   row = row.cloneNode(false);
 
   td = document.createElement("td");
-  mxUtils.write(td, mxResources.get("pageScale") + ":");
+  m.mxUtils.write(td, m.mxResources.get("pageScale") + ":");
   row.appendChild(td);
 
   td = document.createElement("td");
@@ -1271,7 +1275,7 @@ PrintDialog.prototype.create = function (editorUi) {
     // Workaround to match available paper size in actual print output
     printScale *= 0.75;
 
-    var pf = graph.pageFormat || mxConstants.PAGE_FORMAT_A4_PORTRAIT;
+    var pf = graph.pageFormat || m.mxConstants.PAGE_FORMAT_A4_PORTRAIT;
     var scale = 1 / graph.pageScale;
 
     if (autoOrigin) {
@@ -1280,7 +1284,7 @@ PrintDialog.prototype.create = function (editorUi) {
         : parseInt(pageCountInput.value);
 
       if (!isNaN(pageCount)) {
-        scale = mxUtils.getScaleForPageCount(pageCount, graph, pf);
+        scale = m.mxUtils.getScaleForPageCount(pageCount, graph, pf);
       }
     }
 
@@ -1291,7 +1295,7 @@ PrintDialog.prototype.create = function (editorUi) {
     var y0 = 0;
 
     // Applies print scale
-    pf = mxRectangle.fromRectangle(pf);
+    pf = m.mxRectangle.fromRectangle(pf);
     pf.width = Math.ceil(pf.width * printScale);
     pf.height = Math.ceil(pf.height * printScale);
     scale *= printScale;
@@ -1321,7 +1325,7 @@ PrintDialog.prototype.create = function (editorUi) {
     }
   }
 
-  var cancelBtn = mxUtils.button(mxResources.get("cancel"), function () {
+  var cancelBtn = m.mxUtils.button(m.mxResources.get("cancel"), function () {
     editorUi.hideDialog();
   });
   cancelBtn.className = "geBtn";
@@ -1331,7 +1335,7 @@ PrintDialog.prototype.create = function (editorUi) {
   }
 
   if (PrintDialog.previewEnabled) {
-    var previewBtn = mxUtils.button(mxResources.get("preview"), function () {
+    var previewBtn = m.mxUtils.button(m.mxResources.get("preview"), function () {
       editorUi.hideDialog();
       preview(false);
     });
@@ -1339,8 +1343,8 @@ PrintDialog.prototype.create = function (editorUi) {
     td.appendChild(previewBtn);
   }
 
-  var printBtn = mxUtils.button(
-    mxResources.get(!PrintDialog.previewEnabled ? "ok" : "print"),
+  var printBtn = m.mxUtils.button(
+    m.mxResources.get(!PrintDialog.previewEnabled ? "ok" : "print"),
     function () {
       editorUi.hideDialog();
       preview(true);
@@ -1375,7 +1379,7 @@ PrintDialog.printPreview = function (preview) {
       // Workaround for Google Chrome which needs a bit of a
       // delay in order to render the SVG contents
       // Needs testing in production
-      if (mxClient.IS_GC) {
+      if (m.mxClient.IS_GC) {
         window.setTimeout(printFn, 500);
       } else {
         printFn();
@@ -1398,13 +1402,13 @@ PrintDialog.createPrintPreview = function (
   y0,
   autoOrigin,
 ) {
-  var preview = new mxPrintPreview(graph, scale, pf, border, x0, y0);
-  preview.title = mxResources.get("preview");
+  var preview = new m.mxPrintPreview(graph, scale, pf, border, x0, y0);
+  preview.title = m.mxResources.get("preview");
   preview.printBackgroundImage = true;
   preview.autoOrigin = autoOrigin;
   var bg = graph.background;
 
-  if (bg == null || bg == "" || bg == mxConstants.NONE) {
+  if (bg == null || bg == "" || bg == m.mxConstants.NONE) {
     bg = "#ffffff";
   }
 
@@ -1448,7 +1452,7 @@ var PageSetupDialog = function (editorUi) {
   td = document.createElement("td");
   td.style.verticalAlign = "top";
   td.style.fontSize = "10pt";
-  mxUtils.write(td, mxResources.get("paperSize") + ":");
+  m.mxUtils.write(td, m.mxResources.get("paperSize") + ":");
 
   row.appendChild(td);
 
@@ -1468,7 +1472,7 @@ var PageSetupDialog = function (editorUi) {
   row = document.createElement("tr");
 
   td = document.createElement("td");
-  mxUtils.write(td, mxResources.get("background") + ":");
+  m.mxUtils.write(td, m.mxResources.get("background") + ":");
 
   row.appendChild(td);
 
@@ -1488,7 +1492,7 @@ var PageSetupDialog = function (editorUi) {
   var newBackgroundColor = graph.background;
 
   function updateBackgroundColor() {
-    if (newBackgroundColor == null || newBackgroundColor == mxConstants.NONE) {
+    if (newBackgroundColor == null || newBackgroundColor == m.mxConstants.NONE) {
       backgroundButton.style.backgroundColor = "";
       backgroundButton.style.backgroundImage =
         "url('" + Dialog.prototype.noColorImage + "')";
@@ -1500,17 +1504,17 @@ var PageSetupDialog = function (editorUi) {
 
   updateBackgroundColor();
 
-  mxEvent.addListener(backgroundButton, "click", function (evt) {
+  m.mxEvent.addListener(backgroundButton, "click", function (evt) {
     editorUi.pickColor(newBackgroundColor || "none", function (color) {
       newBackgroundColor = color;
       updateBackgroundColor();
     });
-    mxEvent.consume(evt);
+    m.mxEvent.consume(evt);
   });
 
   td.appendChild(backgroundButton);
 
-  mxUtils.write(td, mxResources.get("gridSize") + ":");
+  m.mxUtils.write(td, m.mxResources.get("gridSize") + ":");
 
   var gridSizeInput = document.createElement("input");
   gridSizeInput.setAttribute("type", "number");
@@ -1521,7 +1525,7 @@ var PageSetupDialog = function (editorUi) {
   gridSizeInput.value = graph.getGridSize();
   td.appendChild(gridSizeInput);
 
-  mxEvent.addListener(gridSizeInput, "change", function () {
+  m.mxEvent.addListener(gridSizeInput, "change", function () {
     var value = parseInt(gridSizeInput.value);
     gridSizeInput.value = Math.max(
       1,
@@ -1535,7 +1539,7 @@ var PageSetupDialog = function (editorUi) {
   row = document.createElement("tr");
   td = document.createElement("td");
 
-  mxUtils.write(td, mxResources.get("image") + ":");
+  m.mxUtils.write(td, m.mxResources.get("image") + ":");
 
   row.appendChild(td);
   td = document.createElement("td");
@@ -1552,16 +1556,16 @@ var PageSetupDialog = function (editorUi) {
       changeImageLink.removeAttribute("title");
       changeImageLink.style.fontSize = "";
       changeImageLink.innerHTML =
-        mxUtils.htmlEntities(mxResources.get("change")) + "...";
+        m.mxUtils.htmlEntities(m.mxResources.get("change")) + "...";
     } else {
       changeImageLink.setAttribute("title", newBackgroundImage.src);
       changeImageLink.style.fontSize = "11px";
       changeImageLink.innerHTML =
-        mxUtils.htmlEntities(newBackgroundImage.src.substring(0, 42)) + "...";
+        m.mxUtils.htmlEntities(newBackgroundImage.src.substring(0, 42)) + "...";
     }
   }
 
-  mxEvent.addListener(changeImageLink, "click", function (evt) {
+  m.mxEvent.addListener(changeImageLink, "click", function (evt) {
     editorUi.showBackgroundImageDialog(function (image, failed) {
       if (!failed) {
         newBackgroundImage = image;
@@ -1569,7 +1573,7 @@ var PageSetupDialog = function (editorUi) {
       }
     }, newBackgroundImage);
 
-    mxEvent.consume(evt);
+    m.mxEvent.consume(evt);
   });
 
   updateBackgroundImage();
@@ -1585,7 +1589,7 @@ var PageSetupDialog = function (editorUi) {
   td.style.paddingTop = "16px";
   td.setAttribute("align", "right");
 
-  var cancelBtn = mxUtils.button(mxResources.get("cancel"), function () {
+  var cancelBtn = m.mxUtils.button(m.mxResources.get("cancel"), function () {
     editorUi.hideDialog();
   });
   cancelBtn.className = "geBtn";
@@ -1594,7 +1598,7 @@ var PageSetupDialog = function (editorUi) {
     td.appendChild(cancelBtn);
   }
 
-  var applyBtn = mxUtils.button(mxResources.get("apply"), function () {
+  var applyBtn = m.mxUtils.button(m.mxResources.get("apply"), function () {
     editorUi.hideDialog();
     var gridSize = parseInt(gridSizeInput.value);
 
@@ -1674,7 +1678,7 @@ PageSetupDialog.addPageFormatPanel = function (
 
   var portraitSpan = document.createElement("span");
   portraitSpan.style.maxWidth = "100px";
-  mxUtils.write(portraitSpan, mxResources.get("portrait"));
+  m.mxUtils.write(portraitSpan, m.mxResources.get("portrait"));
   formatDiv.appendChild(portraitSpan);
 
   landscapeCheckBox.style.marginLeft = "10px";
@@ -1683,7 +1687,7 @@ PageSetupDialog.addPageFormatPanel = function (
 
   var landscapeSpan = document.createElement("span");
   landscapeSpan.style.width = "100px";
-  mxUtils.write(landscapeSpan, mxResources.get("landscape"));
+  m.mxUtils.write(landscapeSpan, m.mxResources.get("landscape"));
   formatDiv.appendChild(landscapeSpan);
 
   var customDiv = document.createElement("div");
@@ -1695,13 +1699,13 @@ PageSetupDialog.addPageFormatPanel = function (
   widthInput.setAttribute("size", "7");
   widthInput.style.textAlign = "right";
   customDiv.appendChild(widthInput);
-  mxUtils.write(customDiv, " in x ");
+  m.mxUtils.write(customDiv, " in x ");
 
   var heightInput = document.createElement("input");
   heightInput.setAttribute("size", "7");
   heightInput.style.textAlign = "right";
   customDiv.appendChild(heightInput);
-  mxUtils.write(customDiv, " in");
+  m.mxUtils.write(customDiv, " in");
 
   formatDiv.style.display = "none";
   customDiv.style.display = "none";
@@ -1715,7 +1719,8 @@ PageSetupDialog.addPageFormatPanel = function (
 
     var paperSizeOption = document.createElement("option");
     paperSizeOption.setAttribute("value", f.key);
-    mxUtils.write(paperSizeOption, f.title);
+    m.mxUtils.write(paperSizeOption, f.title);
+
     paperSizeSelect.appendChild(paperSizeOption);
   }
 
@@ -1742,18 +1747,18 @@ PageSetupDialog.addPageFormatPanel = function (
           // Fixes wrong values for previous A4 and A5 page sizes
           if (f.key == "a4") {
             if (pageFormat.width == 826) {
-              pageFormat = mxRectangle.fromRectangle(pageFormat);
+              pageFormat = m.mxRectangle.fromRectangle(pageFormat);
               pageFormat.width = 827;
             } else if (pageFormat.height == 826) {
-              pageFormat = mxRectangle.fromRectangle(pageFormat);
+              pageFormat = m.mxRectangle.fromRectangle(pageFormat);
               pageFormat.height = 827;
             }
           } else if (f.key == "a5") {
             if (pageFormat.width == 584) {
-              pageFormat = mxRectangle.fromRectangle(pageFormat);
+              pageFormat = m.mxRectangle.fromRectangle(pageFormat);
               pageFormat.width = 583;
             } else if (pageFormat.height == 584) {
-              pageFormat = mxRectangle.fromRectangle(pageFormat);
+              pageFormat = m.mxRectangle.fromRectangle(pageFormat);
               pageFormat.height = 583;
             }
           }
@@ -1804,7 +1809,7 @@ PageSetupDialog.addPageFormatPanel = function (
   listener();
 
   div.appendChild(paperSizeSelect);
-  mxUtils.br(div);
+  m.mxUtils.br(div);
 
   div.appendChild(formatDiv);
   div.appendChild(customDiv);
@@ -1836,7 +1841,7 @@ PageSetupDialog.addPageFormatPanel = function (
       heightInput.value = pageFormat.height / 100;
     }
 
-    var newPageFormat = new mxRectangle(
+    var newPageFormat = new m.mxRectangle(
       0,
       0,
       Math.floor(parseFloat(widthInput.value) * 100),
@@ -1844,7 +1849,7 @@ PageSetupDialog.addPageFormatPanel = function (
     );
 
     if (paperSizeSelect.value != "custom" && landscapeCheckBox.checked) {
-      newPageFormat = new mxRectangle(
+      newPageFormat = new m.mxRectangle(
         0,
         0,
         newPageFormat.height,
@@ -1867,25 +1872,25 @@ PageSetupDialog.addPageFormatPanel = function (
     }
   };
 
-  mxEvent.addListener(portraitSpan, "click", function (evt) {
+  m.mxEvent.addListener(portraitSpan, "click", function (evt) {
     portraitCheckBox.checked = true;
     update(evt);
-    mxEvent.consume(evt);
+    m.mxEvent.consume(evt);
   });
 
-  mxEvent.addListener(landscapeSpan, "click", function (evt) {
+  m.mxEvent.addListener(landscapeSpan, "click", function (evt) {
     landscapeCheckBox.checked = true;
     update(evt);
-    mxEvent.consume(evt);
+    m.mxEvent.consume(evt);
   });
 
-  mxEvent.addListener(widthInput, "blur", update);
-  mxEvent.addListener(widthInput, "click", update);
-  mxEvent.addListener(heightInput, "blur", update);
-  mxEvent.addListener(heightInput, "click", update);
-  mxEvent.addListener(landscapeCheckBox, "change", update);
-  mxEvent.addListener(portraitCheckBox, "change", update);
-  mxEvent.addListener(paperSizeSelect, "change", function (evt) {
+  m.mxEvent.addListener(widthInput, "blur", update);
+  m.mxEvent.addListener(widthInput, "click", update);
+  m.mxEvent.addListener(heightInput, "blur", update);
+  m.mxEvent.addListener(heightInput, "click", update);
+  m.mxEvent.addListener(landscapeCheckBox, "change", update);
+  m.mxEvent.addListener(portraitCheckBox, "change", update);
+  m.mxEvent.addListener(paperSizeSelect, "change", function (evt) {
     // Handles special case where custom was chosen
     customSize = paperSizeSelect.value == "custom";
     update(evt, true);
@@ -1914,89 +1919,89 @@ PageSetupDialog.getFormats = function () {
     {
       key: "letter",
       title: 'US-Letter (8,5" x 11")',
-      format: mxConstants.PAGE_FORMAT_LETTER_PORTRAIT,
+      format: m.mxConstants.PAGE_FORMAT_LETTER_PORTRAIT,
     },
     {
       key: "legal",
       title: 'US-Legal (8,5" x 14")',
-      format: new mxRectangle(0, 0, 850, 1400),
+      format: new m.mxRectangle(0, 0, 850, 1400),
     },
     {
       key: "tabloid",
       title: 'US-Tabloid (11" x 17")',
-      format: new mxRectangle(0, 0, 1100, 1700),
+      format: new m.mxRectangle(0, 0, 1100, 1700),
     },
     {
       key: "executive",
       title: 'US-Executive (7" x 10")',
-      format: new mxRectangle(0, 0, 700, 1000),
+      format: new m.mxRectangle(0, 0, 700, 1000),
     },
     {
       key: "a0",
       title: "A0 (841 mm x 1189 mm)",
-      format: new mxRectangle(0, 0, 3300, 4681),
+      format: new m.mxRectangle(0, 0, 3300, 4681),
     },
     {
       key: "a1",
       title: "A1 (594 mm x 841 mm)",
-      format: new mxRectangle(0, 0, 2339, 3300),
+      format: new m.mxRectangle(0, 0, 2339, 3300),
     },
     {
       key: "a2",
       title: "A2 (420 mm x 594 mm)",
-      format: new mxRectangle(0, 0, 1654, 2336),
+      format: new m.mxRectangle(0, 0, 1654, 2336),
     },
     {
       key: "a3",
       title: "A3 (297 mm x 420 mm)",
-      format: new mxRectangle(0, 0, 1169, 1654),
+      format: new m.mxRectangle(0, 0, 1169, 1654),
     },
     {
       key: "a4",
       title: "A4 (210 mm x 297 mm)",
-      format: mxConstants.PAGE_FORMAT_A4_PORTRAIT,
+      format: m.mxConstants.PAGE_FORMAT_A4_PORTRAIT,
     },
     {
       key: "a5",
       title: "A5 (148 mm x 210 mm)",
-      format: new mxRectangle(0, 0, 583, 827),
+      format: new m.mxRectangle(0, 0, 583, 827),
     },
     {
       key: "a6",
       title: "A6 (105 mm x 148 mm)",
-      format: new mxRectangle(0, 0, 413, 583),
+      format: new m.mxRectangle(0, 0, 413, 583),
     },
     {
       key: "a7",
       title: "A7 (74 mm x 105 mm)",
-      format: new mxRectangle(0, 0, 291, 413),
+      format: new m.mxRectangle(0, 0, 291, 413),
     },
     {
       key: "b4",
       title: "B4 (250 mm x 353 mm)",
-      format: new mxRectangle(0, 0, 980, 1390),
+      format: new m.mxRectangle(0, 0, 980, 1390),
     },
     {
       key: "b5",
       title: "B5 (176 mm x 250 mm)",
-      format: new mxRectangle(0, 0, 690, 980),
+      format: new m.mxRectangle(0, 0, 690, 980),
     },
     {
       key: "16-9",
       title: "16:9 (1600 x 900)",
-      format: new mxRectangle(0, 0, 900, 1600),
+      format: new m.mxRectangle(0, 0, 900, 1600),
     },
     {
       key: "16-10",
       title: "16:10 (1920 x 1200)",
-      format: new mxRectangle(0, 0, 1200, 1920),
+      format: new m.mxRectangle(0, 0, 1200, 1920),
     },
     {
       key: "4-3",
       title: "4:3 (1600 x 1200)",
-      format: new mxRectangle(0, 0, 1200, 1600),
+      format: new m.mxRectangle(0, 0, 1200, 1600),
     },
-    { key: "custom", title: mxResources.get("custom"), format: null },
+    { key: "custom", title: m.mxResources.get("custom"), format: null },
   ];
 };
 
@@ -2030,7 +2035,7 @@ var FilenameDialog = function (
   td.style.whiteSpace = "nowrap";
   td.style.fontSize = "10pt";
   td.style.width = hints ? "80px" : "120px";
-  mxUtils.write(td, (label || mxResources.get("filename")) + ":");
+  m.mxUtils.write(td, (label || m.mxResources.get("filename")) + ":");
 
   row.appendChild(td);
 
@@ -2039,7 +2044,7 @@ var FilenameDialog = function (
   nameInput.style.marginLeft = "4px";
   nameInput.style.width = w != null ? w + "px" : "180px";
 
-  var genericBtn = mxUtils.button(buttonText, function () {
+  var genericBtn = m.mxUtils.button(buttonText, function () {
     if (validateFn == null || validateFn(nameInput.value)) {
       if (closeOnBtn) {
         editorUi.hideDialog();
@@ -2058,10 +2063,10 @@ var FilenameDialog = function (
     nameInput.focus();
 
     if (
-      mxClient.IS_GC ||
-      mxClient.IS_FF ||
+      m.mxClient.IS_GC ||
+      m.mxClient.IS_FF ||
       document.documentMode >= 5 ||
-      mxClient.IS_QUIRKS
+      m.mxClient.IS_QUIRKS
     ) {
       nameInput.select();
     } else {
@@ -2077,7 +2082,7 @@ var FilenameDialog = function (
         var graph = editorUi.editor.graph;
         var dropElt = null;
 
-        mxEvent.addListener(dlg, "dragleave", function (evt) {
+        m.mxEvent.addListener(dlg, "dragleave", function (evt) {
           if (dropElt != null) {
             dropElt.style.backgroundColor = "";
             dropElt = null;
@@ -2087,14 +2092,14 @@ var FilenameDialog = function (
           evt.preventDefault();
         });
 
-        mxEvent.addListener(
+        m.mxEvent.addListener(
           dlg,
           "dragover",
-          mxUtils.bind(this, function (evt) {
+          m.mxUtils.bind(this, function (evt) {
             // IE 10 does not implement pointer-events so it can't have a drop highlight
             if (
               dropElt == null &&
-              (!mxClient.IS_IE || document.documentMode > 10)
+              (!m.mxClient.IS_IE || document.documentMode > 10)
             ) {
               dropElt = nameInput;
               dropElt.style.backgroundColor = "#ebf2f9";
@@ -2105,16 +2110,16 @@ var FilenameDialog = function (
           }),
         );
 
-        mxEvent.addListener(
+        m.mxEvent.addListener(
           dlg,
           "drop",
-          mxUtils.bind(this, function (evt) {
+          m.mxUtils.bind(this, function (evt) {
             if (dropElt != null) {
               dropElt.style.backgroundColor = "";
               dropElt = null;
             }
 
-            if (mxUtils.indexOf(evt.dataTransfer.types, "text/uri-list") >= 0) {
+            if (m.mxUtils.indexOf(evt.dataTransfer.types, "text/uri-list") >= 0) {
               nameInput.value = decodeURIComponent(
                 evt.dataTransfer.getData("text/uri-list"),
               );
@@ -2171,7 +2176,7 @@ var FilenameDialog = function (
   td.style.whiteSpace = "nowrap";
   td.setAttribute("align", "right");
 
-  var cancelBtn = mxUtils.button(mxResources.get("cancel"), function () {
+  var cancelBtn = m.mxUtils.button(m.mxResources.get("cancel"), function () {
     editorUi.hideDialog();
 
     if (cancelFn != null) {
@@ -2185,7 +2190,7 @@ var FilenameDialog = function (
   }
 
   if (helpLink != null) {
-    var helpBtn = mxUtils.button(mxResources.get("help"), function () {
+    var helpBtn = m.mxUtils.button(m.mxResources.get("help"), function () {
       editorUi.editor.graph.openLink(helpLink);
     });
 
@@ -2193,7 +2198,7 @@ var FilenameDialog = function (
     td.appendChild(helpBtn);
   }
 
-  mxEvent.addListener(nameInput, "keypress", function (e) {
+  m.mxEvent.addListener(nameInput, "keypress", function (e) {
     if (e.keyCode == 13) {
       genericBtn.click();
     }
@@ -2224,11 +2229,11 @@ FilenameDialog.createTypeHint = function (ui, nameInput, hints) {
   var hint = document.createElement("img");
   hint.style.cssText =
     "vertical-align:top;height:16px;width:16px;margin-left:4px;background-repeat:no-repeat;background-position:center bottom;cursor:pointer;";
-  mxUtils.setOpacity(hint, 70);
+  m.mxUtils.setOpacity(hint, 70);
 
   var nameChanged = function () {
     hint.setAttribute("src", Editor.helpImage);
-    hint.setAttribute("title", mxResources.get("help"));
+    hint.setAttribute("title", m.mxResources.get("help"));
 
     for (var i = 0; i < hints.length; i++) {
       if (
@@ -2238,16 +2243,16 @@ FilenameDialog.createTypeHint = function (ui, nameInput, hints) {
           .substring(nameInput.value.length - hints[i].ext.length - 1) ==
           "." + hints[i].ext
       ) {
-        hint.setAttribute("src", mxClient.imageBasePath + "/warning.png");
-        hint.setAttribute("title", mxResources.get(hints[i].title));
+        hint.setAttribute("src", m.mxClient.imageBasePath + "/warning.png");
+        hint.setAttribute("title", m.mxResources.get(hints[i].title));
         break;
       }
     }
   };
 
-  mxEvent.addListener(nameInput, "keyup", nameChanged);
-  mxEvent.addListener(nameInput, "change", nameChanged);
-  mxEvent.addListener(hint, "click", function (evt) {
+  m.mxEvent.addListener(nameInput, "keyup", nameChanged);
+  m.mxEvent.addListener(nameInput, "change", nameChanged);
+  m.mxEvent.addListener(hint, "click", function (evt) {
     var title = hint.getAttribute("title");
 
     if (hint.getAttribute("src") == Editor.helpImage) {
@@ -2256,12 +2261,12 @@ FilenameDialog.createTypeHint = function (ui, nameInput, hints) {
       ui.showError(
         null,
         title,
-        mxResources.get("help"),
+        m.mxResources.get("help"),
         function () {
           ui.editor.graph.openLink(FilenameDialog.filenameHelpLink);
         },
         null,
-        mxResources.get("ok"),
+        m.mxResources.get("ok"),
         null,
         null,
         null,
@@ -2270,7 +2275,7 @@ FilenameDialog.createTypeHint = function (ui, nameInput, hints) {
       );
     }
 
-    mxEvent.consume(evt);
+    m.mxEvent.consume(evt);
   });
 
   nameChanged();
@@ -2287,14 +2292,14 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
   for (var i = 0; i < types.length; i++) {
     var typeOption = document.createElement("option");
     typeOption.setAttribute("value", i);
-    mxUtils.write(
+    m.mxUtils.write(
       typeOption,
-      mxResources.get(types[i].description) + " (." + types[i].extension + ")",
+      m.mxResources.get(types[i].description) + " (." + types[i].extension + ")",
     );
     typeSelect.appendChild(typeOption);
   }
 
-  mxEvent.addListener(typeSelect, "change", function (evt) {
+  m.mxEvent.addListener(typeSelect, "change", function (evt) {
     var ext = types[typeSelect.value].extension;
     var idx = nameInput.value.lastIndexOf(".");
 
@@ -2333,8 +2338,8 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
     typeSelect.value = active;
   };
 
-  mxEvent.addListener(nameInput, "change", nameInputChanged);
-  mxEvent.addListener(nameInput, "keyup", nameInputChanged);
+  m.mxEvent.addListener(nameInput, "change", nameInputChanged);
+  m.mxEvent.addListener(nameInput, "keyup", nameInputChanged);
   nameInputChanged();
 
   return typeSelect;
@@ -2345,7 +2350,7 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
  */
 (function () {
   // Uses HTML for background pages (to support grid background image)
-  mxGraphView.prototype.validateBackgroundPage = function () {
+  m.mxGraphView.prototype.validateBackgroundPage = function () {
     var graph = this.graph;
 
     if (graph.container != null && !graph.transparentBackground) {
@@ -2358,7 +2363,7 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
 
           while (
             firstChild != null &&
-            firstChild.nodeType != mxConstants.NODETYPE_ELEMENT
+            firstChild.nodeType != m.mxConstants.NODETYPE_ELEMENT
           ) {
             firstChild = firstChild.nextSibling;
           }
@@ -2369,8 +2374,8 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
 
             // Shadow filter causes problems in outline window in quirks mode. IE8 standards
             // also has known rendering issues inside mxWindow but not using shadow is worse.
-            this.backgroundPageShape.isShadow = !mxClient.IS_QUIRKS;
-            this.backgroundPageShape.dialect = mxConstants.DIALECT_STRICTHTML;
+            this.backgroundPageShape.isShadow = !m.mxClient.IS_QUIRKS;
+            this.backgroundPageShape.dialect = m.mxConstants.DIALECT_STRICTHTML;
             this.backgroundPageShape.init(graph.container);
 
             // Required for the browser to render the background page in correct order
@@ -2384,22 +2389,22 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
             this.backgroundPageShape.node.className = "geBackgroundPage";
 
             // Adds listener for double click handling on background
-            mxEvent.addListener(
+            m.mxEvent.addListener(
               this.backgroundPageShape.node,
               "dblclick",
-              mxUtils.bind(this, function (evt) {
+              m.mxUtils.bind(this, function (evt) {
                 graph.dblClick(evt);
               }),
             );
 
             // Adds basic listeners for graph event dispatching outside of the
             // container and finishing the handling of a single gesture
-            mxEvent.addGestureListeners(
+            m.mxEvent.addGestureListeners(
               this.backgroundPageShape.node,
-              mxUtils.bind(this, function (evt) {
-                graph.fireMouseEvent(mxEvent.MOUSE_DOWN, new mxMouseEvent(evt));
+              m.mxUtils.bind(this, function (evt) {
+                graph.fireMouseEvent(m.mxEvent.MOUSE_DOWN, new m.mxMouseEvent(evt));
               }),
-              mxUtils.bind(this, function (evt) {
+              m.mxUtils.bind(this, function (evt) {
                 // Hides the tooltip if mouse is outside container
                 if (
                   graph.tooltipHandler != null &&
@@ -2408,15 +2413,15 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
                   graph.tooltipHandler.hide();
                 }
 
-                if (graph.isMouseDown && !mxEvent.isConsumed(evt)) {
+                if (graph.isMouseDown && !m.mxEvent.isConsumed(evt)) {
                   graph.fireMouseEvent(
-                    mxEvent.MOUSE_MOVE,
-                    new mxMouseEvent(evt),
+                    m.mxEvent.MOUSE_MOVE,
+                    new m.mxMouseEvent(evt),
                   );
                 }
               }),
-              mxUtils.bind(this, function (evt) {
-                graph.fireMouseEvent(mxEvent.MOUSE_UP, new mxMouseEvent(evt));
+              m.mxUtils.bind(this, function (evt) {
+                graph.fireMouseEvent(m.mxEvent.MOUSE_UP, new m.mxMouseEvent(evt));
               }),
             );
           }
@@ -2435,10 +2440,10 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
   };
 
   // Updates the CSS of the background to draw the grid
-  mxGraphView.prototype.validateBackgroundStyles = function () {
+  m.mxGraphView.prototype.validateBackgroundStyles = function () {
     var graph = this.graph;
     var color =
-      graph.background == null || graph.background == mxConstants.NONE
+      graph.background == null || graph.background == m.mxConstants.NONE
         ? graph.defaultPageBackgroundColor
         : graph.background;
     var gridColor =
@@ -2451,7 +2456,7 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
     if (graph.isGridEnabled()) {
       var phase = 10;
 
-      if (mxClient.IS_SVG) {
+      if (m.mxClient.IS_SVG) {
         // Generates the SVG required for drawing the dynamic grid
         image = unescape(encodeURIComponent(this.createSvgGrid(gridColor)));
         image = window.btoa ? btoa(image) : Base64.encode(image, true);
@@ -2475,11 +2480,11 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
       // Computes the offset to maintain origin for grid
       position =
         -Math.round(
-          phase - mxUtils.mod(this.translate.x * this.scale - x0, phase),
+          phase - m.mxUtils.mod(this.translate.x * this.scale - x0, phase),
         ) +
         "px " +
         -Math.round(
-          phase - mxUtils.mod(this.translate.y * this.scale - y0, phase),
+          phase - m.mxUtils.mod(this.translate.y * this.scale - y0, phase),
         ) +
         "px";
     }
@@ -2506,7 +2511,7 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
   };
 
   // Returns the SVG required for painting the background grid.
-  mxGraphView.prototype.createSvgGrid = function (color) {
+  m.mxGraphView.prototype.createSvgGrid = function (color) {
     var tmp = this.graph.gridSize * this.scale;
 
     while (tmp < this.minGridSize) {
@@ -2545,7 +2550,7 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
       '" height="' +
       size +
       '" xmlns="' +
-      mxConstants.NS_SVG +
+      m.mxConstants.NS_SVG +
       '">' +
       '<defs><pattern id="grid" width="' +
       tmp2 +
@@ -2570,8 +2575,8 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
   };
 
   // Adds panning for the grid with no page view and disabled scrollbars
-  var mxGraphPanGraph = mxGraph.prototype.panGraph;
-  mxGraph.prototype.panGraph = function (dx, dy) {
+  var mxGraphPanGraph = m.mxGraph.prototype.panGraph;
+  m.mxGraph.prototype.panGraph = function (dx, dy) {
     mxGraphPanGraph.apply(this, arguments);
 
     if (this.shiftPreview1 != null) {
@@ -2585,12 +2590,12 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
       var position =
         -Math.round(
           phase -
-            mxUtils.mod(this.view.translate.x * this.view.scale + dx, phase),
+            m.mxUtils.mod(this.view.translate.x * this.view.scale + dx, phase),
         ) +
         "px " +
         -Math.round(
           phase -
-            mxUtils.mod(this.view.translate.y * this.view.scale + dy, phase),
+            m.mxUtils.mod(this.view.translate.y * this.view.scale + dy, phase),
         ) +
         "px";
       canvas.style.backgroundPosition = position;
@@ -2598,7 +2603,7 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
   };
 
   // Draws page breaks only within the page
-  mxGraph.prototype.updatePageBreaks = function (visible, width, height) {
+  m.mxGraph.prototype.updatePageBreaks = function (visible, width, height) {
     var scale = this.view.scale;
     var tr = this.view.translate;
     var fmt = this.pageFormat;
@@ -2608,7 +2613,7 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
 
     width = bounds2.width;
     height = bounds2.height;
-    var bounds = new mxRectangle(
+    var bounds = new m.mxRectangle(
       scale * tr.x,
       scale * tr.y,
       fmt.width * ps,
@@ -2632,7 +2637,7 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
       this.verticalPageBreaks = [];
     }
 
-    var drawPageBreaks = mxUtils.bind(this, function (breaks) {
+    var drawPageBreaks = m.mxUtils.bind(this, function (breaks) {
       if (breaks != null) {
         var count =
           breaks == this.horizontalPageBreaks ? horizontalCount : verticalCount;
@@ -2641,21 +2646,21 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
           var pts =
             breaks == this.horizontalPageBreaks
               ? [
-                  new mxPoint(
+                  new m.mxPoint(
                     Math.round(bounds2.x),
                     Math.round(bounds2.y + (i + 1) * bounds.height),
                   ),
-                  new mxPoint(
+                  new m.mxPoint(
                     Math.round(right),
                     Math.round(bounds2.y + (i + 1) * bounds.height),
                   ),
                 ]
               : [
-                  new mxPoint(
+                  new m.mxPoint(
                     Math.round(bounds2.x + (i + 1) * bounds.width),
                     Math.round(bounds2.y),
                   ),
-                  new mxPoint(
+                  new m.mxPoint(
                     Math.round(bounds2.x + (i + 1) * bounds.width),
                     Math.round(bottom),
                   ),
@@ -2665,7 +2670,7 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
             breaks[i].points = pts;
             breaks[i].redraw();
           } else {
-            var pageBreak = new mxPolyline(pts, this.pageBreakColor);
+            var pageBreak = new m.mxPolyline(pts, this.pageBreakColor);
             pageBreak.dialect = this.dialect;
             pageBreak.isDashed = this.pageBreakDashed;
             pageBreak.pointerEvents = false;
@@ -2690,8 +2695,8 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
 
   // Disables removing relative children and table rows and cells from parents
   var mxGraphHandlerShouldRemoveCellsFromParent =
-    mxGraphHandler.prototype.shouldRemoveCellsFromParent;
-  mxGraphHandler.prototype.shouldRemoveCellsFromParent = function (
+    m.mxGraphHandler.prototype.shouldRemoveCellsFromParent;
+  m.mxGraphHandler.prototype.shouldRemoveCellsFromParent = function (
     parent,
     cells,
     evt,
@@ -2713,24 +2718,24 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
 
   // Overrides to ignore hotspot only for target terminal
   var mxConnectionHandlerCreateMarker =
-    mxConnectionHandler.prototype.createMarker;
-  mxConnectionHandler.prototype.createMarker = function () {
-    var marker = mxConnectionHandlerCreateMarker.apply(this, arguments);
+    m.mxConnectionHandler.prototype.createMarker;
+  m.mxConnectionHandler.prototype.createMarker = function () {
+    var marker = m.mxConnectionHandlerCreateMarker.apply(this, arguments);
 
-    marker.intersects = mxUtils.bind(this, function (state, evt) {
+    marker.intersects = m.mxUtils.bind(this, function (state, evt) {
       if (this.isConnecting()) {
         return true;
       }
 
-      return mxCellMarker.prototype.intersects.apply(marker, arguments);
+      return m.mxCellMarker.prototype.intersects.apply(marker, arguments);
     });
 
     return marker;
   };
 
   // Creates background page shape
-  mxGraphView.prototype.createBackgroundPageShape = function (bounds) {
-    return new mxRectangleShape(
+  m.mxGraphView.prototype.createBackgroundPageShape = function (bounds) {
+    return new m.mxRectangleShape(
       bounds,
       "#ffffff",
       this.graph.defaultPageBorderColor,
@@ -2738,7 +2743,7 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
   };
 
   // Fits the number of background pages to the graph
-  mxGraphView.prototype.getBackgroundPageBounds = function () {
+  m.mxGraphView.prototype.getBackgroundPageBounds = function () {
     var gb = this.getGraphBounds();
 
     // Computes unscaled, untranslated graph bounds
@@ -2761,7 +2766,7 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
     var rows = xe - x0;
     var cols = ye - y0;
 
-    var bounds = new mxRectangle(
+    var bounds = new m.mxRectangle(
       this.scale * (this.translate.x + x0 * pw),
       this.scale * (this.translate.y + y0 * ph),
       this.scale * rows * pw,
@@ -2772,14 +2777,14 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
   };
 
   // Add panning for background page in VML
-  var graphPanGraph = mxGraph.prototype.panGraph;
-  mxGraph.prototype.panGraph = function (dx, dy) {
+  var graphPanGraph = m.mxGraph.prototype.panGraph;
+  m.mxGraph.prototype.panGraph = function (dx, dy) {
     graphPanGraph.apply(this, arguments);
 
     if (
-      this.dialect != mxConstants.DIALECT_SVG &&
+      this.dialect != m.mxConstants.DIALECT_SVG &&
       this.view.backgroundPageShape != null &&
-      (!this.useScrollbarsForPanning || !mxUtils.hasScrollbars(this.container))
+      (!this.useScrollbarsForPanning || !m.mxUtils.hasScrollbars(this.container))
     ) {
       this.view.backgroundPageShape.node.style.marginLeft = dx + "px";
       this.view.backgroundPageShape.node.style.marginTop = dy + "px";
@@ -2789,8 +2794,8 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
   /**
    * Consumes click events for disabled menu items.
    */
-  var mxPopupMenuAddItem = mxPopupMenu.prototype.addItem;
-  mxPopupMenu.prototype.addItem = function (
+  var mxPopupMenuAddItem = m.mxPopupMenu.prototype.addItem;
+  m.mxPopupMenu.prototype.addItem = function (
     title,
     image,
     funct,
@@ -2801,8 +2806,8 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
     var result = mxPopupMenuAddItem.apply(this, arguments);
 
     if (enabled != null && !enabled) {
-      mxEvent.addListener(result, "mousedown", function (evt) {
-        mxEvent.consume(evt);
+      m.mxEvent.addListener(result, "mousedown", function (evt) {
+        m.mxEvent.consume(evt);
       });
     }
 
@@ -2813,8 +2818,8 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
    * Selects tables before cells and rows.
    */
   var mxGraphHandlerIsPropagateSelectionCell =
-    mxGraphHandler.prototype.isPropagateSelectionCell;
-  mxGraphHandler.prototype.isPropagateSelectionCell = function (
+    m.mxGraphHandler.prototype.isPropagateSelectionCell;
+  m.mxGraphHandler.prototype.isPropagateSelectionCell = function (
     cell,
     immediate,
     me,
@@ -2859,7 +2864,7 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
   /**
    * Returns last selected ancestor
    */
-  mxPopupMenuHandler.prototype.getCellForPopupEvent = function (me) {
+  m.mxPopupMenuHandler.prototype.getCellForPopupEvent = function (me) {
     var cell = me.getCell();
     var model = this.graph.getModel();
     var parent = model.getParent(cell);
@@ -2884,3 +2889,4 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
     return cell;
   };
 })();
+

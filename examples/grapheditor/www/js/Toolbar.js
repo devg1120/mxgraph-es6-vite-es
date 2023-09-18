@@ -4,7 +4,7 @@
 /**
  * Construcs a new toolbar for the given editor.
  */
-function Toolbar(editorUi, container) {
+export function Toolbar(editorUi, container) {
   this.editorUi = editorUi;
   this.container = container;
   this.staticElements = [];

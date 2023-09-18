@@ -4,7 +4,9 @@
  *
  * Constructs the actions object for the given UI.
  */
-function Actions(editorUi) {
+import * as m   from "../../../../../dist/mxgraph.es.js";
+
+export function Actions(editorUi) {
   this.editorUi = editorUi;
   this.actions = new Object();
   this.init();
@@ -39,21 +41,21 @@ Actions.prototype.init = function () {
 
     // Closes dialog after open
     window.openFile = new OpenFile(
-      mxUtils.bind(this, function () {
+      m.mxUtils.bind(this, function () {
         ui.hideDialog();
       }),
     );
 
     window.openFile.setConsumer(
-      mxUtils.bind(this, function (xml, filename) {
+      m.mxUtils.bind(this, function (xml, filename) {
         try {
-          var doc = mxUtils.parseXml(xml);
+          var doc = m.mxUtils.parseXml(xml);
           editor.graph.setSelectionCells(
             editor.graph.importGraphModel(doc.documentElement),
           );
         } catch (e) {
-          mxUtils.alert(
-            mxResources.get("invalidOrMissingFile") + ": " + e.message,
+          m.mxUtils.alert(
+            m.mxResources.get("invalidOrMissingFile") + ": " + e.message,
           );
         }
       }),
@@ -110,7 +112,7 @@ Actions.prototype.init = function () {
     Editor.ctrlKey + "+P",
   );
   this.addAction("preview", function () {
-    mxUtils.show(graph, null, 10, 10);
+    m.mxUtils.show(graph, null, 10, 10);
   });
 
   // Edit actions
@@ -130,12 +132,12 @@ Actions.prototype.init = function () {
     },
     null,
     "sprite-redo",
-    !mxClient.IS_WIN ? Editor.ctrlKey + "+Shift+Z" : Editor.ctrlKey + "+Y",
+    !m.mxClient.IS_WIN ? Editor.ctrlKey + "+Shift+Z" : Editor.ctrlKey + "+Y",
   );
   this.addAction(
     "cut",
     function () {
-      mxClipboard.cut(graph);
+      m.mxClipboard.cut(graph);
     },
     null,
     "sprite-cut",
@@ -145,7 +147,7 @@ Actions.prototype.init = function () {
     "copy",
     function () {
       try {
-        mxClipboard.copy(graph);
+        m.mxClipboard.copy(graph);
       } catch (e) {
         ui.handleError(e);
       }
@@ -158,7 +160,7 @@ Actions.prototype.init = function () {
     "paste",
     function () {
       if (graph.isEnabled() && !graph.isCellLocked(graph.getDefaultParent())) {
-        mxClipboard.paste(graph);
+        m.mxClipboard.paste(graph);
       }
     },
     false,
@@ -169,7 +171,7 @@ Actions.prototype.init = function () {
     if (graph.isEnabled() && !graph.isCellLocked(graph.getDefaultParent())) {
       graph.getModel().beginUpdate();
       try {
-        var cells = mxClipboard.paste(graph);
+        var cells = m.mxClipboard.paste(graph);
 
         if (cells != null) {
           var includeEdges = true;
@@ -227,7 +229,7 @@ Actions.prototype.init = function () {
         var geo = graph.getCellGeometry(cell);
 
         if (geo != null) {
-          ui.copiedSize = new mxRectangle(geo.x, geo.y, geo.width, geo.height);
+          ui.copiedSize = new m.mxRectangle(geo.x, geo.y, geo.width, geo.height);
         }
       }
     },
@@ -288,7 +290,7 @@ Actions.prototype.init = function () {
   this.addAction(
     "delete",
     function (evt) {
-      deleteCells(evt != null && mxEvent.isControlDown(evt));
+      deleteCells(evt != null && m.mxEvent.isControlDown(evt));
     },
     null,
     null,
@@ -345,11 +347,11 @@ Actions.prototype.init = function () {
   this.put(
     "turn",
     new Action(
-      mxResources.get("turn") + " / " + mxResources.get("reverse"),
+      m.mxResources.get("turn") + " / " + m.mxResources.get("reverse"),
       function (evt) {
         graph.turnShapes(
           graph.getSelectionCells(),
-          evt != null ? mxEvent.isShiftDown(evt) : false,
+          evt != null ? m.mxEvent.isShiftDown(evt) : false,
         );
       },
       null,
@@ -402,11 +404,11 @@ Actions.prototype.init = function () {
           var defaultValue = graph.isCellMovable(graph.getSelectionCell())
             ? 1
             : 0;
-          graph.toggleCellStyles(mxConstants.STYLE_MOVABLE, defaultValue);
-          graph.toggleCellStyles(mxConstants.STYLE_RESIZABLE, defaultValue);
-          graph.toggleCellStyles(mxConstants.STYLE_ROTATABLE, defaultValue);
-          graph.toggleCellStyles(mxConstants.STYLE_DELETABLE, defaultValue);
-          graph.toggleCellStyles(mxConstants.STYLE_EDITABLE, defaultValue);
+          graph.toggleCellStyles(m.mxConstants.STYLE_MOVABLE, defaultValue);
+          graph.toggleCellStyles(m.mxConstants.STYLE_RESIZABLE, defaultValue);
+          graph.toggleCellStyles(m.mxConstants.STYLE_ROTATABLE, defaultValue);
+          graph.toggleCellStyles(m.mxConstants.STYLE_DELETABLE, defaultValue);
+          graph.toggleCellStyles(m.mxConstants.STYLE_EDITABLE, defaultValue);
           graph.toggleCellStyles("connectable", defaultValue);
         } finally {
           graph.getModel().endUpdate();
@@ -488,7 +490,7 @@ Actions.prototype.init = function () {
     "group",
     function () {
       if (graph.isEnabled()) {
-        var cells = mxUtils.sortCells(graph.getSelectionCells(), true);
+        var cells = m.mxUtils.sortCells(graph.getSelectionCells(), true);
 
         if (
           cells.length == 1 &&
@@ -592,7 +594,7 @@ Actions.prototype.init = function () {
         var cell = graph.getSelectionCell();
         var tooltip = "";
 
-        if (mxUtils.isNode(cell.value)) {
+        if (m.mxUtils.isNode(cell.value)) {
           var tmp = null;
 
           if (
@@ -614,7 +616,7 @@ Actions.prototype.init = function () {
 
         var dlg = new TextareaDialog(
           ui,
-          mxResources.get("editTooltip") + ":",
+          m.mxResources.get("editTooltip") + ":",
           tooltip,
           function (newValue) {
             graph.setTooltipForCell(cell, newValue);
@@ -642,8 +644,8 @@ Actions.prototype.init = function () {
         var cell = graph.getSelectionCell();
         var value = graph.getLinkForCell(cell) || "";
 
-        ui.showLinkDialog(value, mxResources.get("apply"), function (link) {
-          link = mxUtils.trim(link);
+        ui.showLinkDialog(value, m.mxResources.get("apply"), function (link) {
+          link = m.mxUtils.trim(link);
           graph.setLinkForCell(cell, link.length > 0 ? link : null);
         });
       }
@@ -654,7 +656,7 @@ Actions.prototype.init = function () {
   );
   this.put(
     "insertImage",
-    new Action(mxResources.get("image") + "...", function () {
+    new Action(m.mxResources.get("image") + "...", function () {
       if (graph.isEnabled() && !graph.isCellLocked(graph.getDefaultParent())) {
         graph.clearSelection();
         ui.actions.get("image").funct();
@@ -663,10 +665,10 @@ Actions.prototype.init = function () {
   ).isEnabled = isGraphEnabled;
   this.put(
     "insertLink",
-    new Action(mxResources.get("link") + "...", function () {
+    new Action(m.mxResources.get("link") + "...", function () {
       if (graph.isEnabled() && !graph.isCellLocked(graph.getDefaultParent())) {
-        ui.showLinkDialog("", mxResources.get("insert"), function (link, docs) {
-          link = mxUtils.trim(link);
+        ui.showLinkDialog("", m.mxResources.get("insert"), function (link, docs) {
+          link = m.mxUtils.trim(link);
 
           if (link.length > 0) {
             var icon = null;
@@ -682,9 +684,9 @@ Actions.prototype.init = function () {
               }
             }
 
-            var linkCell = new mxCell(
+            var linkCell = new m.mxCell(
               title,
-              new mxGeometry(0, 0, 100, 40),
+              new m.mxGeometry(0, 0, 100, 40),
               "fontColor=#0000EE;fontStyle=4;rounded=1;overflow=hidden;" +
                 (icon != null
                   ? "shape=label;imageWidth=16;imageHeight=16;spacingLeft=26;align=left;image=" +
@@ -706,7 +708,7 @@ Actions.prototype.init = function () {
             try {
               linkCell = graph.addCell(linkCell);
               graph.fireEvent(
-                new mxEventObject("cellsInserted", "cells", [linkCell]),
+                new m.mxEventObject("cellsInserted", "cells", [linkCell]),
               );
             } finally {
               graph.getModel().endUpdate();
@@ -721,7 +723,7 @@ Actions.prototype.init = function () {
   ).isEnabled = isGraphEnabled;
   this.addAction(
     "link...",
-    mxUtils.bind(this, function () {
+    m.mxUtils.bind(this, function () {
       if (graph.isEnabled()) {
         if (graph.cellEditor.isContentEditing()) {
           var elt = graph.getSelectedElement();
@@ -751,8 +753,8 @@ Actions.prototype.init = function () {
 
           ui.showLinkDialog(
             oldValue,
-            mxResources.get("apply"),
-            mxUtils.bind(this, function (value) {
+            m.mxResources.get("apply"),
+            m.mxUtils.bind(this, function (value) {
               graph.cellEditor.restoreSelection(selState);
 
               if (value != null) {
@@ -824,12 +826,12 @@ Actions.prototype.init = function () {
           state = graph.getView().getState(cells[i]);
 
           if (state != null) {
-            var html = mxUtils.getValue(state.style, "html", "0");
+            var html = m.mxUtils.getValue(state.style, "html", "0");
 
             if (html == "1" && value == null) {
               var label = graph.convertValueToString(state.cell);
 
-              if (mxUtils.getValue(state.style, "nl2Br", "1") != "0") {
+              if (m.mxUtils.getValue(state.style, "nl2Br", "1") != "0") {
                 // Removes newlines from HTML and converts breaks to newlines
                 // to match the HTML output in plain text
                 label = label.replace(/\n/g, "").replace(/<br\s*.?>/g, "\n");
@@ -838,18 +840,18 @@ Actions.prototype.init = function () {
               // Removes HTML tags
               var temp = document.createElement("div");
               temp.innerHTML = graph.sanitizeHtml(label);
-              label = mxUtils.extractTextWithWhitespace(temp.childNodes);
+              label = m.mxUtils.extractTextWithWhitespace(temp.childNodes);
 
               graph.cellLabelChanged(state.cell, label);
               graph.setCellStyles("html", value, [cells[i]]);
             } else if (html == "0" && value == "1") {
               // Converts HTML tags to text
-              var label = mxUtils.htmlEntities(
+              var label = m.mxUtils.htmlEntities(
                 graph.convertValueToString(state.cell),
                 false,
               );
 
-              if (mxUtils.getValue(state.style, "nl2Br", "1") != "0") {
+              if (m.mxUtils.getValue(state.style, "nl2Br", "1") != "0") {
                 // Converts newlines in plain text to breaks in HTML
                 // to match the plain text output
                 label = label.replace(/\n/g, "<br/>");
@@ -862,7 +864,7 @@ Actions.prototype.init = function () {
         }
 
         ui.fireEvent(
-          new mxEventObject(
+          new m.mxEventObject(
             "styleChanged",
             "keys",
             ["html"],
@@ -883,32 +885,32 @@ Actions.prototype.init = function () {
 
     graph.stopEditing();
 
-    if (state != null && state.style[mxConstants.STYLE_WHITE_SPACE] == "wrap") {
+    if (state != null && state.style[m.mxConstants.STYLE_WHITE_SPACE] == "wrap") {
       value = null;
     }
 
-    graph.setCellStyles(mxConstants.STYLE_WHITE_SPACE, value);
+    graph.setCellStyles(m.mxConstants.STYLE_WHITE_SPACE, value);
   });
   this.addAction("rotation", function () {
     var value = "0";
     var state = graph.getView().getState(graph.getSelectionCell());
 
     if (state != null) {
-      value = state.style[mxConstants.STYLE_ROTATION] || value;
+      value = state.style[m.mxConstants.STYLE_ROTATION] || value;
     }
 
     var dlg = new FilenameDialog(
       ui,
       value,
-      mxResources.get("apply"),
+      m.mxResources.get("apply"),
       function (newValue) {
         if (newValue != null && newValue.length > 0) {
-          graph.setCellStyles(mxConstants.STYLE_ROTATION, newValue);
+          graph.setCellStyles(m.mxConstants.STYLE_ROTATION, newValue);
         }
       },
-      mxResources.get("enterValue") +
+      m.mxResources.get("enterValue") +
         " (" +
-        mxResources.get("rotation") +
+        m.mxResources.get("rotation") +
         " 0-360)",
     );
 
@@ -968,7 +970,7 @@ Actions.prototype.init = function () {
 
       if (graph.backgroundImage != null) {
         bounds.add(
-          new mxRectangle(
+          new m.mxRectangle(
             0,
             0,
             graph.backgroundImage.width,
@@ -990,7 +992,7 @@ Actions.prototype.init = function () {
   );
   this.addAction(
     "fitPage",
-    mxUtils.bind(this, function () {
+    m.mxUtils.bind(this, function () {
       if (!graph.pageVisible) {
         this.get("pageView").funct();
       }
@@ -1004,7 +1006,7 @@ Actions.prototype.init = function () {
         20;
       graph.zoomTo(scale);
 
-      if (mxUtils.hasScrollbars(graph.container)) {
+      if (m.mxUtils.hasScrollbars(graph.container)) {
         var pad = graph.getPagePadding();
         graph.container.scrollTop = pad.y * graph.view.scale - 1;
         graph.container.scrollLeft =
@@ -1020,7 +1022,7 @@ Actions.prototype.init = function () {
   );
   this.addAction(
     "fitTwoPages",
-    mxUtils.bind(this, function () {
+    m.mxUtils.bind(this, function () {
       if (!graph.pageVisible) {
         this.get("pageView").funct();
       }
@@ -1036,7 +1038,7 @@ Actions.prototype.init = function () {
         ) / 20;
       graph.zoomTo(scale);
 
-      if (mxUtils.hasScrollbars(graph.container)) {
+      if (m.mxUtils.hasScrollbars(graph.container)) {
         var pad = graph.getPagePadding();
         graph.container.scrollTop = Math.min(
           pad.y,
@@ -1054,7 +1056,7 @@ Actions.prototype.init = function () {
   );
   this.addAction(
     "fitPageWidth",
-    mxUtils.bind(this, function () {
+    m.mxUtils.bind(this, function () {
       if (!graph.pageVisible) {
         this.get("pageView").funct();
       }
@@ -1066,7 +1068,7 @@ Actions.prototype.init = function () {
       var scale = Math.floor((20 * cw) / fmt.width / ps) / 20;
       graph.zoomTo(scale);
 
-      if (mxUtils.hasScrollbars(graph.container)) {
+      if (m.mxUtils.hasScrollbars(graph.container)) {
         var pad = graph.getPagePadding();
         graph.container.scrollLeft = Math.min(
           pad.x * graph.view.scale,
@@ -1078,20 +1080,20 @@ Actions.prototype.init = function () {
   this.put(
     "customZoom",
     new Action(
-      mxResources.get("custom") + "...",
-      mxUtils.bind(this, function () {
+      m.mxResources.get("custom") + "...",
+      m.mxUtils.bind(this, function () {
         var dlg = new FilenameDialog(
           this.editorUi,
           parseInt(graph.getView().getScale() * 100),
-          mxResources.get("apply"),
-          mxUtils.bind(this, function (newValue) {
+          m.mxResources.get("apply"),
+          m.mxUtils.bind(this, function (newValue) {
             var val = parseInt(newValue);
 
             if (!isNaN(val) && val > 0) {
               graph.zoomTo(val / 100);
             }
           }),
-          mxResources.get("zoom") + " (%)",
+          m.mxResources.get("zoom") + " (%)",
         );
         this.editorUi.showDialog(dlg.container, 300, 80, true, true);
         dlg.init();
@@ -1103,12 +1105,12 @@ Actions.prototype.init = function () {
   );
   this.addAction(
     "pageScale...",
-    mxUtils.bind(this, function () {
+    m.mxUtils.bind(this, function () {
       var dlg = new FilenameDialog(
         this.editorUi,
         parseInt(graph.pageScale * 100),
-        mxResources.get("apply"),
-        mxUtils.bind(this, function (newValue) {
+        m.mxResources.get("apply"),
+        m.mxUtils.bind(this, function (newValue) {
           var val = parseInt(newValue);
 
           if (!isNaN(val) && val > 0) {
@@ -1119,7 +1121,7 @@ Actions.prototype.init = function () {
             graph.model.execute(change);
           }
         }),
-        mxResources.get("pageScale") + " (%)",
+        m.mxResources.get("pageScale") + " (%)",
       );
       this.editorUi.showDialog(dlg.container, 300, 80, true, true);
       dlg.init();
@@ -1132,7 +1134,7 @@ Actions.prototype.init = function () {
     "grid",
     function () {
       graph.setGridEnabled(!graph.isGridEnabled());
-      ui.fireEvent(new mxEventObject("gridEnabledChanged"));
+      ui.fireEvent(new m.mxEventObject("gridEnabledChanged"));
     },
     null,
     null,
@@ -1146,7 +1148,7 @@ Actions.prototype.init = function () {
 
   action = this.addAction("guides", function () {
     graph.graphHandler.guidesEnabled = !graph.graphHandler.guidesEnabled;
-    ui.fireEvent(new mxEventObject("guidesEnabledChanged"));
+    ui.fireEvent(new m.mxEventObject("guidesEnabledChanged"));
   });
   action.setToggleAction(true);
   action.setSelectedCallback(function () {
@@ -1156,7 +1158,7 @@ Actions.prototype.init = function () {
 
   action = this.addAction("tooltips", function () {
     graph.tooltipHandler.setEnabled(!graph.tooltipHandler.isEnabled());
-    ui.fireEvent(new mxEventObject("tooltipsEnabledChanged"));
+    ui.fireEvent(new m.mxEventObject("tooltipsEnabledChanged"));
   });
   action.setToggleAction(true);
   action.setSelectedCallback(function () {
@@ -1185,7 +1187,7 @@ Actions.prototype.init = function () {
   });
   action = this.addAction(
     "pageView",
-    mxUtils.bind(this, function () {
+    m.mxUtils.bind(this, function () {
       ui.setPageVisible(!graph.pageVisible);
     }),
   );
@@ -1197,7 +1199,7 @@ Actions.prototype.init = function () {
     "connectionArrows",
     function () {
       graph.connectionArrowsEnabled = !graph.connectionArrowsEnabled;
-      ui.fireEvent(new mxEventObject("connectionArrowsChanged"));
+      ui.fireEvent(new m.mxEventObject("connectionArrowsChanged"));
     },
     null,
     null,
@@ -1211,7 +1213,7 @@ Actions.prototype.init = function () {
     "connectionPoints",
     function () {
       graph.setConnectable(!graph.connectionHandler.isEnabled());
-      ui.fireEvent(new mxEventObject("connectionPointsChanged"));
+      ui.fireEvent(new m.mxEventObject("connectionPointsChanged"));
     },
     null,
     null,
@@ -1225,7 +1227,7 @@ Actions.prototype.init = function () {
     graph.connectionHandler.setCreateTarget(
       !graph.connectionHandler.isCreateTarget(),
     );
-    ui.fireEvent(new mxEventObject("copyConnectChanged"));
+    ui.fireEvent(new m.mxEventObject("copyConnectChanged"));
   });
   action.setToggleAction(true);
   action.setSelectedCallback(function () {
@@ -1246,8 +1248,8 @@ Actions.prototype.init = function () {
   this.addAction("help", function () {
     var ext = "";
 
-    if (mxResources.isLanguageSupported(mxClient.language)) {
-      ext = "_" + mxClient.language;
+    if (m.mxResources.isLanguageSupported(m.mxClient.language)) {
+      ext = "_" + m.mxClient.language;
     }
 
     graph.openLink(RESOURCES_PATH + "/help" + ext + ".html");
@@ -1257,7 +1259,7 @@ Actions.prototype.init = function () {
 
   this.put(
     "about",
-    new Action(mxResources.get("about") + " Graph Editor...", function () {
+    new Action(m.mxResources.get("about") + " Graph Editor...", function () {
       if (!showingAbout) {
         ui.showDialog(
           new AboutDialog(ui).container,
@@ -1276,7 +1278,7 @@ Actions.prototype.init = function () {
   );
 
   // Font style actions
-  var toggleFontStyle = mxUtils.bind(this, function (key, style, fn, shortcut) {
+  var toggleFontStyle = m.mxUtils.bind(this, function (key, style, fn, shortcut) {
     return this.addAction(
       key,
       function () {
@@ -1289,13 +1291,13 @@ Actions.prototype.init = function () {
           try {
             var cells = graph.getSelectionCells();
             graph.toggleCellStyleFlags(
-              mxConstants.STYLE_FONTSTYLE,
+              m.mxConstants.STYLE_FONTSTYLE,
               style,
               cells,
             );
 
             // Removes bold and italic tags and CSS styles inside labels
-            if ((style & mxConstants.FONT_BOLD) == mxConstants.FONT_BOLD) {
+            if ((style & m.mxConstants.FONT_BOLD) == m.mxConstants.FONT_BOLD) {
               graph.updateLabelElements(
                 graph.getSelectionCells(),
                 function (elt) {
@@ -1307,8 +1309,8 @@ Actions.prototype.init = function () {
                 },
               );
             } else if (
-              (style & mxConstants.FONT_ITALIC) ==
-              mxConstants.FONT_ITALIC
+              (style & m.mxConstants.FONT_ITALIC) ==
+              m.mxConstants.FONT_ITALIC
             ) {
               graph.updateLabelElements(
                 graph.getSelectionCells(),
@@ -1321,8 +1323,8 @@ Actions.prototype.init = function () {
                 },
               );
             } else if (
-              (style & mxConstants.FONT_UNDERLINE) ==
-              mxConstants.FONT_UNDERLINE
+              (style & m.mxConstants.FONT_UNDERLINE) ==
+              m.mxConstants.FONT_UNDERLINE
             ) {
               graph.updateLabelElements(
                 graph.getSelectionCells(),
@@ -1354,7 +1356,7 @@ Actions.prototype.init = function () {
 
   toggleFontStyle(
     "bold",
-    mxConstants.FONT_BOLD,
+    m.mxConstants.FONT_BOLD,
     function () {
       document.execCommand("bold", false, null);
     },
@@ -1362,7 +1364,7 @@ Actions.prototype.init = function () {
   );
   toggleFontStyle(
     "italic",
-    mxConstants.FONT_ITALIC,
+    m.mxConstants.FONT_ITALIC,
     function () {
       document.execCommand("italic", false, null);
     },
@@ -1370,7 +1372,7 @@ Actions.prototype.init = function () {
   );
   toggleFontStyle(
     "underline",
-    mxConstants.FONT_UNDERLINE,
+    m.mxConstants.FONT_UNDERLINE,
     function () {
       document.execCommand("underline", false, null);
     },
@@ -1379,41 +1381,41 @@ Actions.prototype.init = function () {
 
   // Color actions
   this.addAction("fontColor...", function () {
-    ui.menus.pickColor(mxConstants.STYLE_FONTCOLOR, "forecolor", "000000");
+    ui.menus.pickColor(m.mxConstants.STYLE_FONTCOLOR, "forecolor", "000000");
   });
   this.addAction("strokeColor...", function () {
-    ui.menus.pickColor(mxConstants.STYLE_STROKECOLOR);
+    ui.menus.pickColor(m.mxConstants.STYLE_STROKECOLOR);
   });
   this.addAction("fillColor...", function () {
-    ui.menus.pickColor(mxConstants.STYLE_FILLCOLOR);
+    ui.menus.pickColor(m.mxConstants.STYLE_FILLCOLOR);
   });
   this.addAction("gradientColor...", function () {
-    ui.menus.pickColor(mxConstants.STYLE_GRADIENTCOLOR);
+    ui.menus.pickColor(m.mxConstants.STYLE_GRADIENTCOLOR);
   });
   this.addAction("backgroundColor...", function () {
-    ui.menus.pickColor(mxConstants.STYLE_LABEL_BACKGROUNDCOLOR, "backcolor");
+    ui.menus.pickColor(m.mxConstants.STYLE_LABEL_BACKGROUNDCOLOR, "backcolor");
   });
   this.addAction("borderColor...", function () {
-    ui.menus.pickColor(mxConstants.STYLE_LABEL_BORDERCOLOR);
+    ui.menus.pickColor(m.mxConstants.STYLE_LABEL_BORDERCOLOR);
   });
 
   // Format actions
   this.addAction("vertical", function () {
-    ui.menus.toggleStyle(mxConstants.STYLE_HORIZONTAL, true);
+    ui.menus.toggleStyle(m.mxConstants.STYLE_HORIZONTAL, true);
   });
   this.addAction("shadow", function () {
-    ui.menus.toggleStyle(mxConstants.STYLE_SHADOW);
+    ui.menus.toggleStyle(m.mxConstants.STYLE_SHADOW);
   });
   this.addAction("solid", function () {
     graph.getModel().beginUpdate();
     try {
-      graph.setCellStyles(mxConstants.STYLE_DASHED, null);
-      graph.setCellStyles(mxConstants.STYLE_DASH_PATTERN, null);
+      graph.setCellStyles(m.mxConstants.STYLE_DASHED, null);
+      graph.setCellStyles(m.mxConstants.STYLE_DASH_PATTERN, null);
       ui.fireEvent(
-        new mxEventObject(
+        new m.mxEventObject(
           "styleChanged",
           "keys",
-          [mxConstants.STYLE_DASHED, mxConstants.STYLE_DASH_PATTERN],
+          [m.mxConstants.STYLE_DASHED, m.mxConstants.STYLE_DASH_PATTERN],
           "values",
           [null, null],
           "cells",
@@ -1427,13 +1429,13 @@ Actions.prototype.init = function () {
   this.addAction("dashed", function () {
     graph.getModel().beginUpdate();
     try {
-      graph.setCellStyles(mxConstants.STYLE_DASHED, "1");
-      graph.setCellStyles(mxConstants.STYLE_DASH_PATTERN, null);
+      graph.setCellStyles(m.mxConstants.STYLE_DASHED, "1");
+      graph.setCellStyles(m.mxConstants.STYLE_DASH_PATTERN, null);
       ui.fireEvent(
-        new mxEventObject(
+        new m.mxEventObject(
           "styleChanged",
           "keys",
-          [mxConstants.STYLE_DASHED, mxConstants.STYLE_DASH_PATTERN],
+          [m.mxConstants.STYLE_DASHED, m.mxConstants.STYLE_DASH_PATTERN],
           "values",
           ["1", null],
           "cells",
@@ -1447,13 +1449,13 @@ Actions.prototype.init = function () {
   this.addAction("dotted", function () {
     graph.getModel().beginUpdate();
     try {
-      graph.setCellStyles(mxConstants.STYLE_DASHED, "1");
-      graph.setCellStyles(mxConstants.STYLE_DASH_PATTERN, "1 4");
+      graph.setCellStyles(m.mxConstants.STYLE_DASHED, "1");
+      graph.setCellStyles(m.mxConstants.STYLE_DASH_PATTERN, "1 4");
       ui.fireEvent(
-        new mxEventObject(
+        new m.mxEventObject(
           "styleChanged",
           "keys",
-          [mxConstants.STYLE_DASHED, mxConstants.STYLE_DASH_PATTERN],
+          [m.mxConstants.STYLE_DASHED, m.mxConstants.STYLE_DASH_PATTERN],
           "values",
           ["1", "1 4"],
           "cells",
@@ -1467,13 +1469,13 @@ Actions.prototype.init = function () {
   this.addAction("sharp", function () {
     graph.getModel().beginUpdate();
     try {
-      graph.setCellStyles(mxConstants.STYLE_ROUNDED, "0");
-      graph.setCellStyles(mxConstants.STYLE_CURVED, "0");
+      graph.setCellStyles(m.mxConstants.STYLE_ROUNDED, "0");
+      graph.setCellStyles(m.mxConstants.STYLE_CURVED, "0");
       ui.fireEvent(
-        new mxEventObject(
+        new m.mxEventObject(
           "styleChanged",
           "keys",
-          [mxConstants.STYLE_ROUNDED, mxConstants.STYLE_CURVED],
+          [m.mxConstants.STYLE_ROUNDED, m.mxConstants.STYLE_CURVED],
           "values",
           ["0", "0"],
           "cells",
@@ -1487,13 +1489,13 @@ Actions.prototype.init = function () {
   this.addAction("rounded", function () {
     graph.getModel().beginUpdate();
     try {
-      graph.setCellStyles(mxConstants.STYLE_ROUNDED, "1");
-      graph.setCellStyles(mxConstants.STYLE_CURVED, "0");
+      graph.setCellStyles(m.mxConstants.STYLE_ROUNDED, "1");
+      graph.setCellStyles(m.mxConstants.STYLE_CURVED, "0");
       ui.fireEvent(
-        new mxEventObject(
+        new m.mxEventObject(
           "styleChanged",
           "keys",
-          [mxConstants.STYLE_ROUNDED, mxConstants.STYLE_CURVED],
+          [m.mxConstants.STYLE_ROUNDED, m.mxConstants.STYLE_CURVED],
           "values",
           ["1", "0"],
           "cells",
@@ -1511,17 +1513,17 @@ Actions.prototype.init = function () {
         var cells = graph.getSelectionCells();
         var style = graph.getCurrentCellStyle(cells[0]);
         var value =
-          mxUtils.getValue(style, mxConstants.STYLE_ROUNDED, "0") == "1"
+          m.mxUtils.getValue(style, m.mxConstants.STYLE_ROUNDED, "0") == "1"
             ? "0"
             : "1";
 
-        graph.setCellStyles(mxConstants.STYLE_ROUNDED, value);
-        graph.setCellStyles(mxConstants.STYLE_CURVED, null);
+        graph.setCellStyles(m.mxConstants.STYLE_ROUNDED, value);
+        graph.setCellStyles(m.mxConstants.STYLE_CURVED, null);
         ui.fireEvent(
-          new mxEventObject(
+          new m.mxEventObject(
             "styleChanged",
             "keys",
-            [mxConstants.STYLE_ROUNDED, mxConstants.STYLE_CURVED],
+            [m.mxConstants.STYLE_ROUNDED, m.mxConstants.STYLE_CURVED],
             "values",
             [value, "0"],
             "cells",
@@ -1536,13 +1538,13 @@ Actions.prototype.init = function () {
   this.addAction("curved", function () {
     graph.getModel().beginUpdate();
     try {
-      graph.setCellStyles(mxConstants.STYLE_ROUNDED, "0");
-      graph.setCellStyles(mxConstants.STYLE_CURVED, "1");
+      graph.setCellStyles(m.mxConstants.STYLE_ROUNDED, "0");
+      graph.setCellStyles(m.mxConstants.STYLE_CURVED, "1");
       ui.fireEvent(
-        new mxEventObject(
+        new m.mxEventObject(
           "styleChanged",
           "keys",
-          [mxConstants.STYLE_ROUNDED, mxConstants.STYLE_CURVED],
+          [m.mxConstants.STYLE_ROUNDED, m.mxConstants.STYLE_CURVED],
           "values",
           ["0", "1"],
           "cells",
@@ -1563,7 +1565,7 @@ Actions.prototype.init = function () {
 
     graph.setCellStyles("collapsible", value);
     ui.fireEvent(
-      new mxEventObject(
+      new m.mxEventObject(
         "styleChanged",
         "keys",
         ["collapsible"],
@@ -1576,7 +1578,7 @@ Actions.prototype.init = function () {
   });
   this.addAction(
     "editStyle...",
-    mxUtils.bind(this, function () {
+    m.mxUtils.bind(this, function () {
       var cells = graph.getSelectionCells();
 
       if (cells != null && cells.length > 0) {
@@ -1584,11 +1586,11 @@ Actions.prototype.init = function () {
 
         var dlg = new TextareaDialog(
           this.editorUi,
-          mxResources.get("editStyle") + ":",
+          m.mxResources.get("editStyle") + ":",
           model.getStyle(cells[0]) || "",
           function (newValue) {
             if (newValue != null) {
-              graph.setCellStyle(mxUtils.trim(newValue), cells);
+              graph.setCellStyle(m.mxUtils.trim(newValue), cells);
             }
           },
           null,
@@ -1632,7 +1634,7 @@ Actions.prototype.init = function () {
     if (cell != null && graph.getModel().isEdge(cell)) {
       var handler = editor.graph.selectionCellsHandler.getHandler(cell);
 
-      if (handler instanceof mxEdgeHandler) {
+      if (handler instanceof m.mxEdgeHandler) {
         var t = graph.view.translate;
         var s = graph.view.scale;
         var dx = t.x;
@@ -1706,7 +1708,7 @@ Actions.prototype.init = function () {
   );
   action = this.addAction(
     "subscript",
-    mxUtils.bind(this, function () {
+    m.mxUtils.bind(this, function () {
       if (graph.cellEditor.isContentEditing()) {
         document.execCommand("subscript", false, null);
       }
@@ -1717,7 +1719,7 @@ Actions.prototype.init = function () {
   );
   action = this.addAction(
     "superscript",
-    mxUtils.bind(this, function () {
+    m.mxUtils.bind(this, function () {
       if (graph.cellEditor.isContentEditing()) {
         document.execCommand("superscript", false, null);
       }
@@ -1728,7 +1730,7 @@ Actions.prototype.init = function () {
   );
   action = this.addAction(
     "indent",
-    mxUtils.bind(this, function () {
+    m.mxUtils.bind(this, function () {
       // NOTE: Alt+Tab for outdent implemented via special code in
       // keyHandler.getFunction in EditorUi.js. Ctrl+Tab is reserved.
       if (graph.cellEditor.isContentEditing()) {
@@ -1742,12 +1744,12 @@ Actions.prototype.init = function () {
   this.addAction("image...", function () {
     if (graph.isEnabled() && !graph.isCellLocked(graph.getDefaultParent())) {
       var title =
-        mxResources.get("image") + " (" + mxResources.get("url") + "):";
+        m.mxResources.get("image") + " (" + m.mxResources.get("url") + "):";
       var state = graph.getView().getState(graph.getSelectionCell());
       var value = "";
 
       if (state != null) {
-        value = state.style[mxConstants.STYLE_IMAGE] || value;
+        value = state.style[m.mxConstants.STYLE_IMAGE] || value;
       }
 
       var selectionState = graph.cellEditor.saveSelection();
@@ -1790,12 +1792,12 @@ Actions.prototype.init = function () {
 
                   select = cells;
                   graph.fireEvent(
-                    new mxEventObject("cellsInserted", "cells", select),
+                    new m.mxEventObject("cellsInserted", "cells", select),
                   );
                 }
 
                 graph.setCellStyles(
-                  mxConstants.STYLE_IMAGE,
+                  m.mxConstants.STYLE_IMAGE,
                   newValue.length > 0 ? newValue : null,
                   cells,
                 );
@@ -1804,12 +1806,12 @@ Actions.prototype.init = function () {
                 var style = graph.getCurrentCellStyle(cells[0]);
 
                 if (
-                  style[mxConstants.STYLE_SHAPE] != "image" &&
-                  style[mxConstants.STYLE_SHAPE] != "label"
+                  style[m.mxConstants.STYLE_SHAPE] != "image" &&
+                  style[m.mxConstants.STYLE_SHAPE] != "label"
                 ) {
-                  graph.setCellStyles(mxConstants.STYLE_SHAPE, "image", cells);
+                  graph.setCellStyles(m.mxConstants.STYLE_SHAPE, "image", cells);
                 } else if (newValue.length == 0) {
-                  graph.setCellStyles(mxConstants.STYLE_SHAPE, null, cells);
+                  graph.setCellStyles(m.mxConstants.STYLE_SHAPE, null, cells);
                 }
 
                 if (graph.getSelectionCount() == 1) {
@@ -1843,7 +1845,7 @@ Actions.prototype.init = function () {
   }).isEnabled = isGraphEnabled;
   action = this.addAction(
     "layers",
-    mxUtils.bind(this, function () {
+    m.mxUtils.bind(this, function () {
       if (this.layersWindow == null) {
         // LATER: Check outline window for initial placement
         this.layersWindow = new LayersWindow(
@@ -1854,13 +1856,13 @@ Actions.prototype.init = function () {
           196,
         );
         this.layersWindow.window.addListener("show", function () {
-          ui.fireEvent(new mxEventObject("layers"));
+          ui.fireEvent(new m.mxEventObject("layers"));
         });
         this.layersWindow.window.addListener("hide", function () {
-          ui.fireEvent(new mxEventObject("layers"));
+          ui.fireEvent(new m.mxEventObject("layers"));
         });
         this.layersWindow.window.setVisible(true);
-        ui.fireEvent(new mxEventObject("layers"));
+        ui.fireEvent(new m.mxEventObject("layers"));
 
         this.layersWindow.init();
       } else {
@@ -1875,13 +1877,13 @@ Actions.prototype.init = function () {
   );
   action.setToggleAction(true);
   action.setSelectedCallback(
-    mxUtils.bind(this, function () {
+    m.mxUtils.bind(this, function () {
       return this.layersWindow != null && this.layersWindow.window.isVisible();
     }),
   );
   action = this.addAction(
     "formatPanel",
-    mxUtils.bind(this, function () {
+    m.mxUtils.bind(this, function () {
       ui.toggleFormatPanel();
     }),
     null,
@@ -1890,13 +1892,13 @@ Actions.prototype.init = function () {
   );
   action.setToggleAction(true);
   action.setSelectedCallback(
-    mxUtils.bind(this, function () {
+    m.mxUtils.bind(this, function () {
       return ui.formatWidth > 0;
     }),
   );
   action = this.addAction(
     "outline",
-    mxUtils.bind(this, function () {
+    m.mxUtils.bind(this, function () {
       if (this.outlineWindow == null) {
         // LATER: Check layers window for initial placement
         this.outlineWindow = new OutlineWindow(
@@ -1907,13 +1909,13 @@ Actions.prototype.init = function () {
           180,
         );
         this.outlineWindow.window.addListener("show", function () {
-          ui.fireEvent(new mxEventObject("outline"));
+          ui.fireEvent(new m.mxEventObject("outline"));
         });
         this.outlineWindow.window.addListener("hide", function () {
-          ui.fireEvent(new mxEventObject("outline"));
+          ui.fireEvent(new m.mxEventObject("outline"));
         });
         this.outlineWindow.window.setVisible(true);
-        ui.fireEvent(new mxEventObject("outline"));
+        ui.fireEvent(new m.mxEventObject("outline"));
       } else {
         this.outlineWindow.window.setVisible(
           !this.outlineWindow.window.isVisible(),
@@ -1927,7 +1929,7 @@ Actions.prototype.init = function () {
 
   action.setToggleAction(true);
   action.setSelectedCallback(
-    mxUtils.bind(this, function () {
+    m.mxUtils.bind(this, function () {
       return (
         this.outlineWindow != null && this.outlineWindow.window.isVisible()
       );
@@ -1949,9 +1951,9 @@ Actions.prototype.addAction = function (
 
   if (key.substring(key.length - 3) == "...") {
     key = key.substring(0, key.length - 3);
-    title = mxResources.get(key) + "...";
+    title = m.mxResources.get(key) + "...";
   } else {
-    title = mxResources.get(key);
+    title = m.mxResources.get(key);
   }
 
   return this.put(key, new Action(title, funct, enabled, iconCls, shortcut));
@@ -1977,7 +1979,7 @@ Actions.prototype.get = function (name) {
  * Constructs a new action for the given parameters.
  */
 function Action(label, funct, enabled, iconCls, shortcut) {
-  mxEventSource.call(this);
+  m.mxEventSource.call(this);
   this.label = label;
   this.funct = this.createFunction(funct);
   this.enabled = enabled != null ? enabled : true;
@@ -1987,7 +1989,7 @@ function Action(label, funct, enabled, iconCls, shortcut) {
 }
 
 // Action inherits from mxEventSource
-mxUtils.extend(Action, mxEventSource);
+m.mxUtils.extend(Action, m.mxEventSource);
 
 /**
  * Sets the enabled state of the action and fires a stateChanged event.
@@ -2002,7 +2004,7 @@ Action.prototype.createFunction = function (funct) {
 Action.prototype.setEnabled = function (value) {
   if (this.enabled != value) {
     this.enabled = value;
-    this.fireEvent(new mxEventObject("stateChanged"));
+    this.fireEvent(new m.mxEventObject("stateChanged"));
   }
 };
 

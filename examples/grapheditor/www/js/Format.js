@@ -1,7 +1,8 @@
 /**
  * Copyright (c) 2006-2012, JGraph Ltd
  */
-Format = function (editorUi, container) {
+//Format = function (editorUi, container) {
+export function Format(editorUi, container) {
   this.editorUi = editorUi;
   this.container = container;
 };
