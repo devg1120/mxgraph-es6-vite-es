@@ -209,7 +209,7 @@ export function bootstrap() {
   mxCodecRegistry.register(new mxStylesheetCodec());
   mxCodecRegistry.register(new mxTerminalChangeCodec());
 
-//  mxCodecRegistry.register(new mxGeometry());   /*GS*/
+  //mxCodecRegistry.register(new mxGeometry());   /*GS*/
 
   // mxStyleRegistry
   mxStyleRegistry.putValue(mxConstants.EDGESTYLE_ELBOW, mxEdgeStyle.ElbowConnector);

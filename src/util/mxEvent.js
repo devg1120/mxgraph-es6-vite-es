@@ -346,7 +346,7 @@ export class mxEvent {
     return mxEvent.getMainEvent(e).clientY;
   }
 
-  static consume(evt, preventDefault, stopPropagation) {
+  static org_consume(evt, preventDefault, stopPropagation) {
     preventDefault = preventDefault != null ? preventDefault : true;
     stopPropagation = stopPropagation != null ? stopPropagation : true;
 
@@ -369,6 +369,30 @@ export class mxEvent {
     }
   }
 
+  static consume(evt, preventDefault, stopPropagation) {
+    preventDefault = preventDefault != null ? preventDefault : true;
+    stopPropagation = stopPropagation != null ? stopPropagation : true;
+
+    if (preventDefault) {
+      if (evt.preventDefault) {
+        if (stopPropagation) {
+          evt.stopPropagation();
+        }
+        //console.dir(evt.type);
+        if (evt.type != 'wheel' ) {
+             evt.preventDefault();
+	}
+      } else if (stopPropagation) {
+        evt.cancelBubble = true;
+      }
+    }
+
+    evt.isConsumed = true;
+
+    if (!evt.preventDefault) {
+      evt.returnValue = false;
+    }
+  }
   static LABEL_HANDLE = -1;
   static ROTATION_HANDLE = -2;
   static CUSTOM_HANDLE = -100;

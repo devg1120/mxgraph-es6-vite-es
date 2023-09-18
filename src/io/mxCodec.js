@@ -147,6 +147,8 @@ export class mxCodec {
 
 
       var dec = null;
+
+/*
       try {
         ctor = window[node.nodeName];
         //ctor = globalThis[node.nodeName];
@@ -154,12 +156,13 @@ export class mxCodec {
       }
       if (ctor != null) {
           dec = mxCodecRegistry.getCodec(ctor);  
-
+          //console.log("ctor    :",ctor,dec);
       } else {
           dec = mxCodecRegistry.getCodec(node.nodeName );
+          //console.log("nodeName:",node.nodeName,dec);
       }
-
-      //var dec = mxCodecRegistry.getCodec(node.nodeName );
+*/
+      var dec = mxCodecRegistry.getCodec(node.nodeName );
       if (dec != null) {
          try {                                        /* try GS */
             obj = dec.decode( this, node, into);
@@ -170,7 +173,9 @@ export class mxCodec {
         //obj = node.cloneNode(true);
         //obj.removeAttribute('as');
 	 if ( node.nodeName == 'mxGeometry') {      /* GS */
-                  obj = new mxGeometry(0,0, 100,100);
+              obj = new mxGeometry(0,0, 100,100);
+	 } else {
+        console.warn("mxCodec decode notreg:", node.nodeName);
 	 }
       }
     }
@@ -258,3 +263,4 @@ export class mxCodec {
     }
   }
 }
+

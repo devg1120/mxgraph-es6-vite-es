@@ -42,6 +42,8 @@ var mxLanguage = urlParams["lang"];
 
 globalThis.g_onInit = function (editor) {
 
+  console.log("window:", window);
+
   // Enables rotation handle
   m.mxVertexHandler.prototype.rotationEnabled = true;
 
