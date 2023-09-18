@@ -1708,7 +1708,7 @@ EditorUi.prototype.updatePasteActionStates = function () {
 EditorUi.prototype.initClipboard = function () {
   var ui = this;
 
-  var m.mxClipboardCut = m.mxClipboard.cut;
+  var mxClipboardCut = m.mxClipboard.cut;
   m.mxClipboard.cut = function (graph) {
     if (graph.cellEditor.isContentEditing()) {
       document.execCommand("cut", false, null);
@@ -1719,7 +1719,7 @@ EditorUi.prototype.initClipboard = function () {
     ui.updatePasteActionStates();
   };
 
-  var m.mxClipboardCopy = m.mxClipboard.copy;
+  var mxClipboardCopy = m.mxClipboard.copy;
   m.mxClipboard.copy = function (graph) {
     var result = null;
 
@@ -1776,7 +1776,7 @@ EditorUi.prototype.initClipboard = function () {
     return result;
   };
 
-  var m.mxClipboardPaste = m.mxClipboard.paste;
+  var mxClipboardPaste = m.mxClipboard.paste;
   m.mxClipboard.paste = function (graph) {
     var result = null;
 
