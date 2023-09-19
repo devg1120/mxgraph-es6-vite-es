@@ -4,6 +4,9 @@
 /**
  * Construcs a new sidebar for the given editor.
  */
+
+import * as m   from "../../../../../dist/mxgraph.es.js";
+
 export function Sidebar(editorUi, container) {
   this.editorUi = editorUi;
   this.container = container;
@@ -20,29 +23,29 @@ export function Sidebar(editorUi, container) {
 
   document.body.appendChild(this.graph.container);
 
-  this.pointerUpHandler = mxUtils.bind(this, function () {
+  this.pointerUpHandler = m.mxUtils.bind(this, function () {
     this.showTooltips = true;
   });
 
-  mxEvent.addListener(
+  m.mxEvent.addListener(
     document,
-    mxClient.IS_POINTER ? "pointerup" : "mouseup",
+    m.mxClient.IS_POINTER ? "pointerup" : "mouseup",
     this.pointerUpHandler,
   );
 
-  this.pointerDownHandler = mxUtils.bind(this, function () {
+  this.pointerDownHandler = m.mxUtils.bind(this, function () {
     this.showTooltips = false;
     this.hideTooltip();
   });
 
-  mxEvent.addListener(
+  m.mxEvent.addListener(
     document,
-    mxClient.IS_POINTER ? "pointerdown" : "mousedown",
+    m.mxClient.IS_POINTER ? "pointerdown" : "mousedown",
     this.pointerDownHandler,
   );
 
-  this.pointerMoveHandler = mxUtils.bind(this, function (evt) {
-    var src = mxEvent.getSource(evt);
+  this.pointerMoveHandler = m.mxUtils.bind(this, function (evt) {
+    var src = m.mxEvent.getSource(evt);
 
     while (src != null) {
       if (src == this.currentElt) {
@@ -55,30 +58,30 @@ export function Sidebar(editorUi, container) {
     this.hideTooltip();
   });
 
-  mxEvent.addListener(
+  m.mxEvent.addListener(
     document,
-    mxClient.IS_POINTER ? "pointermove" : "mousemove",
+    m.mxClient.IS_POINTER ? "pointermove" : "mousemove",
     this.pointerMoveHandler,
   );
 
   // Handles mouse leaving the window
-  this.pointerOutHandler = mxUtils.bind(this, function (evt) {
+  this.pointerOutHandler = m.mxUtils.bind(this, function (evt) {
     if (evt.toElement == null && evt.relatedTarget == null) {
       this.hideTooltip();
     }
   });
 
-  mxEvent.addListener(
+  m.mxEvent.addListener(
     document,
-    mxClient.IS_POINTER ? "pointerout" : "mouseout",
+    m.mxClient.IS_POINTER ? "pointerout" : "mouseout",
     this.pointerOutHandler,
   );
 
   // Enables tooltips after scroll
-  mxEvent.addListener(
+  m.mxEvent.addListener(
     container,
     "scroll",
-    mxUtils.bind(this, function () {
+    m.mxUtils.bind(this, function () {
       this.showTooltips = true;
       this.hideTooltip();
     }),
@@ -102,7 +105,7 @@ Sidebar.prototype.init = function () {
   this.setCurrentSearchEntryLibrary("arrows");
   this.addStencilPalette(
     "arrows",
-    mxResources.get("arrows"),
+    m.mxResources.get("arrows"),
     dir + "/arrows.xml",
     ";whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2",
   );
@@ -123,7 +126,7 @@ Sidebar.prototype.init = function () {
   this.setCurrentSearchEntryLibrary("clipart");
   this.addImagePalette(
     "clipart",
-    mxResources.get("clipart"),
+    m.mxResources.get("clipart"),
     dir + "/clipart/",
     "_128x128.png",
     [
@@ -175,21 +178,21 @@ Sidebar.prototype.init = function () {
 /**
  * Sets the default font size.
  */
-Sidebar.prototype.collapsedImage = !mxClient.IS_SVG
+Sidebar.prototype.collapsedImage = !m.mxClient.IS_SVG
   ? IMAGE_PATH + "/collapsed.gif"
   : "data:image/gif;base64,R0lGODlhDQANAIABAJmZmf///yH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS4wLWMwNjAgNjEuMTM0Nzc3LCAyMDEwLzAyLzEyLTE3OjMyOjAwICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozNUQyRTJFNjZGNUYxMUU1QjZEOThCNDYxMDQ2MzNCQiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozNUQyRTJFNzZGNUYxMUU1QjZEOThCNDYxMDQ2MzNCQiI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjFERjc3MEUxNkY1RjExRTVCNkQ5OEI0NjEwNDYzM0JCIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjFERjc3MEUyNkY1RjExRTVCNkQ5OEI0NjEwNDYzM0JCIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+Af/+/fz7+vn49/b19PPy8fDv7u3s6+rp6Ofm5eTj4uHg397d3Nva2djX1tXU09LR0M/OzczLysnIx8bFxMPCwcC/vr28u7q5uLe2tbSzsrGwr66trKuqqainpqWko6KhoJ+enZybmpmYl5aVlJOSkZCPjo2Mi4qJiIeGhYSDgoGAf359fHt6eXh3dnV0c3JxcG9ubWxramloZ2ZlZGNiYWBfXl1cW1pZWFdWVVRTUlFQT05NTEtKSUhHRkVEQ0JBQD8+PTw7Ojk4NzY1NDMyMTAvLi0sKyopKCcmJSQjIiEgHx4dHBsaGRgXFhUUExIREA8ODQwLCgkIBwYFBAMCAQAAIfkEAQAAAQAsAAAAAA0ADQAAAhSMj6lrwAjcC1GyahV+dcZJgeIIFgA7";
 
 /**
  * Sets the default font size.
  */
-Sidebar.prototype.expandedImage = !mxClient.IS_SVG
+Sidebar.prototype.expandedImage = !m.mxClient.IS_SVG
   ? IMAGE_PATH + "/expanded.gif"
   : "data:image/gif;base64,R0lGODlhDQANAIABAJmZmf///yH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS4wLWMwNjAgNjEuMTM0Nzc3LCAyMDEwLzAyLzEyLTE3OjMyOjAwICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIiB4bWxuczpzdFJlZj0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL3NUeXBlL1Jlc291cmNlUmVmIyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDoxREY3NzBERjZGNUYxMUU1QjZEOThCNDYxMDQ2MzNCQiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDoxREY3NzBFMDZGNUYxMUU1QjZEOThCNDYxMDQ2MzNCQiI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjFERjc3MERENkY1RjExRTVCNkQ5OEI0NjEwNDYzM0JCIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjFERjc3MERFNkY1RjExRTVCNkQ5OEI0NjEwNDYzM0JCIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+Af/+/fz7+vn49/b19PPy8fDv7u3s6+rp6Ofm5eTj4uHg397d3Nva2djX1tXU09LR0M/OzczLysnIx8bFxMPCwcC/vr28u7q5uLe2tbSzsrGwr66trKuqqainpqWko6KhoJ+enZybmpmYl5aVlJOSkZCPjo2Mi4qJiIeGhYSDgoGAf359fHt6eXh3dnV0c3JxcG9ubWxramloZ2ZlZGNiYWBfXl1cW1pZWFdWVVRTUlFQT05NTEtKSUhHRkVEQ0JBQD8+PTw7Ojk4NzY1NDMyMTAvLi0sKyopKCcmJSQjIiEgHx4dHBsaGRgXFhUUExIREA8ODQwLCgkIBwYFBAMCAQAAIfkEAQAAAQAsAAAAAA0ADQAAAhGMj6nL3QAjVHIu6azbvPtWAAA7";
 
 /**
  *
  */
-Sidebar.prototype.searchImage = !mxClient.IS_SVG
+Sidebar.prototype.searchImage = !m.mxClient.IS_SVG
   ? IMAGE_PATH + "/search.png"
   : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAEaSURBVHjabNGxS5VxFIfxz71XaWuQUJCG/gCHhgTD9VpEETg4aMOlQRp0EoezObgcd220KQiXmpretTAHQRBdojlQEJyukPdt+b1ywfvAGc7wnHP4nlZd1yKijQW8xzNc4Su+ZOYfQ3T6/f4YNvEJYzjELXp4VVXVz263+7cR2niBxAFeZ2YPi3iHR/gYERPDwhpOsd6sz8x/mfkNG3iOlWFhFj8y89J9KvzGXER0GuEaD42mgwHqUtoljbcRsTBCeINpfM/MgZLKPpaxFxGbOCqDXmILN7hoJrTKH+axhxmcYRxP0MIDnOBDZv5q1XUNIuJxifJp+UNV7t7BFM6xeic0RMQ4Bpl5W/ol7GISx/eEUUTECrbx+f8A8xhiZht9zsgAAAAASUVORK5CYII=";
 
@@ -311,7 +314,7 @@ Sidebar.prototype.defaultImageHeight = 80;
  * Adds all palettes to the sidebar.
  */
 Sidebar.prototype.getTooltipOffset = function () {
-  return new mxPoint(0, 0);
+  return new m.mxPoint(0, 0);
 };
 
 /**
@@ -325,12 +328,12 @@ Sidebar.prototype.showTooltip = function (elt, cells, w, h, title, showLabel) {
         this.thread = null;
       }
 
-      var show = mxUtils.bind(this, function () {
+      var show = m.mxUtils.bind(this, function () {
         // Lazy creation of the DOM nodes and graph instance
         if (this.tooltip == null) {
           this.tooltip = document.createElement("div");
           this.tooltip.className = "geSidebarTooltip";
-          this.tooltip.style.zIndex = mxPopupMenu.prototype.zIndex - 1;
+          this.tooltip.style.zIndex = m.mxPopupMenu.prototype.zIndex - 1;
           document.body.appendChild(this.tooltip);
 
           this.graph2 = new Graph(
@@ -347,7 +350,7 @@ Sidebar.prototype.showTooltip = function (elt, cells, w, h, title, showLabel) {
           this.graph2.setConnectable(false);
           this.graph2.setEnabled(false);
 
-          if (!mxClient.IS_SVG) {
+          if (!m.mxClient.IS_SVG) {
             this.graph2.view.canvas.style.position = "relative";
           }
         }
@@ -367,21 +370,21 @@ Sidebar.prototype.showTooltip = function (elt, cells, w, h, title, showLabel) {
 
         this.tooltip.style.display = "block";
         this.graph2.labelsVisible = showLabel == null || showLabel;
-        var fo = mxClient.NO_FO;
-        mxClient.NO_FO = Editor.prototype.originalNoForeignObject;
+        var fo = m.mxClient.NO_FO;
+        m.mxClient.NO_FO = Editor.prototype.originalNoForeignObject;
 
         // Applies current style for preview
         var temp = this.graph2.cloneCells(cells);
         this.editorUi.insertHandler(temp, null, this.graph2.model);
         this.graph2.addCells(temp);
 
-        mxClient.NO_FO = fo;
+        m.mxClient.NO_FO = fo;
 
         var bounds = this.graph2.getGraphBounds();
         var width = bounds.width + 2 * this.tooltipBorder + 4;
         var height = bounds.height + 2 * this.tooltipBorder;
 
-        if (mxClient.IS_QUIRKS) {
+        if (m.mxClient.IS_QUIRKS) {
           height += 4;
           this.tooltip.style.overflow = "hidden";
         } else {
@@ -409,7 +412,7 @@ Sidebar.prototype.showTooltip = function (elt, cells, w, h, title, showLabel) {
           }
 
           this.tooltipTitle.style.display = "";
-          mxUtils.write(this.tooltipTitle, title);
+          m.mxUtils.write(this.tooltipTitle, title);
 
           // Allows for wider labels
           w2 = Math.min(
@@ -419,7 +422,7 @@ Sidebar.prototype.showTooltip = function (elt, cells, w, h, title, showLabel) {
           var ddy = this.tooltipTitle.offsetHeight + 10;
           height += ddy;
 
-          if (mxClient.IS_SVG) {
+          if (m.mxClient.IS_SVG) {
             this.tooltipTitle.style.marginTop = 2 - ddy + "px";
           } else {
             height -= 6;
@@ -467,7 +470,7 @@ Sidebar.prototype.showTooltip = function (elt, cells, w, h, title, showLabel) {
             ),
           ) + off.y;
 
-        if (mxClient.IS_SVG) {
+        if (m.mxClient.IS_SVG) {
           if (x0 != 0 || y0 != 0) {
             this.graph2.view.canvas.setAttribute(
               "transform",
@@ -520,7 +523,7 @@ Sidebar.prototype.hideTooltip = function () {
 Sidebar.prototype.addDataEntry = function (tags, width, height, title, data) {
   return this.addEntry(
     tags,
-    mxUtils.bind(this, function () {
+    m.mxUtils.bind(this, function () {
       return this.createVertexTemplateFromData(data, width, height, title);
     }),
   );
@@ -531,7 +534,7 @@ Sidebar.prototype.addDataEntry = function (tags, width, height, title, data) {
  */
 Sidebar.prototype.addEntries = function (images) {
   for (var i = 0; i < images.length; i++) {
-    mxUtils.bind(this, function (img) {
+    m.mxUtils.bind(this, function (img) {
       var data = img.data;
       var tags = img.title != null ? img.title : "";
 
@@ -542,7 +545,7 @@ Sidebar.prototype.addEntries = function (images) {
       if (data != null && tags.length > 0) {
         this.addEntry(
           tags,
-          mxUtils.bind(this, function () {
+          m.mxUtils.bind(this, function () {
             data = this.editorUi.convertDataUri(data);
             var s =
               "shape=image;verticalLabelPosition=bottom;verticalAlign=top;imageAspect=0;";
@@ -566,7 +569,7 @@ Sidebar.prototype.addEntries = function (images) {
       } else if (img.xml != null && tags.length > 0) {
         this.addEntry(
           tags,
-          mxUtils.bind(this, function () {
+          m.mxUtils.bind(this, function () {
             var cells = this.editorUi.stringToCells(Graph.decompress(img.xml));
 
             return this.createVertexTemplateFromCells(
@@ -663,7 +666,7 @@ Sidebar.prototype.searchEntries = function (
 ) {
   if (this.taglist != null && searchTerms != null) {
     var tmp = searchTerms.toLowerCase().split(" ");
-    var dict = new mxDictionary();
+    var dict = new m.mxDictionary();
     var max = (page + 1) * count;
     var results = [];
     var index = 0;
@@ -671,7 +674,7 @@ Sidebar.prototype.searchEntries = function (
     for (var i = 0; i < tmp.length; i++) {
       if (tmp[i].length > 0) {
         var entry = this.taglist[tmp[i]];
-        var tmpDict = new mxDictionary();
+        var tmpDict = new m.mxDictionary();
 
         if (entry != null) {
           var arr = entry.entries;
@@ -780,7 +783,7 @@ Sidebar.prototype.addSearchPalette = function (expand) {
   inner.style.cursor = "default";
 
   var input = document.createElement("input");
-  input.setAttribute("placeholder", mxResources.get("searchShapes"));
+  input.setAttribute("placeholder", m.mxResources.get("searchShapes"));
   input.setAttribute("type", "text");
   input.style.fontSize = "12px";
   input.style.overflow = "hidden";
@@ -795,11 +798,11 @@ Sidebar.prototype.addSearchPalette = function (expand) {
 
   var cross = document.createElement("img");
   cross.setAttribute("src", Sidebar.prototype.searchImage);
-  cross.setAttribute("title", mxResources.get("search"));
+  cross.setAttribute("title", m.mxResources.get("search"));
   cross.style.position = "relative";
   cross.style.left = "-18px";
 
-  if (mxClient.IS_QUIRKS) {
+  if (m.mxClient.IS_QUIRKS) {
     input.style.height = "28px";
     cross.style.top = "-4px";
   } else {
@@ -816,7 +819,7 @@ Sidebar.prototype.addSearchPalette = function (expand) {
   div.appendChild(inner);
 
   var center = document.createElement("center");
-  var button = mxUtils.button(mxResources.get("moreResults"), function () {
+  var button = m.mxUtils.button(m.mxResources.get("moreResults"), function () {
     find();
   });
   button.style.display = "none";
@@ -842,7 +845,7 @@ Sidebar.prototype.addSearchPalette = function (expand) {
   // Count is dynamically updated below
   var count = 12;
 
-  var clearDiv = mxUtils.bind(this, function () {
+  var clearDiv = m.mxUtils.bind(this, function () {
     active = false;
     this.currentSearch = null;
     var child = div.firstChild;
@@ -858,10 +861,10 @@ Sidebar.prototype.addSearchPalette = function (expand) {
     }
   });
 
-  mxEvent.addListener(cross, "click", function () {
+  m.mxEvent.addListener(cross, "click", function () {
     if (cross.getAttribute("src") == Dialog.prototype.closeImage) {
       cross.setAttribute("src", Sidebar.prototype.searchImage);
-      cross.setAttribute("title", mxResources.get("search"));
+      cross.setAttribute("title", m.mxResources.get("search"));
       button.style.display = "none";
       input.value = "";
       searchTerm = "";
@@ -871,7 +874,7 @@ Sidebar.prototype.addSearchPalette = function (expand) {
     input.focus();
   });
 
-  find = mxUtils.bind(this, function () {
+  find = m.mxUtils.bind(this, function () {
     // Shows 4 rows (minimum 4 results)
     count =
       4 *
@@ -895,7 +898,7 @@ Sidebar.prototype.addSearchPalette = function (expand) {
           button.setAttribute("disabled", "true");
           button.style.display = "";
           button.style.cursor = "wait";
-          button.innerHTML = mxResources.get("loading") + "...";
+          button.innerHTML = m.mxResources.get("loading") + "...";
           active = true;
 
           // Ignores old results
@@ -906,7 +909,7 @@ Sidebar.prototype.addSearchPalette = function (expand) {
             searchTerm,
             count,
             page,
-            mxUtils.bind(this, function (results, len, more, terms) {
+            m.mxUtils.bind(this, function (results, len, more, terms) {
               if (this.currentSearch == current) {
                 results = results != null ? results : [];
                 active = false;
@@ -932,7 +935,7 @@ Sidebar.prototype.addSearchPalette = function (expand) {
                 }
 
                 for (var i = 0; i < results.length; i++) {
-                  mxUtils.bind(this, function (result) {
+                  m.mxUtils.bind(this, function (result) {
                     try {
                       var elt = result();
 
@@ -949,21 +952,21 @@ Sidebar.prototype.addSearchPalette = function (expand) {
                         );
                       }
 
-                      mxEvent.addGestureListeners(
+                      m.mxEvent.addGestureListeners(
                         elt,
                         null,
                         null,
-                        mxUtils.bind(this, function (evt) {
+                        m.mxUtils.bind(this, function (evt) {
                           var libs = hash[elt.innerHTML];
 
-                          if (mxEvent.isPopupTrigger(evt)) {
+                          if (m.mxEvent.isPopupTrigger(evt)) {
                             this.showPopupMenuForEntry(elt, libs, evt);
                           }
                         }),
                       );
 
                       // Disables the built-in context menu
-                      mxEvent.disableContextMenu(elt);
+                      m.mxEvent.disableContextMenu(elt);
                     } catch (e) {
                       // ignore
                     }
@@ -972,9 +975,9 @@ Sidebar.prototype.addSearchPalette = function (expand) {
 
                 if (more) {
                   button.removeAttribute("disabled");
-                  button.innerHTML = mxResources.get("moreResults");
+                  button.innerHTML = m.mxResources.get("moreResults");
                 } else {
-                  button.innerHTML = mxResources.get("reset");
+                  button.innerHTML = m.mxResources.get("reset");
                   button.style.display = "none";
                   complete = true;
                 }
@@ -983,7 +986,7 @@ Sidebar.prototype.addSearchPalette = function (expand) {
                 div.appendChild(center);
               }
             }),
-            mxUtils.bind(this, function () {
+            m.mxUtils.bind(this, function () {
               // TODO: Error handling
               button.style.cursor = "";
             }),
@@ -1001,27 +1004,27 @@ Sidebar.prototype.addSearchPalette = function (expand) {
     }
   });
 
-  mxEvent.addListener(
+  m.mxEvent.addListener(
     input,
     "keydown",
-    mxUtils.bind(this, function (evt) {
+    m.mxUtils.bind(this, function (evt) {
       if (evt.keyCode == 13 /* Enter */) {
         find();
-        mxEvent.consume(evt);
+        m.mxEvent.consume(evt);
       }
     }),
   );
 
-  mxEvent.addListener(
+  m.mxEvent.addListener(
     input,
     "keyup",
-    mxUtils.bind(this, function (evt) {
+    m.mxUtils.bind(this, function (evt) {
       if (input.value == "") {
         cross.setAttribute("src", Sidebar.prototype.searchImage);
-        cross.setAttribute("title", mxResources.get("search"));
+        cross.setAttribute("title", m.mxResources.get("search"));
       } else {
         cross.setAttribute("src", Dialog.prototype.closeImage);
-        cross.setAttribute("title", mxResources.get("reset"));
+        cross.setAttribute("title", m.mxResources.get("reset"));
       }
 
       if (input.value == "") {
@@ -1041,7 +1044,7 @@ Sidebar.prototype.addSearchPalette = function (expand) {
   );
 
   // Workaround for blocked text selection in Editor
-  mxEvent.addListener(input, "mousedown", function (evt) {
+  m.mxEvent.addListener(input, "mousedown", function (evt) {
     if (evt.stopPropagation) {
       evt.stopPropagation();
     }
@@ -1050,7 +1053,7 @@ Sidebar.prototype.addSearchPalette = function (expand) {
   });
 
   // Workaround for blocked text selection in Editor
-  mxEvent.addListener(input, "selectstart", function (evt) {
+  m.mxEvent.addListener(input, "selectstart", function (evt) {
     if (evt.stopPropagation) {
       evt.stopPropagation();
     }
@@ -1087,7 +1090,7 @@ Sidebar.prototype.insertSearchHint = function (
       "color:gray;padding:6px 0px 0px 0px !important;margin:4px 8px 4px 8px;" +
       "text-align:center;cursor:default !important";
 
-    mxUtils.write(err, mxResources.get("noResultsFor", [searchTerm]));
+    m.mxUtils.write(err, m.mxResources.get("noResultsFor", [searchTerm]));
     div.appendChild(err);
   }
 };
@@ -1344,15 +1347,15 @@ Sidebar.prototype.addGeneralPalette = function (expand) {
     ),
     this.addEntry(
       "curve",
-      mxUtils.bind(this, function () {
-        var cell = new mxCell(
+      m.mxUtils.bind(this, function () {
+        var cell = new m.mxCell(
           "",
-          new mxGeometry(0, 0, 50, 50),
+          new m.mxGeometry(0, 0, 50, 50),
           "curved=1;endArrow=classic;html=1;",
         );
-        cell.geometry.setTerminalPoint(new mxPoint(0, 50), true);
-        cell.geometry.setTerminalPoint(new mxPoint(50, 0), false);
-        cell.geometry.points = [new mxPoint(50, 50), new mxPoint(0, 0)];
+        cell.geometry.setTerminalPoint(new m.mxPoint(0, 50), true);
+        cell.geometry.setTerminalPoint(new m.mxPoint(50, 0), false);
+        cell.geometry.points = [new m.mxPoint(50, 50), new m.mxPoint(0, 0)];
         cell.geometry.relative = true;
         cell.edge = true;
 
@@ -1438,20 +1441,20 @@ Sidebar.prototype.addGeneralPalette = function (expand) {
     ),
     this.addEntry(
       lineTags + "edge title",
-      mxUtils.bind(this, function () {
-        var edge = new mxCell(
+      m.mxUtils.bind(this, function () {
+        var edge = new m.mxCell(
           "",
-          new mxGeometry(0, 0, 0, 0),
+          new m.mxGeometry(0, 0, 0, 0),
           "endArrow=classic;html=1;",
         );
-        edge.geometry.setTerminalPoint(new mxPoint(0, 0), true);
-        edge.geometry.setTerminalPoint(new mxPoint(100, 0), false);
+        edge.geometry.setTerminalPoint(new m.mxPoint(0, 0), true);
+        edge.geometry.setTerminalPoint(new m.mxPoint(100, 0), false);
         edge.geometry.relative = true;
         edge.edge = true;
 
-        var cell0 = new mxCell(
+        var cell0 = new m.mxCell(
           "Label",
-          new mxGeometry(0, 0, 0, 0),
+          new m.mxGeometry(0, 0, 0, 0),
           "edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;",
         );
         cell0.geometry.relative = true;
@@ -1469,20 +1472,20 @@ Sidebar.prototype.addGeneralPalette = function (expand) {
     ),
     this.addEntry(
       lineTags + "edge title multiplicity",
-      mxUtils.bind(this, function () {
-        var edge = new mxCell(
+      m.mxUtils.bind(this, function () {
+        var edge = new m.mxCell(
           "",
-          new mxGeometry(0, 0, 0, 0),
+          new m.mxGeometry(0, 0, 0, 0),
           "endArrow=classic;html=1;",
         );
-        edge.geometry.setTerminalPoint(new mxPoint(0, 0), true);
-        edge.geometry.setTerminalPoint(new mxPoint(160, 0), false);
+        edge.geometry.setTerminalPoint(new m.mxPoint(0, 0), true);
+        edge.geometry.setTerminalPoint(new m.mxPoint(160, 0), false);
         edge.geometry.relative = true;
         edge.edge = true;
 
-        var cell0 = new mxCell(
+        var cell0 = new m.mxCell(
           "Label",
-          new mxGeometry(0, 0, 0, 0),
+          new m.mxGeometry(0, 0, 0, 0),
           "edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;",
         );
         cell0.geometry.relative = true;
@@ -1490,9 +1493,9 @@ Sidebar.prototype.addGeneralPalette = function (expand) {
         cell0.vertex = true;
         edge.insert(cell0);
 
-        var cell1 = new mxCell(
+        var cell1 = new m.mxCell(
           "Source",
-          new mxGeometry(-1, 0, 0, 0),
+          new m.mxGeometry(-1, 0, 0, 0),
           "edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;",
         );
         cell1.geometry.relative = true;
@@ -1510,20 +1513,21 @@ Sidebar.prototype.addGeneralPalette = function (expand) {
     ),
     this.addEntry(
       lineTags + "edge title multiplicity",
-      mxUtils.bind(this, function () {
-        var edge = new mxCell(
+      m.mxUtils.bind(this, function () {
+        var edge = new m.mxCell(
           "Label",
-          new mxGeometry(0, 0, 0, 0),
+          new m.mxGeometry(0, 0, 0, 0),
           "endArrow=classic;html=1;",
         );
-        edge.geometry.setTerminalPoint(new mxPoint(0, 0), true);
-        edge.geometry.setTerminalPoint(new mxPoint(160, 0), false);
+        edge.geometry.setTerminalPoint(new m.mxPoint(0, 0), true);
+        edge.geometry.setTerminalPoint(new m.mxPoint(160, 0), false);
+
         edge.geometry.relative = true;
         edge.edge = true;
 
-        var cell0 = new mxCell(
+        var cell0 = new m.mxCell(
           "Label",
-          new mxGeometry(0, 0, 0, 0),
+          new m.mxGeometry(0, 0, 0, 0),
           "edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;",
         );
         cell0.geometry.relative = true;
@@ -1531,9 +1535,9 @@ Sidebar.prototype.addGeneralPalette = function (expand) {
         cell0.vertex = true;
         edge.insert(cell0);
 
-        var cell1 = new mxCell(
+        var cell1 = new m.mxCell(
           "Source",
-          new mxGeometry(-1, 0, 0, 0),
+          new m.mxGeometry(-1, 0, 0, 0),
           "edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;",
         );
         cell1.geometry.relative = true;
@@ -1541,9 +1545,9 @@ Sidebar.prototype.addGeneralPalette = function (expand) {
         cell1.vertex = true;
         edge.insert(cell1);
 
-        var cell2 = new mxCell(
+        var cell2 = new m.mxCell(
           "Target",
-          new mxGeometry(1, 0, 0, 0),
+          new m.mxGeometry(1, 0, 0, 0),
           "edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;",
         );
         cell2.geometry.relative = true;
@@ -1561,25 +1565,25 @@ Sidebar.prototype.addGeneralPalette = function (expand) {
     ),
     this.addEntry(
       lineTags + "edge shape symbol message mail email",
-      mxUtils.bind(this, function () {
-        var edge = new mxCell(
+      m.mxUtils.bind(this, function () {
+        var edge = new m.mxCell(
           "",
-          new mxGeometry(0, 0, 0, 0),
+          new m.mxGeometry(0, 0, 0, 0),
           "endArrow=classic;html=1;",
         );
-        edge.geometry.setTerminalPoint(new mxPoint(0, 0), true);
-        edge.geometry.setTerminalPoint(new mxPoint(100, 0), false);
+        edge.geometry.setTerminalPoint(new m.mxPoint(0, 0), true);
+        edge.geometry.setTerminalPoint(new m.mxPoint(100, 0), false);
         edge.geometry.relative = true;
         edge.edge = true;
 
-        var cell = new mxCell(
+        var cell = new m.mxCell(
           "",
-          new mxGeometry(0, 0, 20, 14),
+          new m.mxGeometry(0, 0, 20, 14),
           "shape=message;html=1;outlineConnect=0;",
         );
         cell.geometry.relative = true;
         cell.vertex = true;
-        cell.geometry.offset = new mxPoint(-10, -7);
+        cell.geometry.offset = new m.mxPoint(-10, -7);
         edge.insert(cell);
 
         return this.createEdgeTemplateFromCells(
@@ -1594,7 +1598,7 @@ Sidebar.prototype.addGeneralPalette = function (expand) {
 
   this.addPaletteFunctions(
     "general",
-    mxResources.get("general"),
+    m.mxResources.get("general"),
     expand != null ? expand : true,
     fns,
   );
@@ -1714,10 +1718,10 @@ Sidebar.prototype.addMiscPalette = function (expand) {
     ),
     this.addEntry(
       "link hyperlink",
-      mxUtils.bind(this, function () {
-        var cell = new mxCell(
+      m.mxUtils.bind(this, function () {
+        var cell = new m.mxCell(
           "Link",
-          new mxGeometry(0, 0, 60, 40),
+          new m.mxGeometry(0, 0, 60, 40),
           "text;html=1;strokeColor=none;fillColor=none;whiteSpace=wrap;align=center;verticalAlign=middle;fontColor=#0000EE;fontStyle=4;",
         );
         cell.vertex = true;
@@ -1733,10 +1737,10 @@ Sidebar.prototype.addMiscPalette = function (expand) {
     ),
     this.addEntry(
       "timestamp date time text label",
-      mxUtils.bind(this, function () {
-        var cell = new mxCell(
+      m.mxUtils.bind(this, function () {
+        var cell = new m.mxCell(
           "%date{ddd mmm dd yyyy HH:MM:ss}%",
-          new mxGeometry(0, 0, 160, 20),
+          new m.mxGeometry(0, 0, 160, 20),
           "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;",
         );
         cell.vertex = true;
@@ -1752,10 +1756,10 @@ Sidebar.prototype.addMiscPalette = function (expand) {
     ),
     this.addEntry(
       "variable placeholder metadata hello world text label",
-      mxUtils.bind(this, function () {
-        var cell = new mxCell(
+      m.mxUtils.bind(this, function () {
+        var cell = new m.mxCell(
           "%name% Text",
-          new mxGeometry(0, 0, 80, 20),
+          new m.mxGeometry(0, 0, 80, 20),
           "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;overflow=hidden;",
         );
         cell.vertex = true;
@@ -1989,16 +1993,16 @@ Sidebar.prototype.addMiscPalette = function (expand) {
       "label image icon symbol",
     ),
     this.addEntry("shape group container", function () {
-      var cell = new mxCell(
+      var cell = new m.mxCell(
         "Label",
-        new mxGeometry(0, 0, 160, 70),
+        new m.mxGeometry(0, 0, 160, 70),
         "html=1;whiteSpace=wrap;container=1;recursiveResize=0;collapsible=0;",
       );
       cell.vertex = true;
 
-      var symbol = new mxCell(
+      var symbol = new m.mxCell(
         "",
-        new mxGeometry(20, 20, 20, 30),
+        new m.mxGeometry(20, 20, 20, 30),
         "triangle;html=1;whiteSpace=wrap;",
       );
       symbol.vertex = true;
@@ -2063,7 +2067,7 @@ Sidebar.prototype.addMiscPalette = function (expand) {
 
   this.addPaletteFunctions(
     "misc",
-    mxResources.get("misc"),
+    m.mxResources.get("misc"),
     expand != null ? expand : true,
     fns,
   );
@@ -2076,7 +2080,7 @@ Sidebar.prototype.addAdvancedPalette = function (expand) {
   this.setCurrentSearchEntryLibrary("general", "advanced");
   this.addPaletteFunctions(
     "advanced",
-    mxResources.get("advanced"),
+    m.mxResources.get("advanced"),
     expand != null ? expand : false,
     this.createAdvancedShapes(),
   );
@@ -2090,7 +2094,7 @@ Sidebar.prototype.addBasicPalette = function (dir) {
   this.setCurrentSearchEntryLibrary("basic");
   this.addStencilPalette(
     "basic",
-    mxResources.get("basic"),
+    m.mxResources.get("basic"),
     dir + "/basic.xml",
     ";whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#000000;strokeWidth=2",
     null,
@@ -2139,9 +2143,9 @@ Sidebar.prototype.createAdvancedShapes = function () {
   var sb = this;
 
   // Reusable cells
-  var field = new mxCell(
+  var field = new m.mxCell(
     "List Item",
-    new mxGeometry(0, 0, 60, 26),
+    new m.mxGeometry(0, 0, 60, 26),
     "text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;",
   );
   field.vertex = true;
@@ -2364,9 +2368,9 @@ Sidebar.prototype.createAdvancedShapes = function () {
       "container swimlane lane pool group",
     ),
     this.addEntry("list group erd table", function () {
-      var cell = new mxCell(
+      var cell = new m.mxCell(
         "List",
-        new mxGeometry(0, 0, 140, 110),
+        new m.mxGeometry(0, 0, 140, 110),
         "swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;" +
           "resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;",
       );
@@ -2401,16 +2405,16 @@ Sidebar.prototype.addUmlPalette = function (expand) {
   var sb = this;
 
   // Reusable cells
-  var field = new mxCell(
+  var field = new m.mxCell(
     "+ field: type",
-    new mxGeometry(0, 0, 100, 26),
+    new m.mxGeometry(0, 0, 100, 26),
     "text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;",
   );
   field.vertex = true;
 
-  var divider = new mxCell(
+  var divider = new m.mxCell(
     "",
-    new mxGeometry(0, 0, 40, 8),
+    new m.mxGeometry(0, 0, 40, 8),
     "line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;",
   );
   divider.vertex = true;
@@ -2441,9 +2445,9 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       dt + "interface object instance annotated annotation",
     ),
     this.addEntry(dt + "object instance", function () {
-      var cell = new mxCell(
+      var cell = new m.mxCell(
         "Classname",
-        new mxGeometry(0, 0, 160, 90),
+        new m.mxGeometry(0, 0, 160, 90),
         "swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;",
       );
       cell.vertex = true;
@@ -2459,9 +2463,9 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       );
     }),
     this.addEntry(dt + "section subsection", function () {
-      var cell = new mxCell(
+      var cell = new m.mxCell(
         "Classname",
-        new mxGeometry(0, 0, 140, 110),
+        new m.mxGeometry(0, 0, 140, 110),
         "swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=26;fillColor=none;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;",
       );
       cell.vertex = true;
@@ -2490,9 +2494,9 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     this.addEntry(
       dt + "item member method function variable field attribute label",
       function () {
-        var cell = new mxCell(
+        var cell = new m.mxCell(
           "item: attribute",
-          new mxGeometry(0, 0, 120, field.geometry.height),
+          new m.mxGeometry(0, 0, 120, field.geometry.height),
           "label;fontStyle=0;strokeColor=none;fillColor=none;align=left;verticalAlign=top;overflow=hidden;" +
             "spacingLeft=28;spacingRight=4;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;imageWidth=16;imageHeight=16;image=" +
             sb.gearImage,
@@ -2516,9 +2520,9 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       );
     }),
     this.addEntry(dt + "spacer space gap separator", function () {
-      var cell = new mxCell(
+      var cell = new m.mxCell(
         "",
-        new mxGeometry(0, 0, 20, 14),
+        new m.mxGeometry(0, 0, 20, 14),
         "text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=4;spacingRight=4;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;",
       );
       cell.vertex = true;
@@ -2541,21 +2545,21 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       dt + "title label",
     ),
     this.addEntry(dt + "component", function () {
-      var cell = new mxCell(
+      var cell = new m.mxCell(
         "&laquo;Annotation&raquo;<br/><b>Component</b>",
-        new mxGeometry(0, 0, 180, 90),
+        new m.mxGeometry(0, 0, 180, 90),
         "html=1;dropTarget=0;",
       );
       cell.vertex = true;
 
-      var symbol = new mxCell(
+      var symbol = new m.mxCell(
         "",
-        new mxGeometry(1, 0, 20, 20),
+        new m.mxGeometry(1, 0, 20, 20),
         "shape=module;jettyWidth=8;jettyHeight=4;",
       );
       symbol.vertex = true;
       symbol.geometry.relative = true;
-      symbol.geometry.offset = new mxPoint(-27, 7);
+      symbol.geometry.offset = new m.mxPoint(-27, 7);
       cell.insert(symbol);
 
       return sb.createVertexTemplateFromCells(
@@ -2566,22 +2570,22 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       );
     }),
     this.addEntry(dt + "component", function () {
-      var cell = new mxCell(
+      var cell = new m.mxCell(
         '<p style="margin:0px;margin-top:6px;text-align:center;"><b>Component</b></p>' +
           '<hr/><p style="margin:0px;margin-left:8px;">+ Attribute1: Type<br/>+ Attribute2: Type</p>',
-        new mxGeometry(0, 0, 180, 90),
+        new m.mxGeometry(0, 0, 180, 90),
         "align=left;overflow=fill;html=1;dropTarget=0;",
       );
       cell.vertex = true;
 
-      var symbol = new mxCell(
+      var symbol = new m.mxCell(
         "",
-        new mxGeometry(1, 0, 20, 20),
+        new m.mxGeometry(1, 0, 20, 20),
         "shape=component;jettyWidth=8;jettyHeight=4;",
       );
       symbol.vertex = true;
       symbol.geometry.relative = true;
-      symbol.geometry.offset = new mxPoint(-24, 4);
+      symbol.geometry.offset = new m.mxPoint(-24, 4);
       cell.insert(symbol);
 
       return sb.createVertexTemplateFromCells(
@@ -2646,11 +2650,11 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       "er entity table",
     ),
     this.addEntry(dt + "object instance", function () {
-      var cell = new mxCell(
+      var cell = new m.mxCell(
         '<p style="margin:0px;margin-top:4px;text-align:center;">' +
           "<b>Class</b></p>" +
           '<hr size="1"/><div style="height:2px;"></div>',
-        new mxGeometry(0, 0, 140, 60),
+        new m.mxGeometry(0, 0, 140, 60),
         "verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;",
       );
       cell.vertex = true;
@@ -2663,11 +2667,11 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       );
     }),
     this.addEntry(dt + "object instance", function () {
-      var cell = new mxCell(
+      var cell = new m.mxCell(
         '<p style="margin:0px;margin-top:4px;text-align:center;">' +
           "<b>Class</b></p>" +
           '<hr size="1"/><div style="height:2px;"></div><hr size="1"/><div style="height:2px;"></div>',
-        new mxGeometry(0, 0, 140, 60),
+        new m.mxGeometry(0, 0, 140, 60),
         "verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;",
       );
       cell.vertex = true;
@@ -2680,12 +2684,12 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       );
     }),
     this.addEntry(dt + "object instance", function () {
-      var cell = new mxCell(
+      var cell = new m.mxCell(
         '<p style="margin:0px;margin-top:4px;text-align:center;">' +
           "<b>Class</b></p>" +
           '<hr size="1"/><p style="margin:0px;margin-left:4px;">+ field: Type</p><hr size="1"/>' +
           '<p style="margin:0px;margin-left:4px;">+ method(): Type</p>',
-        new mxGeometry(0, 0, 160, 90),
+        new m.mxGeometry(0, 0, 160, 90),
         "verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;",
       );
       cell.vertex = true;
@@ -2698,7 +2702,7 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       );
     }),
     this.addEntry(dt + "object instance", function () {
-      var cell = new mxCell(
+      var cell = new m.mxCell(
         '<p style="margin:0px;margin-top:4px;text-align:center;">' +
           "<i>&lt;&lt;Interface&gt;&gt;</i><br/><b>Interface</b></p>" +
           '<hr size="1"/><p style="margin:0px;margin-left:4px;">+ field1: Type<br/>' +
@@ -2706,7 +2710,7 @@ Sidebar.prototype.addUmlPalette = function (expand) {
           '<hr size="1"/><p style="margin:0px;margin-left:4px;">' +
           "+ method1(Type): Type<br/>" +
           "+ method2(Type, Type): Type</p>",
-        new mxGeometry(0, 0, 190, 140),
+        new m.mxGeometry(0, 0, 190, 140),
         "verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;",
       );
       cell.vertex = true;
@@ -2800,19 +2804,19 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       "uml use case usecase",
     ),
     this.addEntry("uml activity state start", function () {
-      var cell = new mxCell(
+      var cell = new m.mxCell(
         "",
-        new mxGeometry(0, 0, 30, 30),
+        new m.mxGeometry(0, 0, 30, 30),
         "ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#ff0000;",
       );
       cell.vertex = true;
 
-      var edge = new mxCell(
+      var edge = new m.mxCell(
         "",
-        new mxGeometry(0, 0, 0, 0),
+        new m.mxGeometry(0, 0, 0, 0),
         "edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;",
       );
-      edge.geometry.setTerminalPoint(new mxPoint(15, 90), false);
+      edge.geometry.setTerminalPoint(new m.mxPoint(15, 90), false);
       edge.geometry.relative = true;
       edge.edge = true;
 
@@ -2821,19 +2825,19 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       return sb.createVertexTemplateFromCells([cell, edge], 30, 90, "Start");
     }),
     this.addEntry("uml activity state", function () {
-      var cell = new mxCell(
+      var cell = new m.mxCell(
         "Activity",
-        new mxGeometry(0, 0, 120, 40),
+        new m.mxGeometry(0, 0, 120, 40),
         "rounded=1;whiteSpace=wrap;html=1;arcSize=40;fontColor=#000000;fillColor=#ffffc0;strokeColor=#ff0000;",
       );
       cell.vertex = true;
 
-      var edge = new mxCell(
+      var edge = new m.mxCell(
         "",
-        new mxGeometry(0, 0, 0, 0),
+        new m.mxGeometry(0, 0, 0, 0),
         "edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;",
       );
-      edge.geometry.setTerminalPoint(new mxPoint(60, 100), false);
+      edge.geometry.setTerminalPoint(new m.mxPoint(60, 100), false);
       edge.geometry.relative = true;
       edge.edge = true;
 
@@ -2847,27 +2851,27 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       );
     }),
     this.addEntry("uml activity composite state", function () {
-      var cell = new mxCell(
+      var cell = new m.mxCell(
         "Composite State",
-        new mxGeometry(0, 0, 160, 60),
+        new m.mxGeometry(0, 0, 160, 60),
         "swimlane;html=1;fontStyle=1;align=center;verticalAlign=middle;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=0;resizeLast=1;container=0;fontColor=#000000;collapsible=0;rounded=1;arcSize=30;strokeColor=#ff0000;fillColor=#ffffc0;swimlaneFillColor=#ffffc0;dropTarget=0;",
       );
       cell.vertex = true;
 
-      var cell1 = new mxCell(
+      var cell1 = new m.mxCell(
         "Subtitle",
-        new mxGeometry(0, 0, 200, 26),
+        new m.mxGeometry(0, 0, 200, 26),
         "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;whiteSpace=wrap;overflow=hidden;rotatable=0;fontColor=#000000;",
       );
       cell1.vertex = true;
       cell.insert(cell1);
 
-      var edge = new mxCell(
+      var edge = new m.mxCell(
         "",
-        new mxGeometry(0, 0, 0, 0),
+        new m.mxGeometry(0, 0, 0, 0),
         "edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;",
       );
-      edge.geometry.setTerminalPoint(new mxPoint(80, 120), false);
+      edge.geometry.setTerminalPoint(new m.mxPoint(80, 120), false);
       edge.geometry.relative = true;
       edge.edge = true;
 
@@ -2881,31 +2885,31 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       );
     }),
     this.addEntry("uml activity condition", function () {
-      var cell = new mxCell(
+      var cell = new m.mxCell(
         "Condition",
-        new mxGeometry(0, 0, 80, 40),
+        new m.mxGeometry(0, 0, 80, 40),
         "rhombus;whiteSpace=wrap;html=1;fillColor=#ffffc0;strokeColor=#ff0000;",
       );
       cell.vertex = true;
 
-      var edge1 = new mxCell(
+      var edge1 = new m.mxCell(
         "no",
-        new mxGeometry(0, 0, 0, 0),
+        new m.mxGeometry(0, 0, 0, 0),
         "edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;",
       );
-      edge1.geometry.setTerminalPoint(new mxPoint(180, 20), false);
+      edge1.geometry.setTerminalPoint(new m.mxPoint(180, 20), false);
       edge1.geometry.relative = true;
       edge1.geometry.x = -1;
       edge1.edge = true;
 
       cell.insertEdge(edge1, true);
 
-      var edge2 = new mxCell(
+      var edge2 = new m.mxCell(
         "yes",
-        new mxGeometry(0, 0, 0, 0),
+        new m.mxGeometry(0, 0, 0, 0),
         "edgeStyle=orthogonalEdgeStyle;html=1;align=left;verticalAlign=top;endArrow=open;endSize=8;strokeColor=#ff0000;",
       );
-      edge2.geometry.setTerminalPoint(new mxPoint(40, 100), false);
+      edge2.geometry.setTerminalPoint(new m.mxPoint(40, 100), false);
       edge2.geometry.relative = true;
       edge2.geometry.x = -1;
       edge2.edge = true;
@@ -2920,19 +2924,19 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       );
     }),
     this.addEntry("uml activity fork join", function () {
-      var cell = new mxCell(
+      var cell = new m.mxCell(
         "",
-        new mxGeometry(0, 0, 200, 10),
+        new m.mxGeometry(0, 0, 200, 10),
         "shape=line;html=1;strokeWidth=6;strokeColor=#ff0000;",
       );
       cell.vertex = true;
 
-      var edge = new mxCell(
+      var edge = new m.mxCell(
         "",
-        new mxGeometry(0, 0, 0, 0),
+        new m.mxGeometry(0, 0, 0, 0),
         "edgeStyle=orthogonalEdgeStyle;html=1;verticalAlign=bottom;endArrow=open;endSize=8;strokeColor=#ff0000;",
       );
-      edge.geometry.setTerminalPoint(new mxPoint(100, 80), false);
+      edge.geometry.setTerminalPoint(new m.mxPoint(100, 80), false);
       edge.geometry.relative = true;
       edge.edge = true;
 
@@ -3028,19 +3032,19 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     this.addEntry(
       "uml sequence invoke invocation call activation",
       function () {
-        var cell = new mxCell(
+        var cell = new m.mxCell(
           "",
-          new mxGeometry(0, 0, 10, 80),
+          new m.mxGeometry(0, 0, 10, 80),
           "html=1;points=[];perimeter=orthogonalPerimeter;",
         );
         cell.vertex = true;
 
-        var edge = new mxCell(
+        var edge = new m.mxCell(
           "dispatch",
-          new mxGeometry(0, 0, 0, 0),
+          new m.mxGeometry(0, 0, 0, 0),
           "html=1;verticalAlign=bottom;startArrow=oval;endArrow=block;startSize=8;",
         );
-        edge.geometry.setTerminalPoint(new mxPoint(-60, 0), true);
+        edge.geometry.setTerminalPoint(new m.mxPoint(-60, 0), true);
         edge.geometry.relative = true;
         edge.edge = true;
 
@@ -3057,30 +3061,30 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     this.addEntry(
       "uml sequence invoke call delegation synchronous invocation activation",
       function () {
-        var cell = new mxCell(
+        var cell = new m.mxCell(
           "",
-          new mxGeometry(0, 0, 10, 80),
+          new m.mxGeometry(0, 0, 10, 80),
           "html=1;points=[];perimeter=orthogonalPerimeter;",
         );
         cell.vertex = true;
 
-        var edge1 = new mxCell(
+        var edge1 = new m.mxCell(
           "dispatch",
-          new mxGeometry(0, 0, 0, 0),
+          new m.mxGeometry(0, 0, 0, 0),
           "html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;",
         );
-        edge1.geometry.setTerminalPoint(new mxPoint(-70, 0), true);
+        edge1.geometry.setTerminalPoint(new m.mxPoint(-70, 0), true);
         edge1.geometry.relative = true;
         edge1.edge = true;
 
         cell.insertEdge(edge1, false);
 
-        var edge2 = new mxCell(
+        var edge2 = new m.mxCell(
           "return",
-          new mxGeometry(0, 0, 0, 0),
+          new m.mxGeometry(0, 0, 0, 0),
           "html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;exitX=0;exitY=0.95;",
         );
-        edge2.geometry.setTerminalPoint(new mxPoint(-70, 76), false);
+        edge2.geometry.setTerminalPoint(new m.mxPoint(-70, 76), false);
         edge2.geometry.relative = true;
         edge2.edge = true;
 
@@ -3097,20 +3101,20 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     this.addEntry(
       "uml sequence self call recursion delegation activation",
       function () {
-        var cell = new mxCell(
+        var cell = new m.mxCell(
           "",
-          new mxGeometry(0, 20, 10, 40),
+          new m.mxGeometry(0, 20, 10, 40),
           "html=1;points=[];perimeter=orthogonalPerimeter;",
         );
         cell.vertex = true;
 
-        var edge = new mxCell(
+        var edge = new m.mxCell(
           "self call",
-          new mxGeometry(0, 0, 0, 0),
+          new m.mxGeometry(0, 0, 0, 0),
           "edgeStyle=orthogonalEdgeStyle;html=1;align=left;spacingLeft=2;endArrow=block;rounded=0;entryX=1;entryY=0;",
         );
-        edge.geometry.setTerminalPoint(new mxPoint(5, 0), true);
-        edge.geometry.points = [new mxPoint(30, 0)];
+        edge.geometry.setTerminalPoint(new m.mxPoint(5, 0), true);
+        edge.geometry.points = [new m.mxPoint(30, 0)];
         edge.geometry.relative = true;
         edge.edge = true;
 
@@ -3183,15 +3187,15 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     this.addEntry(
       "uml sequence self call recursion delegation activation",
       function () {
-        var cell = new mxCell(
+        var cell = new m.mxCell(
           "Constraint1 specification",
-          new mxGeometry(0, 0, 160, 60),
+          new m.mxGeometry(0, 0, 160, 60),
           "shape=note2;boundedLbl=1;whiteSpace=wrap;html=1;size=25;verticalAlign=top;align=center;",
         );
         cell.vertex = true;
-        var label = new mxCell(
+        var label = new m.mxCell(
           "<<keyword>>",
-          new mxGeometry(0, 0, cell.geometry.width, 25),
+          new m.mxGeometry(0, 0, cell.geometry.width, 25),
           "resizeWidth=1;part=1;strokeColor=none;fillColor=none;align=left;spacingLeft=5;",
         );
         label.geometry.relative = true;
@@ -3208,51 +3212,51 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     ),
 
     this.addEntry(dt + "classifier", function () {
-      var cell1 = new mxCell(
+      var cell1 = new m.mxCell(
         "&lt;&lt;keyword&gt;&gt;<br><b>Classifier1</b><br>{abstract}",
-        new mxGeometry(0, 0, 140, 183),
+        new m.mxGeometry(0, 0, 140, 183),
         "swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=55;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;",
       );
       cell1.vertex = true;
-      var field1 = new mxCell(
+      var field1 = new m.mxCell(
         "attributes",
-        new mxGeometry(0, 0, 140, 20),
+        new m.mxGeometry(0, 0, 140, 20),
         "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;",
       );
       field1.vertex = true;
       cell1.insert(field1);
-      var field2 = new mxCell(
+      var field2 = new m.mxCell(
         "attribute1",
-        new mxGeometry(0, 0, 140, 20),
+        new m.mxGeometry(0, 0, 140, 20),
         "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;",
       );
       field2.vertex = true;
       cell1.insert(field2);
-      var field3 = new mxCell(
+      var field3 = new m.mxCell(
         "inherited attribute2",
-        new mxGeometry(0, 0, 140, 20),
+        new m.mxGeometry(0, 0, 140, 20),
         "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;fontColor=#808080;",
       );
       field3.vertex = true;
       cell1.insert(field3);
-      var field4 = new mxCell(
+      var field4 = new m.mxCell(
         "...",
-        new mxGeometry(0, 0, 140, 20),
+        new m.mxGeometry(0, 0, 140, 20),
         "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;",
       );
       field4.vertex = true;
       cell1.insert(field4);
       cell1.insert(divider.clone());
-      var field5 = new mxCell(
+      var field5 = new m.mxCell(
         "operations",
-        new mxGeometry(0, 0, 140, 20),
+        new m.mxGeometry(0, 0, 140, 20),
         "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;",
       );
       field5.vertex = true;
       cell1.insert(field5);
-      var field6 = new mxCell(
+      var field6 = new m.mxCell(
         "operation1",
-        new mxGeometry(0, 0, 140, 20),
+        new m.mxGeometry(0, 0, 140, 20),
         "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;",
       );
       field6.vertex = true;
@@ -3278,51 +3282,51 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     ),
 
     this.addEntry(dt + "classifier", function () {
-      var cell1 = new mxCell(
+      var cell1 = new m.mxCell(
         "Classifier1",
-        new mxGeometry(0, 0, 140, 183),
+        new m.mxGeometry(0, 0, 140, 183),
         "swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;",
       );
       cell1.vertex = true;
-      var field1 = new mxCell(
+      var field1 = new m.mxCell(
         "internal structure",
-        new mxGeometry(0, 0, 140, 30),
+        new m.mxGeometry(0, 0, 140, 30),
         "html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;rotatable=0;points=[[0,0.5],[1,0.5]];resizeWidth=1;",
       );
       field1.vertex = true;
       cell1.insert(field1);
 
-      var cell2 = new mxCell(
+      var cell2 = new m.mxCell(
         "",
-        new mxGeometry(0, 0, 140, 140),
+        new m.mxGeometry(0, 0, 140, 140),
         "strokeColor=none;fillColor=none;",
       );
       cell2.vertex = true;
       cell1.insert(cell2);
 
-      var field2 = new mxCell(
+      var field2 = new m.mxCell(
         "property1",
-        new mxGeometry(0, 0, 100, 30),
+        new m.mxGeometry(0, 0, 100, 30),
         "html=1;align=center;verticalAlign=middle;rotatable=0;",
       );
       field2.geometry.relative = true;
-      field2.geometry.offset = new mxPoint(20, 20);
+      field2.geometry.offset = new m.mxPoint(20, 20);
       field2.vertex = true;
       cell2.insert(field2);
 
-      var field3 = new mxCell(
+      var field3 = new m.mxCell(
         "property2",
-        new mxGeometry(0, 0, 100, 30),
+        new m.mxGeometry(0, 0, 100, 30),
         "html=1;align=center;verticalAlign=middle;rotatable=0;",
       );
       field3.geometry.relative = true;
-      field3.geometry.offset = new mxPoint(20, 90);
+      field3.geometry.offset = new m.mxPoint(20, 90);
       field3.vertex = true;
       cell2.insert(field3);
 
-      var assoc1 = new mxCell(
+      var assoc1 = new m.mxCell(
         "connector1",
-        new mxGeometry(0, 0, 0, 0),
+        new m.mxGeometry(0, 0, 0, 0),
         "edgeStyle=none;endArrow=none;verticalAlign=middle;labelBackgroundColor=none;endSize=12;html=1;align=left;endFill=0;exitX=0.15;exitY=1;entryX=0.15;entryY=0;spacingLeft=4;",
       );
       assoc1.geometry.relative = true;
@@ -3351,15 +3355,15 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     ),
 
     this.addEntry(dt + "classifier", function () {
-      var cell1 = new mxCell(
+      var cell1 = new m.mxCell(
         "Instance1",
-        new mxGeometry(0, 0, 140, 138),
+        new m.mxGeometry(0, 0, 140, 138),
         "swimlane;fontStyle=4;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;",
       );
       cell1.vertex = true;
-      var field1 = new mxCell(
+      var field1 = new m.mxCell(
         "slot1",
-        new mxGeometry(0, 0, 140, 30),
+        new m.mxGeometry(0, 0, 140, 30),
         "html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;rotatable=0;points=[[0,0.5],[1,0.5]];resizeWidth=1;",
       );
       field1.vertex = true;
@@ -3367,29 +3371,29 @@ Sidebar.prototype.addUmlPalette = function (expand) {
 
       cell1.insert(divider.clone());
 
-      var field2 = new mxCell(
+      var field2 = new m.mxCell(
         "internal structure",
-        new mxGeometry(0, 0, 140, 20),
+        new m.mxGeometry(0, 0, 140, 20),
         "html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;rotatable=0;points=[[0,0.5],[1,0.5]];resizeWidth=1;",
       );
       field2.vertex = true;
       cell1.insert(field2);
 
-      var cell2 = new mxCell(
+      var cell2 = new m.mxCell(
         "",
-        new mxGeometry(0, 0, 140, 50),
+        new m.mxGeometry(0, 0, 140, 50),
         "strokeColor=none;fillColor=none;",
       );
       cell2.vertex = true;
       cell1.insert(cell2);
 
-      var field3 = new mxCell(
+      var field3 = new m.mxCell(
         "instance2",
-        new mxGeometry(0, 0, 80, 30),
+        new m.mxGeometry(0, 0, 80, 30),
         "html=1;align=center;verticalAlign=middle;rotatable=0;",
       );
       field3.geometry.relative = true;
-      field3.geometry.offset = new mxPoint(30, 10);
+      field3.geometry.offset = new m.mxPoint(30, 10);
       field3.vertex = true;
       cell2.insert(field3);
 
@@ -3413,15 +3417,15 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     ),
 
     this.addEntry(dt + "classifier", function () {
-      var cell1 = new mxCell(
+      var cell1 = new m.mxCell(
         "&lt;&lt;enumeration&gt;&gt;<br><b>Enum1</b>",
-        new mxGeometry(0, 0, 140, 70),
+        new m.mxGeometry(0, 0, 140, 70),
         "swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;",
       );
       cell1.vertex = true;
-      var field1 = new mxCell(
+      var field1 = new m.mxCell(
         "literal1",
-        new mxGeometry(0, 0, 140, 30),
+        new m.mxGeometry(0, 0, 140, 30),
         "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;",
       );
       field1.vertex = true;
@@ -3436,19 +3440,19 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     }),
 
     this.addEntry(dt + "classifier", function () {
-      var cell1 = new mxCell(
+      var cell1 = new m.mxCell(
         "0..1",
-        new mxGeometry(0, 0, 120, 50),
+        new m.mxGeometry(0, 0, 120, 50),
         "align=right;verticalAlign=top;spacingRight=2;",
       );
       cell1.vertex = true;
-      var field1 = new mxCell(
+      var field1 = new m.mxCell(
         "Property1",
-        new mxGeometry(0, 1, 120, 30),
+        new m.mxGeometry(0, 1, 120, 30),
         "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;resizeWidth=1;",
       );
       field1.geometry.relative = true;
-      field1.geometry.offset = new mxPoint(0, -30);
+      field1.geometry.offset = new m.mxPoint(0, -30);
       field1.vertex = true;
 
       cell1.insert(field1);
@@ -3483,44 +3487,44 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     ),
 
     this.addEntry(dt + "component", function () {
-      var cell1 = new mxCell(
+      var cell1 = new m.mxCell(
         "",
-        new mxGeometry(0, 0, 140, 200),
+        new m.mxGeometry(0, 0, 140, 200),
         "fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;marginBottom=0;",
       );
       cell1.vertex = true;
 
-      var cell2 = new mxCell(
+      var cell2 = new m.mxCell(
         "Component",
-        new mxGeometry(0, 0, 140, 40),
+        new m.mxGeometry(0, 0, 140, 40),
         "html=1;align=left;spacingLeft=4;verticalAlign=top;strokeColor=none;fillColor=none;",
       );
       cell2.vertex = true;
       cell1.insert(cell2);
 
-      var symbol = new mxCell(
+      var symbol = new m.mxCell(
         "",
-        new mxGeometry(1, 0, 16, 20),
+        new m.mxGeometry(1, 0, 16, 20),
         "shape=module;jettyWidth=10;jettyHeight=4;",
       );
       symbol.vertex = true;
       symbol.geometry.relative = true;
-      symbol.geometry.offset = new mxPoint(-25, 9);
+      symbol.geometry.offset = new m.mxPoint(-25, 9);
       cell2.insert(symbol);
 
       cell1.insert(divider.clone());
 
-      var cell3 = new mxCell(
+      var cell3 = new m.mxCell(
         "provided interfaces",
-        new mxGeometry(0, 0, 140, 25),
+        new m.mxGeometry(0, 0, 140, 25),
         "html=1;align=center;spacingLeft=4;verticalAlign=top;strokeColor=none;fillColor=none;",
       );
       cell3.vertex = true;
       cell1.insert(cell3);
 
-      var cell4 = new mxCell(
+      var cell4 = new m.mxCell(
         "Interface1",
-        new mxGeometry(0, 0, 140, 25),
+        new m.mxGeometry(0, 0, 140, 25),
         "html=1;align=left;spacingLeft=4;verticalAlign=top;strokeColor=none;fillColor=none;",
       );
       cell4.vertex = true;
@@ -3528,17 +3532,17 @@ Sidebar.prototype.addUmlPalette = function (expand) {
 
       cell1.insert(divider.clone());
 
-      var cell5 = new mxCell(
+      var cell5 = new m.mxCell(
         "required interfaces",
-        new mxGeometry(0, 0, 140, 25),
+        new m.mxGeometry(0, 0, 140, 25),
         "html=1;align=center;spacingLeft=4;verticalAlign=top;strokeColor=none;fillColor=none;",
       );
       cell5.vertex = true;
       cell1.insert(cell5);
 
-      var cell6 = new mxCell(
+      var cell6 = new m.mxCell(
         "Interface2",
-        new mxGeometry(0, 0, 140, 30),
+        new m.mxGeometry(0, 0, 140, 30),
         "html=1;align=left;spacingLeft=4;verticalAlign=top;strokeColor=none;fillColor=none;",
       );
       cell6.vertex = true;
@@ -3553,54 +3557,54 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     }),
 
     this.addEntry(dt + "classifier", function () {
-      var cell1 = new mxCell(
+      var cell1 = new m.mxCell(
         "",
-        new mxGeometry(0, 0, 270, 230),
+        new m.mxGeometry(0, 0, 270, 230),
         "shape=ellipse;container=1;horizontal=1;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;html=1;dashed=1;collapsible=0;",
       );
       cell1.vertex = true;
 
-      var field1 = new mxCell(
+      var field1 = new m.mxCell(
         "Collaboration1",
-        new mxGeometry(0, 0, 270, 30),
+        new m.mxGeometry(0, 0, 270, 30),
         "html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;rotatable=0;points=[[0,0.5],[1,0.5]];resizeWidth=1;",
       );
       field1.vertex = true;
       cell1.insert(field1);
 
-      var divider1 = new mxCell(
+      var divider1 = new m.mxCell(
         "",
-        new mxGeometry(0.145, 0, 192, 8),
+        new m.mxGeometry(0.145, 0, 192, 8),
         "line;strokeWidth=1;fillColor=none;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;dashed=1;resizeWidth=1;",
       );
       divider1.geometry.relative = true;
-      divider1.geometry.offset = new mxPoint(0, 30);
+      divider1.geometry.offset = new m.mxPoint(0, 30);
       divider1.vertex = true;
       cell1.insert(divider1);
 
-      var field2 = new mxCell(
+      var field2 = new m.mxCell(
         "Classifier1",
-        new mxGeometry(0, 0, 100, 30),
+        new m.mxGeometry(0, 0, 100, 30),
         "html=1;align=center;verticalAlign=middle;rotatable=0;",
       );
       field2.geometry.relative = true;
-      field2.geometry.offset = new mxPoint(85, 50);
+      field2.geometry.offset = new m.mxPoint(85, 50);
       field2.vertex = true;
       cell1.insert(field2);
 
-      var field3 = new mxCell(
+      var field3 = new m.mxCell(
         "Collaboration use 1",
-        new mxGeometry(0, 0, 140, 30),
+        new m.mxGeometry(0, 0, 140, 30),
         "shape=ellipse;html=1;align=center;verticalAlign=middle;rotatable=0;dashed=1;",
       );
       field3.geometry.relative = true;
-      field3.geometry.offset = new mxPoint(65, 110);
+      field3.geometry.offset = new m.mxPoint(65, 110);
       field3.vertex = true;
       cell1.insert(field3);
 
-      var assoc1 = new mxCell(
+      var assoc1 = new m.mxCell(
         "property1",
-        new mxGeometry(0, 0, 0, 0),
+        new m.mxGeometry(0, 0, 0, 0),
         "edgeStyle=none;endArrow=none;verticalAlign=middle;labelBackgroundColor=none;endSize=12;html=1;align=left;endFill=0;spacingLeft=4;",
       );
       assoc1.geometry.relative = true;
@@ -3609,19 +3613,19 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       field3.insertEdge(assoc1, false);
       cell1.insert(assoc1);
 
-      var field4 = new mxCell(
+      var field4 = new m.mxCell(
         "Classifier2",
-        new mxGeometry(0, 0, 100, 30),
+        new m.mxGeometry(0, 0, 100, 30),
         "html=1;align=center;verticalAlign=middle;rotatable=0;",
       );
       field4.geometry.relative = true;
-      field4.geometry.offset = new mxPoint(85, 170);
+      field4.geometry.offset = new m.mxPoint(85, 170);
       field4.vertex = true;
       cell1.insert(field4);
 
-      var assoc2 = new mxCell(
+      var assoc2 = new m.mxCell(
         "property1",
-        new mxGeometry(0, 0, 0, 0),
+        new m.mxGeometry(0, 0, 0, 0),
         "edgeStyle=none;endArrow=none;verticalAlign=middle;labelBackgroundColor=none;endSize=12;html=1;align=left;endFill=0;spacingLeft=4;",
       );
       assoc2.geometry.relative = true;
@@ -3650,20 +3654,20 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     ),
 
     this.addEntry(dt + "package", function () {
-      var cell1 = new mxCell(
+      var cell1 = new m.mxCell(
         "Package1",
-        new mxGeometry(0, 0, 150, 100),
+        new m.mxGeometry(0, 0, 150, 100),
         "shape=folder;fontStyle=1;tabWidth=110;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;",
       );
       cell1.vertex = true;
 
-      var field1 = new mxCell(
+      var field1 = new m.mxCell(
         "Packaged element1",
-        new mxGeometry(0, 0, 110, 30),
+        new m.mxGeometry(0, 0, 110, 30),
         "html=1;",
       );
       field1.geometry.relative = true;
-      field1.geometry.offset = new mxPoint(20, 50);
+      field1.geometry.offset = new m.mxPoint(20, 50);
       field1.vertex = true;
       cell1.insert(field1);
 
@@ -3676,9 +3680,9 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     }),
 
     this.addEntry(dt + "package", function () {
-      var cell1 = new mxCell(
+      var cell1 = new m.mxCell(
         "Model1",
-        new mxGeometry(0, 0, 150, 80),
+        new m.mxGeometry(0, 0, 150, 80),
         "shape=folder;fontStyle=1;tabWidth=110;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;folderSymbol=triangle;",
       );
       cell1.vertex = true;
@@ -3692,29 +3696,29 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     }),
 
     this.addEntry(dt + "stereotype", function () {
-      var cell1 = new mxCell(
+      var cell1 = new m.mxCell(
         "",
-        new mxGeometry(0, 0, 160, 75),
+        new m.mxGeometry(0, 0, 160, 75),
         "shape=note2;size=25;childLayout=stackLayout;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;container=1;",
       );
       cell1.vertex = true;
-      var field1 = new mxCell(
+      var field1 = new m.mxCell(
         "&lt;&lt;stereotype1&gt;&gt;",
-        new mxGeometry(0, 0, 160, 25),
+        new m.mxGeometry(0, 0, 160, 25),
         "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;",
       );
       field1.vertex = true;
       cell1.insert(field1);
-      var field2 = new mxCell(
+      var field2 = new m.mxCell(
         "stereotype property 1",
-        new mxGeometry(0, 0, 160, 25),
+        new m.mxGeometry(0, 0, 160, 25),
         "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;",
       );
       field2.vertex = true;
       cell1.insert(field2);
-      var field3 = new mxCell(
+      var field3 = new m.mxCell(
         "stereotype property 2",
-        new mxGeometry(0, 0, 160, 25),
+        new m.mxGeometry(0, 0, 160, 25),
         "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;",
       );
       field3.vertex = true;
@@ -3729,22 +3733,22 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     }),
 
     this.addEntry(dt + "class", function () {
-      var cell1 = new mxCell(
+      var cell1 = new m.mxCell(
         "Class1",
-        new mxGeometry(0, 0, 140, 79),
+        new m.mxGeometry(0, 0, 140, 79),
         "swimlane;fontStyle=1;align=center;verticalAlign=middle;childLayout=stackLayout;horizontal=1;startSize=29;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;",
       );
       cell1.vertex = true;
-      var field1 = new mxCell(
+      var field1 = new m.mxCell(
         "&lt;&lt;stereotype1&gt;&gt;",
-        new mxGeometry(0, 0, 140, 25),
+        new m.mxGeometry(0, 0, 140, 25),
         "text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;",
       );
       field1.vertex = true;
       cell1.insert(field1);
-      var field2 = new mxCell(
+      var field2 = new m.mxCell(
         "stereotype property 1",
-        new mxGeometry(0, 0, 140, 25),
+        new m.mxGeometry(0, 0, 140, 25),
         "text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;",
       );
       field2.vertex = true;
@@ -3780,23 +3784,23 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     ),
 
     this.addEntry(dt + "region", function () {
-      var cell1 = new mxCell(
+      var cell1 = new m.mxCell(
         "",
-        new mxGeometry(60, 0, 10, 100),
+        new m.mxGeometry(60, 0, 10, 100),
         "line;strokeWidth=1;direction=south;html=1;dashed=1;dashPattern=20 20;",
       );
       cell1.vertex = true;
 
-      var cell2 = new mxCell(
+      var cell2 = new m.mxCell(
         "Region 1",
-        new mxGeometry(0, 40, 60, 20),
+        new m.mxGeometry(0, 40, 60, 20),
         "text;align=right;",
       );
       cell2.vertex = true;
 
-      var cell3 = new mxCell(
+      var cell3 = new m.mxCell(
         "Region 2",
-        new mxGeometry(70, 40, 60, 20),
+        new m.mxGeometry(70, 40, 60, 20),
         "text;align=left;",
       );
       cell3.vertex = true;
@@ -3810,24 +3814,24 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     }),
 
     this.addEntry(dt + "State", function () {
-      var cell1 = new mxCell(
+      var cell1 = new m.mxCell(
         "State1<br>[invariant1]<br>&lt;&lt;extended/final&gt;&gt;",
-        new mxGeometry(0, 0, 140, 176),
+        new m.mxGeometry(0, 0, 140, 176),
         "swimlane;fontStyle=4;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=60;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=0;marginBottom=0;html=1;rounded=1;absoluteArcSize=1;arcSize=50;",
       );
       cell1.vertex = true;
 
-      var field1 = new mxCell(
+      var field1 = new m.mxCell(
         "",
-        new mxGeometry(0, 0, 140, 50),
+        new m.mxGeometry(0, 0, 140, 50),
         "fillColor=none;strokeColor=none;container=1;collapsible=0;",
       );
       field1.vertex = true;
       cell1.insert(field1);
 
-      var field2 = new mxCell(
+      var field2 = new m.mxCell(
         "State2",
-        new mxGeometry(30, 10, 80, 30),
+        new m.mxGeometry(30, 10, 80, 30),
         "html=1;align=center;verticalAlign=middle;rounded=1;absoluteArcSize=1;arcSize=10;",
       );
       field2.vertex = true;
@@ -3835,9 +3839,9 @@ Sidebar.prototype.addUmlPalette = function (expand) {
 
       cell1.insert(divider.clone());
 
-      var field3 = new mxCell(
+      var field3 = new m.mxCell(
         "behavior1",
-        new mxGeometry(0, 0, 140, 25),
+        new m.mxGeometry(0, 0, 140, 25),
         "fillColor=none;strokeColor=none;align=left;verticalAlign=middle;spacingLeft=5;",
       );
       field3.vertex = true;
@@ -3845,9 +3849,9 @@ Sidebar.prototype.addUmlPalette = function (expand) {
 
       cell1.insert(divider.clone());
 
-      var field4 = new mxCell(
+      var field4 = new m.mxCell(
         "transition1",
-        new mxGeometry(0, 0, 140, 25),
+        new m.mxGeometry(0, 0, 140, 25),
         "fillColor=none;strokeColor=none;align=left;verticalAlign=middle;spacingLeft=5;",
       );
       field4.vertex = true;
@@ -3917,16 +3921,16 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     ),
 
     this.addEntry(dt + "State", function () {
-      var cell1 = new mxCell(
+      var cell1 = new m.mxCell(
         "State1",
-        new mxGeometry(40, 0, 140, 50),
+        new m.mxGeometry(40, 0, 140, 50),
         "shape=umlState;rounded=1;verticalAlign=middle;align=center;absoluteArcSize=1;arcSize=10;umlStateConnection=connPointRefEntry;boundedLbl=1;",
       );
       cell1.vertex = true;
 
-      var field1 = new mxCell(
+      var field1 = new m.mxCell(
         "Entry1",
-        new mxGeometry(0, 40, 50, 20),
+        new m.mxGeometry(0, 40, 50, 20),
         "text;verticalAlign=middle;align=center;",
       );
       field1.vertex = true;
@@ -3941,16 +3945,16 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     }),
 
     this.addEntry(dt + "State", function () {
-      var cell1 = new mxCell(
+      var cell1 = new m.mxCell(
         "State1",
-        new mxGeometry(40, 0, 140, 50),
+        new m.mxGeometry(40, 0, 140, 50),
         "shape=umlState;rounded=1;verticalAlign=middle;spacingTop=0;absoluteArcSize=1;arcSize=10;umlStateConnection=connPointRefExit;boundedLbl=1;",
       );
       cell1.vertex = true;
 
-      var field1 = new mxCell(
+      var field1 = new m.mxCell(
         "Exit1",
-        new mxGeometry(0, 40, 50, 20),
+        new m.mxGeometry(0, 40, 50, 20),
         "text;verticalAlign=middle;align=center;",
       );
       field1.vertex = true;
@@ -4115,33 +4119,33 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       "uml sequence message call invoke dispatch",
     ),
     this.addEntry("uml sequence return message", function () {
-      var edge = new mxCell(
+      var edge = new m.mxCell(
         "return",
-        new mxGeometry(0, 0, 0, 0),
+        new m.mxGeometry(0, 0, 0, 0),
         "html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;",
       );
-      edge.geometry.setTerminalPoint(new mxPoint(80, 0), true);
-      edge.geometry.setTerminalPoint(new mxPoint(0, 0), false);
+      edge.geometry.setTerminalPoint(new m.mxPoint(80, 0), true);
+      edge.geometry.setTerminalPoint(new m.mxPoint(0, 0), false);
       edge.geometry.relative = true;
       edge.edge = true;
 
       return sb.createEdgeTemplateFromCells([edge], 80, 0, "Return");
     }),
     this.addEntry("uml relation", function () {
-      var edge = new mxCell(
+      var edge = new m.mxCell(
         "name",
-        new mxGeometry(0, 0, 0, 0),
+        new m.mxGeometry(0, 0, 0, 0),
         "endArrow=block;endFill=1;html=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=top;",
       );
-      edge.geometry.setTerminalPoint(new mxPoint(0, 0), true);
-      edge.geometry.setTerminalPoint(new mxPoint(160, 0), false);
+      edge.geometry.setTerminalPoint(new m.mxPoint(0, 0), true);
+      edge.geometry.setTerminalPoint(new m.mxPoint(160, 0), false);
       edge.geometry.relative = true;
       edge.geometry.x = -1;
       edge.edge = true;
 
-      var cell = new mxCell(
+      var cell = new m.mxCell(
         "1",
-        new mxGeometry(-1, 0, 0, 0),
+        new m.mxGeometry(-1, 0, 0, 0),
         "edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;",
       );
       cell.geometry.relative = true;
@@ -4152,19 +4156,19 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       return sb.createEdgeTemplateFromCells([edge], 160, 0, "Relation 1");
     }),
     this.addEntry("uml association", function () {
-      var edge = new mxCell(
+      var edge = new m.mxCell(
         "",
-        new mxGeometry(0, 0, 0, 0),
+        new m.mxGeometry(0, 0, 0, 0),
         "endArrow=none;html=1;edgeStyle=orthogonalEdgeStyle;",
       );
-      edge.geometry.setTerminalPoint(new mxPoint(0, 0), true);
-      edge.geometry.setTerminalPoint(new mxPoint(160, 0), false);
+      edge.geometry.setTerminalPoint(new m.mxPoint(0, 0), true);
+      edge.geometry.setTerminalPoint(new m.mxPoint(160, 0), false);
       edge.geometry.relative = true;
       edge.edge = true;
 
-      var cell1 = new mxCell(
+      var cell1 = new m.mxCell(
         "parent",
-        new mxGeometry(-1, 0, 0, 0),
+        new m.mxGeometry(-1, 0, 0, 0),
         "edgeLabel;resizable=0;html=1;align=left;verticalAlign=bottom;",
       );
       cell1.geometry.relative = true;
@@ -4172,9 +4176,9 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       cell1.vertex = true;
       edge.insert(cell1);
 
-      var cell2 = new mxCell(
+      var cell2 = new m.mxCell(
         "child",
-        new mxGeometry(1, 0, 0, 0),
+        new m.mxGeometry(1, 0, 0, 0),
         "edgeLabel;resizable=0;html=1;align=right;verticalAlign=bottom;",
       );
       cell2.geometry.relative = true;
@@ -4185,13 +4189,13 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       return sb.createEdgeTemplateFromCells([edge], 160, 0, "Association 1");
     }),
     this.addEntry("uml aggregation", function () {
-      var edge = new mxCell(
+      var edge = new m.mxCell(
         "1",
-        new mxGeometry(0, 0, 0, 0),
+        new m.mxGeometry(0, 0, 0, 0),
         "endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=0;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=bottom;",
       );
-      edge.geometry.setTerminalPoint(new mxPoint(0, 0), true);
-      edge.geometry.setTerminalPoint(new mxPoint(160, 0), false);
+      edge.geometry.setTerminalPoint(new m.mxPoint(0, 0), true);
+      edge.geometry.setTerminalPoint(new m.mxPoint(160, 0), false);
       edge.geometry.relative = true;
       edge.geometry.x = -1;
       edge.geometry.y = 3;
@@ -4200,13 +4204,13 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       return sb.createEdgeTemplateFromCells([edge], 160, 0, "Aggregation 1");
     }),
     this.addEntry("uml composition", function () {
-      var edge = new mxCell(
+      var edge = new m.mxCell(
         "1",
-        new mxGeometry(0, 0, 0, 0),
+        new m.mxGeometry(0, 0, 0, 0),
         "endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=1;edgeStyle=orthogonalEdgeStyle;align=left;verticalAlign=bottom;",
       );
-      edge.geometry.setTerminalPoint(new mxPoint(0, 0), true);
-      edge.geometry.setTerminalPoint(new mxPoint(160, 0), false);
+      edge.geometry.setTerminalPoint(new m.mxPoint(0, 0), true);
+      edge.geometry.setTerminalPoint(new m.mxPoint(160, 0), false);
       edge.geometry.relative = true;
       edge.geometry.x = -1;
       edge.geometry.y = 3;
@@ -4215,19 +4219,19 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       return sb.createEdgeTemplateFromCells([edge], 160, 0, "Composition 1");
     }),
     this.addEntry("uml relation", function () {
-      var edge = new mxCell(
+      var edge = new m.mxCell(
         "Relation",
-        new mxGeometry(0, 0, 0, 0),
+        new m.mxGeometry(0, 0, 0, 0),
         "endArrow=open;html=1;endSize=12;startArrow=diamondThin;startSize=14;startFill=0;edgeStyle=orthogonalEdgeStyle;",
       );
-      edge.geometry.setTerminalPoint(new mxPoint(0, 0), true);
-      edge.geometry.setTerminalPoint(new mxPoint(160, 0), false);
+      edge.geometry.setTerminalPoint(new m.mxPoint(0, 0), true);
+      edge.geometry.setTerminalPoint(new m.mxPoint(160, 0), false);
       edge.geometry.relative = true;
       edge.edge = true;
 
-      var cell1 = new mxCell(
+      var cell1 = new m.mxCell(
         "0..n",
-        new mxGeometry(-1, 0, 0, 0),
+        new m.mxGeometry(-1, 0, 0, 0),
         "edgeLabel;resizable=0;html=1;align=left;verticalAlign=top;",
       );
       cell1.geometry.relative = true;
@@ -4235,9 +4239,9 @@ Sidebar.prototype.addUmlPalette = function (expand) {
       cell1.vertex = true;
       edge.insert(cell1);
 
-      var cell2 = new mxCell(
+      var cell2 = new m.mxCell(
         "1",
-        new mxGeometry(1, 0, 0, 0),
+        new m.mxGeometry(1, 0, 0, 0),
         "edgeLabel;resizable=0;html=1;align=right;verticalAlign=top;",
       );
       cell2.geometry.relative = true;
@@ -4330,7 +4334,7 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     ),
   ];
 
-  this.addPaletteFunctions("uml", mxResources.get("uml"), expand || false, fns);
+  this.addPaletteFunctions("uml", m.mxResources.get("uml"), expand || false, fns);
   this.setCurrentSearchEntryLibrary();
 };
 
@@ -4384,21 +4388,21 @@ Sidebar.prototype.addBpmnPalette = function (dir, expand) {
       "bpmn call activity",
     ),
     this.addEntry("bpmn subprocess sub process sub-process", function () {
-      var cell = new mxCell(
+      var cell = new m.mxCell(
         "Sub-Process",
-        new mxGeometry(0, 0, 120, 80),
+        new m.mxGeometry(0, 0, 120, 80),
         "html=1;whiteSpace=wrap;rounded=1;dropTarget=0;",
       );
       cell.vertex = true;
 
-      var cell1 = new mxCell(
+      var cell1 = new m.mxCell(
         "",
-        new mxGeometry(0.5, 1, 14, 14),
+        new m.mxGeometry(0.5, 1, 14, 14),
         "html=1;shape=plus;outlineConnect=0;",
       );
       cell1.vertex = true;
       cell1.geometry.relative = true;
-      cell1.geometry.offset = new mxPoint(-7, -14);
+      cell1.geometry.offset = new m.mxPoint(-7, -14);
       cell.insert(cell1);
 
       return sb.createVertexTemplateFromCells(
@@ -4415,31 +4419,31 @@ Sidebar.prototype.addBpmnPalette = function (dir, expand) {
         "subprocess sub process sub-process looped",
       ).join(" "),
       function () {
-        var cell = new mxCell(
+        var cell = new m.mxCell(
           "Looped\nSub-Process",
-          new mxGeometry(0, 0, 120, 80),
+          new m.mxGeometry(0, 0, 120, 80),
           "html=1;whiteSpace=wrap;rounded=1;dropTarget=0;",
         );
         cell.vertex = true;
 
-        var cell1 = new mxCell(
+        var cell1 = new m.mxCell(
           "",
-          new mxGeometry(0.5, 1, 14, 14),
+          new m.mxGeometry(0.5, 1, 14, 14),
           "html=1;shape=mxgraph.bpmn.loop;outlineConnect=0;",
         );
         cell1.vertex = true;
         cell1.geometry.relative = true;
-        cell1.geometry.offset = new mxPoint(-15, -14);
+        cell1.geometry.offset = new m.mxPoint(-15, -14);
         cell.insert(cell1);
 
-        var cell2 = new mxCell(
+        var cell2 = new m.mxCell(
           "",
-          new mxGeometry(0.5, 1, 14, 14),
+          new m.mxGeometry(0.5, 1, 14, 14),
           "html=1;shape=plus;",
         );
         cell2.vertex = true;
         cell2.geometry.relative = true;
-        cell2.geometry.offset = new mxPoint(1, -14);
+        cell2.geometry.offset = new m.mxPoint(1, -14);
         cell.insert(cell2);
 
         return sb.createVertexTemplateFromCells(
@@ -4451,21 +4455,21 @@ Sidebar.prototype.addBpmnPalette = function (dir, expand) {
       },
     ),
     this.addEntry("bpmn receive task", function () {
-      var cell = new mxCell(
+      var cell = new m.mxCell(
         "Receive",
-        new mxGeometry(0, 0, 120, 80),
+        new m.mxGeometry(0, 0, 120, 80),
         "html=1;whiteSpace=wrap;rounded=1;dropTarget=0;",
       );
       cell.vertex = true;
 
-      var cell1 = new mxCell(
+      var cell1 = new m.mxCell(
         "",
-        new mxGeometry(0, 0, 20, 14),
+        new m.mxGeometry(0, 0, 20, 14),
         "html=1;shape=message;outlineConnect=0;",
       );
       cell1.vertex = true;
       cell1.geometry.relative = true;
-      cell1.geometry.offset = new mxPoint(7, 7);
+      cell1.geometry.offset = new m.mxPoint(7, 7);
       cell.insert(cell1);
 
       return sb.createVertexTemplateFromCells(
@@ -4478,31 +4482,31 @@ Sidebar.prototype.addBpmnPalette = function (dir, expand) {
     this.addEntry(
       this.getTagsForStencil("mxgraph.bpmn", "user_task").join(" "),
       function () {
-        var cell = new mxCell(
+        var cell = new m.mxCell(
           "User",
-          new mxGeometry(0, 0, 120, 80),
+          new m.mxGeometry(0, 0, 120, 80),
           "html=1;whiteSpace=wrap;rounded=1;dropTarget=0;",
         );
         cell.vertex = true;
 
-        var cell1 = new mxCell(
+        var cell1 = new m.mxCell(
           "",
-          new mxGeometry(0, 0, 14, 14),
+          new m.mxGeometry(0, 0, 14, 14),
           "html=1;shape=mxgraph.bpmn.user_task;outlineConnect=0;",
         );
         cell1.vertex = true;
         cell1.geometry.relative = true;
-        cell1.geometry.offset = new mxPoint(7, 7);
+        cell1.geometry.offset = new m.mxPoint(7, 7);
         cell.insert(cell1);
 
-        var cell2 = new mxCell(
+        var cell2 = new m.mxCell(
           "",
-          new mxGeometry(0.5, 1, 14, 14),
+          new m.mxGeometry(0.5, 1, 14, 14),
           "html=1;shape=plus;outlineConnect=0;",
         );
         cell2.vertex = true;
         cell2.geometry.relative = true;
-        cell2.geometry.offset = new mxPoint(-7, -14);
+        cell2.geometry.offset = new m.mxPoint(-7, -14);
         cell.insert(cell2);
 
         return sb.createVertexTemplateFromCells(
@@ -4518,21 +4522,21 @@ Sidebar.prototype.addBpmnPalette = function (dir, expand) {
         " ",
       ),
       function () {
-        var cell = new mxCell(
+        var cell = new m.mxCell(
           "Process",
-          new mxGeometry(0, 0, 120, 80),
+          new m.mxGeometry(0, 0, 120, 80),
           "html=1;whiteSpace=wrap;rounded=1;dropTarget=0;",
         );
         cell.vertex = true;
 
-        var cell1 = new mxCell(
+        var cell1 = new m.mxCell(
           "",
-          new mxGeometry(1, 1, 30, 30),
+          new m.mxGeometry(1, 1, 30, 30),
           "shape=mxgraph.bpmn.timer_start;perimeter=ellipsePerimeter;html=1;verticalLabelPosition=bottom;verticalAlign=top;outlineConnect=0;",
         );
         cell1.vertex = true;
         cell1.geometry.relative = true;
-        cell1.geometry.offset = new mxPoint(-40, -15);
+        cell1.geometry.offset = new m.mxPoint(-40, -15);
         cell.insert(cell1);
 
         return sb.createVertexTemplateFromCells(
@@ -4548,21 +4552,21 @@ Sidebar.prototype.addBpmnPalette = function (dir, expand) {
         " ",
       ),
       function () {
-        var cell = new mxCell(
+        var cell = new m.mxCell(
           "Process",
-          new mxGeometry(0, 0, 120, 80),
+          new m.mxGeometry(0, 0, 120, 80),
           "html=1;whiteSpace=wrap;rounded=1;dropTarget=0;",
         );
         cell.vertex = true;
 
-        var cell1 = new mxCell(
+        var cell1 = new m.mxCell(
           "",
-          new mxGeometry(1, 0, 30, 30),
+          new m.mxGeometry(1, 0, 30, 30),
           "shape=mxgraph.bpmn.timer_start;perimeter=ellipsePerimeter;html=1;labelPosition=right;align=left;outlineConnect=0;",
         );
         cell1.vertex = true;
         cell1.geometry.relative = true;
-        cell1.geometry.offset = new mxPoint(-15, 10);
+        cell1.geometry.offset = new m.mxPoint(-15, 10);
         cell.insert(cell1);
 
         return sb.createVertexTemplateFromCells(
@@ -4616,21 +4620,21 @@ Sidebar.prototype.addBpmnPalette = function (dir, expand) {
     this.addEntry(
       "bpmn subconversation sub conversation sub-conversation",
       function () {
-        var cell = new mxCell(
+        var cell = new m.mxCell(
           "",
-          new mxGeometry(0, 0, 60, 50),
+          new m.mxGeometry(0, 0, 60, 50),
           "shape=hexagon;whiteSpace=wrap;html=1;perimeter=hexagonPerimeter;rounded=0;dropTarget=0;",
         );
         cell.vertex = true;
 
-        var cell1 = new mxCell(
+        var cell1 = new m.mxCell(
           "",
-          new mxGeometry(0.5, 1, 14, 14),
+          new m.mxGeometry(0.5, 1, 14, 14),
           "html=1;shape=plus;",
         );
         cell1.vertex = true;
         cell1.geometry.relative = true;
-        cell1.geometry.offset = new mxPoint(-7, -14);
+        cell1.geometry.offset = new m.mxPoint(-7, -14);
         cell.insert(cell1);
 
         return sb.createVertexTemplateFromCells(
@@ -4642,31 +4646,31 @@ Sidebar.prototype.addBpmnPalette = function (dir, expand) {
       },
     ),
     this.addEntry("bpmn data object", function () {
-      var cell = new mxCell(
+      var cell = new m.mxCell(
         "",
-        new mxGeometry(0, 0, 40, 60),
+        new m.mxGeometry(0, 0, 40, 60),
         "shape=note;whiteSpace=wrap;size=16;html=1;dropTarget=0;",
       );
       cell.vertex = true;
 
-      var cell1 = new mxCell(
+      var cell1 = new m.mxCell(
         "",
-        new mxGeometry(0, 0, 14, 14),
+        new m.mxGeometry(0, 0, 14, 14),
         "html=1;shape=singleArrow;arrowWidth=0.4;arrowSize=0.4;outlineConnect=0;",
       );
       cell1.vertex = true;
       cell1.geometry.relative = true;
-      cell1.geometry.offset = new mxPoint(2, 2);
+      cell1.geometry.offset = new m.mxPoint(2, 2);
       cell.insert(cell1);
 
-      var cell2 = new mxCell(
+      var cell2 = new m.mxCell(
         "",
-        new mxGeometry(0.5, 1, 14, 14),
+        new m.mxGeometry(0.5, 1, 14, 14),
         "html=1;whiteSpace=wrap;shape=parallelMarker;outlineConnect=0;",
       );
       cell2.vertex = true;
       cell2.geometry.relative = true;
-      cell2.geometry.offset = new mxPoint(-7, -14);
+      cell2.geometry.offset = new m.mxPoint(-7, -14);
       cell.insert(cell2);
 
       return sb.createVertexTemplateFromCells(
@@ -4936,24 +4940,24 @@ Sidebar.prototype.addBpmnPalette = function (dir, expand) {
       "bpmn message flow",
     ),
     this.addEntry("bpmn message flow", function () {
-      var edge = new mxCell(
+      var edge = new m.mxCell(
         "",
-        new mxGeometry(0, 0, 0, 0),
+        new m.mxGeometry(0, 0, 0, 0),
         "startArrow=oval;startFill=0;startSize=7;endArrow=block;endFill=0;endSize=10;dashed=1;html=1;",
       );
-      edge.geometry.setTerminalPoint(new mxPoint(0, 0), true);
-      edge.geometry.setTerminalPoint(new mxPoint(100, 0), false);
+      edge.geometry.setTerminalPoint(new m.mxPoint(0, 0), true);
+      edge.geometry.setTerminalPoint(new m.mxPoint(100, 0), false);
       edge.geometry.relative = true;
       edge.edge = true;
 
-      var cell = new mxCell(
+      var cell = new m.mxCell(
         "",
-        new mxGeometry(0, 0, 20, 14),
+        new m.mxGeometry(0, 0, 20, 14),
         "shape=message;html=1;outlineConnect=0;",
       );
       cell.geometry.relative = true;
       cell.vertex = true;
-      cell.geometry.offset = new mxPoint(-10, -7);
+      cell.geometry.offset = new m.mxPoint(-10, -7);
       edge.insert(cell);
 
       return sb.createEdgeTemplateFromCells([edge], 100, 0, "Message Flow 2");
@@ -4971,7 +4975,7 @@ Sidebar.prototype.addBpmnPalette = function (dir, expand) {
 
   this.addPaletteFunctions(
     "bpmn",
-    "BPMN " + mxResources.get("general"),
+    "BPMN " + m.mxResources.get("general"),
     false,
     fns,
   );
@@ -4983,9 +4987,9 @@ Sidebar.prototype.addBpmnPalette = function (dir, expand) {
  */
 Sidebar.prototype.createTitle = function (label) {
   var elt = document.createElement("a");
-  elt.setAttribute("title", mxResources.get("sidebarTooltip"));
+  elt.setAttribute("title", m.mxResources.get("sidebarTooltip"));
   elt.className = "geTitle";
-  mxUtils.write(elt, label);
+  m.mxUtils.write(elt, label);
 
   return elt;
 };
@@ -5005,8 +5009,8 @@ Sidebar.prototype.createThumb = function (
   realHeight,
 ) {
   this.graph.labelsVisible = showLabel == null || showLabel;
-  var fo = mxClient.NO_FO;
-  mxClient.NO_FO = Editor.prototype.originalNoForeignObject;
+  var fo = m.mxClient.NO_FO;
+  m.mxClient.NO_FO = Editor.prototype.originalNoForeignObject;
   this.graph.view.scaleAndTranslate(1, 0, 0);
   this.graph.addCells(cells);
   var bounds = this.graph.getGraphBounds();
@@ -5026,8 +5030,8 @@ Sidebar.prototype.createThumb = function (
 
   // For supporting HTML labels in IE9 standards mode the container is cloned instead
   if (
-    this.graph.dialect == mxConstants.DIALECT_SVG &&
-    !mxClient.NO_FO &&
+    this.graph.dialect == m.mxConstants.DIALECT_SVG &&
+    !m.mxClient.NO_FO &&
     this.graph.view.getCanvas().ownerSVGElement != null
   ) {
     node = this.graph.view.getCanvas().ownerSVGElement.cloneNode(true);
@@ -5038,16 +5042,16 @@ Sidebar.prototype.createThumb = function (
     node.innerHTML = this.graph.container.innerHTML;
 
     // Workaround for clipping in older IE versions
-    if (mxClient.IS_QUIRKS || document.documentMode == 8) {
+    if (m.mxClient.IS_QUIRKS || document.documentMode == 8) {
       node.firstChild.style.overflow = "visible";
     }
   }
 
   this.graph.getModel().clear();
-  mxClient.NO_FO = fo;
+  m.mxClient.NO_FO = fo;
 
   // Catch-all event handling
-  if (mxClient.IS_IE6) {
+  if (m.mxClient.IS_IE6) {
     parent.style.backgroundImage =
       "url(" + this.editorUi.editor.transparentImage + ")";
   }
@@ -5066,7 +5070,7 @@ Sidebar.prototype.createThumb = function (
 
   // Adds title for sidebar entries
   if (this.sidebarTitles && title != null && showTitle != false) {
-    var border = mxClient.IS_QUIRKS ? 2 * this.thumbPadding + 2 : 0;
+    var border = m.mxClient.IS_QUIRKS ? 2 * this.thumbPadding + 2 : 0;
     parent.style.height =
       this.thumbHeight + border + this.sidebarTitleSize + 8 + "px";
 
@@ -5076,12 +5080,12 @@ Sidebar.prototype.createThumb = function (
     div.style.textAlign = "center";
     div.style.whiteSpace = "nowrap";
 
-    if (mxClient.IS_IE) {
+    if (m.mxClient.IS_IE) {
       div.style.height = this.sidebarTitleSize + 12 + "px";
     }
 
     div.style.paddingTop = "4px";
-    mxUtils.write(div, title);
+    m.mxUtils.write(div, title);
     parent.appendChild(div);
   }
 
@@ -5103,20 +5107,20 @@ Sidebar.prototype.createItem = function (
   var elt = document.createElement("a");
   elt.className = "geItem";
   elt.style.overflow = "hidden";
-  var border = mxClient.IS_QUIRKS
+  var border = m.mxClient.IS_QUIRKS
     ? 8 + 2 * this.thumbPadding
     : 2 * this.thumbBorder;
   elt.style.width = this.thumbWidth + border + "px";
   elt.style.height = this.thumbHeight + border + "px";
   elt.style.padding = this.thumbPadding + "px";
 
-  if (mxClient.IS_IE6) {
+  if (m.mxClient.IS_IE6) {
     elt.style.border = "none";
   }
 
   // Blocks default click action
-  mxEvent.addListener(elt, "click", function (evt) {
-    mxEvent.consume(evt);
+  m.mxEvent.addListener(elt, "click", function (evt) {
+    m.mxEvent.consume(evt);
   });
 
   this.createThumb(
@@ -5130,7 +5134,7 @@ Sidebar.prototype.createItem = function (
     width,
     height,
   );
-  var bounds = new mxRectangle(0, 0, width, height);
+  var bounds = new m.mxRectangle(0, 0, width, height);
 
   if (cells.length > 1 || cells[0].vertex) {
     var ds = this.createDragSource(
@@ -5143,7 +5147,7 @@ Sidebar.prototype.createItem = function (
     this.addClickHandler(elt, ds, cells);
 
     // Uses guides for vertices only if enabled in graph
-    ds.isGuidesEnabled = mxUtils.bind(this, function () {
+    ds.isGuidesEnabled = m.mxUtils.bind(this, function () {
       return this.editorUi.editor.graph.graphHandler.guidesEnabled;
     });
   } else if (cells[0] != null && cells[0].edge) {
@@ -5158,12 +5162,12 @@ Sidebar.prototype.createItem = function (
   }
 
   // Shows a tooltip with the rendered cell
-  if (!mxClient.IS_IOS) {
-    mxEvent.addGestureListeners(
+  if (!m.mxClient.IS_IOS) {
+    m.mxEvent.addGestureListeners(
       elt,
       null,
-      mxUtils.bind(this, function (evt) {
-        if (mxEvent.isMouseEvent(evt)) {
+      m.mxUtils.bind(this, function (evt) {
+        if (m.mxEvent.isMouseEvent(evt)) {
           this.showTooltip(
             elt,
             cells,
@@ -5245,7 +5249,7 @@ Sidebar.prototype.updateShapes = function (source, targets) {
         graph.getModel().setStyle(targetCell, cellStyle);
 
         // Removes all children of composite cells
-        if (mxUtils.getValue(style, "composite", "0") == "1") {
+        if (m.mxUtils.getValue(style, "composite", "0") == "1") {
           var childCount = graph.model.getChildCount(targetCell);
 
           for (var j = childCount; j >= 0; j--) {
@@ -5255,15 +5259,15 @@ Sidebar.prototype.updateShapes = function (source, targets) {
 
         // Replaces the participant style in the lifeline shape with the target shape
         if (
-          style[mxConstants.STYLE_SHAPE] == "umlLifeline" &&
-          sourceCellStyle[mxConstants.STYLE_SHAPE] != "umlLifeline"
+          style[m.mxConstants.STYLE_SHAPE] == "umlLifeline" &&
+          sourceCellStyle[m.mxConstants.STYLE_SHAPE] != "umlLifeline"
         ) {
-          graph.setCellStyles(mxConstants.STYLE_SHAPE, "umlLifeline", [
+          graph.setCellStyles(m.mxConstants.STYLE_SHAPE, "umlLifeline", [
             targetCell,
           ]);
           graph.setCellStyles(
             "participant",
-            sourceCellStyle[mxConstants.STYLE_SHAPE],
+            sourceCellStyle[m.mxConstants.STYLE_SHAPE],
             [targetCell],
           );
         }
@@ -5297,15 +5301,15 @@ Sidebar.prototype.createDropHandler = function (
 ) {
   allowCellsInserted = allowCellsInserted != null ? allowCellsInserted : true;
 
-  return mxUtils.bind(this, function (graph, evt, target, x, y, force) {
+  return m.mxUtils.bind(this, function (graph, evt, target, x, y, force) {
     var elt = force
       ? null
-      : mxEvent.isTouchEvent(evt) || mxEvent.isPenEvent(evt)
+      : m.mxEvent.isTouchEvent(evt) || m.mxEvent.isPenEvent(evt)
       ? document.elementFromPoint(
-          mxEvent.getClientX(evt),
-          mxEvent.getClientY(evt),
+          m.mxEvent.getClientX(evt),
+          m.mxEvent.getClientY(evt),
         )
-      : mxEvent.getSource(evt);
+      : m.mxEvent.getSource(evt);
 
     while (elt != null && elt != this.container) {
       elt = elt.parentNode;
@@ -5319,7 +5323,7 @@ Sidebar.prototype.createDropHandler = function (
 
         // Holding alt while mouse is released ignores drop target
         var validDropTarget =
-          target != null && !mxEvent.isAltDown(evt)
+          target != null && !m.mxEvent.isAltDown(evt)
             ? graph.isValidDropTarget(target, cells, evt)
             : false;
 
@@ -5375,10 +5379,10 @@ Sidebar.prototype.createDropHandler = function (
 
             if (
               allowCellsInserted &&
-              (evt == null || !mxEvent.isShiftDown(evt))
+              (evt == null || !m.mxEvent.isShiftDown(evt))
             ) {
               graph.fireEvent(
-                new mxEventObject("cellsInserted", "cells", select),
+                new m.mxEventObject("cellsInserted", "cells", select),
               );
             }
           } catch (e) {
@@ -5395,7 +5399,7 @@ Sidebar.prototype.createDropHandler = function (
           if (
             graph.editAfterInsert &&
             evt != null &&
-            mxEvent.isMouseEvent(evt) &&
+            m.mxEvent.isMouseEvent(evt) &&
             select != null &&
             select.length == 1
           ) {
@@ -5406,7 +5410,7 @@ Sidebar.prototype.createDropHandler = function (
         }
       }
 
-      mxEvent.consume(evt);
+      m.mxEvent.consume(evt);
     }
   });
 };
@@ -5461,7 +5465,7 @@ Sidebar.prototype.dropAndConnect = function (
         var layout = graph.layoutManager.getLayout(targetParent);
 
         // LATER: Use parent of parent if valid layout
-        if (layout != null && layout.constructor == mxStackLayout) {
+        if (layout != null && layout.constructor == m.mxStackLayout) {
           validLayout = false;
         }
       }
@@ -5550,7 +5554,7 @@ Sidebar.prototype.dropAndConnect = function (
         graph.model.setTerminal(
           source,
           targets[dropCellIndex],
-          direction == mxConstants.DIRECTION_NORTH,
+          direction == m.mxConstants.DIRECTION_NORTH,
         );
       } else if (graph.model.isEdge(targets[dropCellIndex])) {
         // Adds new outgoing connection to vertex and clears points
@@ -5566,7 +5570,7 @@ Sidebar.prototype.dropAndConnect = function (
           var offset =
             tmpState.cell != graph.view.currentRoot
               ? tmpState.origin
-              : new mxPoint(0, 0);
+              : new m.mxPoint(0, 0);
 
           graph.cellsMoved(targets, offset.x, offset.y, null, null, true);
         }
@@ -5592,8 +5596,8 @@ Sidebar.prototype.dropAndConnect = function (
         );
       }
 
-      if (evt == null || !mxEvent.isShiftDown(evt)) {
-        graph.fireEvent(new mxEventObject("cellsInserted", "cells", targets));
+      if (evt == null || !m.mxEvent.isShiftDown(evt)) {
+        graph.fireEvent(new m.mxEventObject("cellsInserted", "cells", targets));
       }
     } catch (e) {
       this.editorUi.handleError(e);
@@ -5604,7 +5608,7 @@ Sidebar.prototype.dropAndConnect = function (
     if (
       graph.editAfterInsert &&
       evt != null &&
-      mxEvent.isMouseEvent(evt) &&
+      m.mxEvent.isMouseEvent(evt) &&
       editingCell != null
     ) {
       window.setTimeout(function () {
@@ -5640,7 +5644,7 @@ Sidebar.prototype.getDropAndConnectGeometry = function (
       var p0 = pts[0];
       var pe = pts[pts.length - 1];
 
-      if (direction == mxConstants.DIRECTION_NORTH) {
+      if (direction == m.mxConstants.DIRECTION_NORTH) {
         geo2.x = p0.x / view.scale - view.translate.x - geo2.width / 2;
         geo2.y = p0.y / view.scale - view.translate.y - geo2.height / 2;
       } else {
@@ -5675,28 +5679,28 @@ Sidebar.prototype.getDropAndConnectGeometry = function (
         geo2.width = 1;
         geo2.height = 1;
 
-        if (direction == mxConstants.DIRECTION_NORTH) {
+        if (direction == m.mxConstants.DIRECTION_NORTH) {
           geo2.height = length;
           geo2.y = geo.y - length;
-          geo2.setTerminalPoint(new mxPoint(geo2.x, geo2.y), false);
-        } else if (direction == mxConstants.DIRECTION_EAST) {
+          geo2.setTerminalPoint(new m.mxPoint(geo2.x, geo2.y), false);
+        } else if (direction == m.mxConstants.DIRECTION_EAST) {
           geo2.width = length;
           geo2.x = geo.x + geo.width;
           geo2.setTerminalPoint(
-            new mxPoint(geo2.x + geo2.width, geo2.y),
+            new m.mxPoint(geo2.x + geo2.width, geo2.y),
             false,
           );
-        } else if (direction == mxConstants.DIRECTION_SOUTH) {
+        } else if (direction == m.mxConstants.DIRECTION_SOUTH) {
           geo2.height = length;
           geo2.y = geo.y + geo.height;
           geo2.setTerminalPoint(
-            new mxPoint(geo2.x, geo2.y + geo2.height),
+            new m.mxPoint(geo2.x, geo2.y + geo2.height),
             false,
           );
-        } else if (direction == mxConstants.DIRECTION_WEST) {
+        } else if (direction == m.mxConstants.DIRECTION_WEST) {
           geo2.width = length;
           geo2.x = geo.x - length;
-          geo2.setTerminalPoint(new mxPoint(geo2.x, geo2.y), false);
+          geo2.setTerminalPoint(new m.mxPoint(geo2.x, geo2.y), false);
         }
       } else {
         // Try match size or ignore if width or height < 45 which
@@ -5715,13 +5719,13 @@ Sidebar.prototype.getDropAndConnectGeometry = function (
         geo2.x = geo.x + geo.width / 2 - geo2.width / 2;
         geo2.y = geo.y + geo.height / 2 - geo2.height / 2;
 
-        if (direction == mxConstants.DIRECTION_NORTH) {
+        if (direction == m.mxConstants.DIRECTION_NORTH) {
           geo2.y = geo2.y - geo.height / 2 - geo2.height / 2 - length;
-        } else if (direction == mxConstants.DIRECTION_EAST) {
+        } else if (direction == m.mxConstants.DIRECTION_EAST) {
           geo2.x = geo2.x + geo.width / 2 + geo2.width / 2 + length;
-        } else if (direction == mxConstants.DIRECTION_SOUTH) {
+        } else if (direction == m.mxConstants.DIRECTION_SOUTH) {
           geo2.y = geo2.y + geo.height / 2 + geo2.height / 2 + length;
-        } else if (direction == mxConstants.DIRECTION_WEST) {
+        } else if (direction == m.mxConstants.DIRECTION_WEST) {
           geo2.x = geo2.x - geo.width / 2 - geo2.width / 2 - length;
         }
 
@@ -5734,16 +5738,16 @@ Sidebar.prototype.getDropAndConnectGeometry = function (
           var targetGeo = graph.getCellGeometry(target.getTerminal(false));
 
           if (targetGeo != null) {
-            if (direction == mxConstants.DIRECTION_NORTH) {
+            if (direction == m.mxConstants.DIRECTION_NORTH) {
               geo2.x -= targetGeo.getCenterX();
               geo2.y -= targetGeo.getCenterY() + targetGeo.height / 2;
-            } else if (direction == mxConstants.DIRECTION_EAST) {
+            } else if (direction == m.mxConstants.DIRECTION_EAST) {
               geo2.x -= targetGeo.getCenterX() - targetGeo.width / 2;
               geo2.y -= targetGeo.getCenterY();
-            } else if (direction == mxConstants.DIRECTION_SOUTH) {
+            } else if (direction == m.mxConstants.DIRECTION_SOUTH) {
               geo2.x -= targetGeo.getCenterX();
               geo2.y -= targetGeo.getCenterY() - targetGeo.height / 2;
-            } else if (direction == mxConstants.DIRECTION_WEST) {
+            } else if (direction == m.mxConstants.DIRECTION_WEST) {
               geo2.x -= targetGeo.getCenterX() + targetGeo.width / 2;
               geo2.y -= targetGeo.getCenterY();
             }
@@ -5767,16 +5771,16 @@ Sidebar.prototype.isDropStyleEnabled = function (cells, firstVertex) {
 
     if (vstyle != null) {
       result =
-        mxUtils.getValue(
+        m.mxUtils.getValue(
           vstyle,
-          mxConstants.STYLE_STROKECOLOR,
-          mxConstants.NONE,
-        ) != mxConstants.NONE ||
-        mxUtils.getValue(
+          m.mxConstants.STYLE_STROKECOLOR,
+          m.mxConstants.NONE,
+        ) != m.mxConstants.NONE ||
+        m.mxUtils.getValue(
           vstyle,
-          mxConstants.STYLE_FILLCOLOR,
-          mxConstants.NONE,
-        ) != mxConstants.NONE;
+          m.mxConstants.STYLE_FILLCOLOR,
+          m.mxConstants.NONE,
+        ) != m.mxConstants.NONE;
     }
   }
 
@@ -5830,10 +5834,10 @@ Sidebar.prototype.createDragSource = function (
 
   var dropStyleEnabled = this.isDropStyleEnabled(cells, firstVertex);
 
-  var dragSource = mxUtils.makeDraggable(
+  var dragSource = m.mxUtils.makeDraggable(
     elt,
     graph,
-    mxUtils.bind(this, function (graph, evt, target, x, y) {
+    m.mxUtils.bind(this, function (graph, evt, target, x, y) {
       if (this.updateThread != null) {
         window.clearTimeout(this.updateThread);
       }
@@ -5891,7 +5895,7 @@ Sidebar.prototype.createDragSource = function (
   );
 
   // Stops dragging if cancel is pressed
-  graph.addListener(mxEvent.ESCAPE, function (sender, evt) {
+  graph.addListener(m.mxEvent.ESCAPE, function (sender, evt) {
     if (dragSource.isActive()) {
       dragSource.reset();
     }
@@ -5901,7 +5905,7 @@ Sidebar.prototype.createDragSource = function (
   var mouseDown = dragSource.mouseDown;
 
   dragSource.mouseDown = function (evt) {
-    if (!mxEvent.isPopupTrigger(evt) && !mxEvent.isMultiTouchEvent(evt)) {
+    if (!m.mxEvent.isPopupTrigger(evt) && !m.mxEvent.isMultiTouchEvent(evt)) {
       graph.stopEditing();
       mouseDown.apply(this, arguments);
     }
@@ -5911,10 +5915,10 @@ Sidebar.prototype.createDragSource = function (
   function createArrow(img, tooltip) {
     var arrow = null;
 
-    if (mxClient.IS_IE && !mxClient.IS_SVG) {
+    if (m.mxClient.IS_IE && !m.mxClient.IS_SVG) {
       // Workaround for PNG images in IE6
-      if (mxClient.IS_IE6 && document.compatMode != "CSS1Compat") {
-        arrow = document.createElement(mxClient.VML_PREFIX + ":image");
+      if (m.mxClient.IS_IE6 && document.compatMode != "CSS1Compat") {
+        arrow = document.createElement(m.mxClient.VML_PREFIX + ":image");
         arrow.setAttribute("src", img.src);
         arrow.style.borderStyle = "none";
       } else {
@@ -5926,9 +5930,9 @@ Sidebar.prototype.createDragSource = function (
 
       arrow.style.width = img.width + 4 + "px";
       arrow.style.height = img.height + 4 + "px";
-      arrow.style.display = mxClient.IS_QUIRKS ? "inline" : "inline-block";
+      arrow.style.display = m.mxClient.IS_QUIRKS ? "inline" : "inline-block";
     } else {
-      arrow = mxUtils.createImage(img.src);
+      arrow = m.mxUtils.createImage(img.src);
       arrow.style.width = img.width + "px";
       arrow.style.height = img.height + "px";
     }
@@ -5937,7 +5941,7 @@ Sidebar.prototype.createDragSource = function (
       arrow.setAttribute("title", tooltip);
     }
 
-    mxUtils.setOpacity(arrow, img == this.refreshTarget ? 30 : 20);
+    m.mxUtils.setOpacity(arrow, img == this.refreshTarget ? 30 : 20);
     arrow.style.position = "absolute";
     arrow.style.cursor = "crosshair";
 
@@ -5949,25 +5953,25 @@ Sidebar.prototype.createDragSource = function (
   var currentStyleTarget = null;
   var activeTarget = false;
 
-  var arrowUp = createArrow(this.triangleUp, mxResources.get("connect"));
-  var arrowRight = createArrow(this.triangleRight, mxResources.get("connect"));
-  var arrowDown = createArrow(this.triangleDown, mxResources.get("connect"));
-  var arrowLeft = createArrow(this.triangleLeft, mxResources.get("connect"));
-  var styleTarget = createArrow(this.refreshTarget, mxResources.get("replace"));
+  var arrowUp = createArrow(this.triangleUp, m.mxResources.get("connect"));
+  var arrowRight = createArrow(this.triangleRight, m.mxResources.get("connect"));
+  var arrowDown = createArrow(this.triangleDown, m.mxResources.get("connect"));
+  var arrowLeft = createArrow(this.triangleLeft, m.mxResources.get("connect"));
+  var styleTarget = createArrow(this.refreshTarget, m.mxResources.get("replace"));
   // Workaround for actual parentNode not being updated in old IE
   var styleTargetParent = null;
   var roundSource = createArrow(this.roundDrop);
   var roundTarget = createArrow(this.roundDrop);
-  var direction = mxConstants.DIRECTION_NORTH;
+  var direction = m.mxConstants.DIRECTION_NORTH;
   var activeArrow = null;
 
   function checkArrow(x, y, bounds, arrow) {
     if (arrow.parentNode != null) {
-      if (mxUtils.contains(bounds, x, y)) {
-        mxUtils.setOpacity(arrow, 100);
+      if (m.mxUtils.contains(bounds, x, y)) {
+        m.mxUtils.setOpacity(arrow, 100);
         activeArrow = arrow;
       } else {
-        mxUtils.setOpacity(arrow, arrow == styleTarget ? 30 : 20);
+        m.mxUtils.setOpacity(arrow, arrow == styleTarget ? 30 : 20);
       }
     }
 
@@ -5982,7 +5986,7 @@ Sidebar.prototype.createDragSource = function (
     var elt = dsCreatePreviewElement.apply(this, arguments);
 
     // Pass-through events required to tooltip on replace shape
-    if (mxClient.IS_SVG) {
+    if (m.mxClient.IS_SVG) {
       elt.style.pointerEvents = "none";
     }
 
@@ -6012,7 +6016,7 @@ Sidebar.prototype.createDragSource = function (
   };
 
   dragSource.dragOver = function (graph, evt) {
-    mxDragSource.prototype.dragOver.apply(this, arguments);
+    m.mxDragSource.prototype.dragOver.apply(this, arguments);
 
     if (this.currentGuide != null && activeArrow != null) {
       this.currentGuide.hide();
@@ -6120,11 +6124,11 @@ Sidebar.prototype.createDragSource = function (
   var sourceCellStyle = this.editorUi.editor.graph.getCellStyle(cells[0]);
 
   // Allows drop into cell only if target is a valid root
-  dragSource.getDropTarget = mxUtils.bind(this, function (graph, x, y, evt) {
+  dragSource.getDropTarget = m.mxUtils.bind(this, function (graph, x, y, evt) {
     // Alt means no targets at all
     // LATER: Show preview where result will go
     var cell =
-      !mxEvent.isAltDown(evt) && cells != null
+      !m.mxEvent.isAltDown(evt) && cells != null
         ? graph.getCellAt(x, y, null, null, null, function (state, x, y) {
             return graph.isContainer(state.cell);
           })
@@ -6182,26 +6186,26 @@ Sidebar.prototype.createDragSource = function (
       dropStyleEnabled &&
       timeOnTarget < 2500 &&
       state != null &&
-      !mxEvent.isShiftDown(evt) &&
+      !m.mxEvent.isShiftDown(evt) &&
       // If shape is equal or target has no stroke, fill and gradient then use longer delay except for images
-      ((mxUtils.getValue(state.style, mxConstants.STYLE_SHAPE) !=
-        mxUtils.getValue(sourceCellStyle, mxConstants.STYLE_SHAPE) &&
-        (mxUtils.getValue(
+      ((m.mxUtils.getValue(state.style, m.mxConstants.STYLE_SHAPE) !=
+        m.mxUtils.getValue(sourceCellStyle, m.mxConstants.STYLE_SHAPE) &&
+        (m.mxUtils.getValue(
           state.style,
-          mxConstants.STYLE_STROKECOLOR,
-          mxConstants.NONE,
-        ) != mxConstants.NONE ||
-          mxUtils.getValue(
+          m.mxConstants.STYLE_STROKECOLOR,
+          m.mxConstants.NONE,
+        ) != m.mxConstants.NONE ||
+          m.mxUtils.getValue(
             state.style,
-            mxConstants.STYLE_FILLCOLOR,
-            mxConstants.NONE,
-          ) != mxConstants.NONE ||
-          mxUtils.getValue(
+            m.mxConstants.STYLE_FILLCOLOR,
+            m.mxConstants.NONE,
+          ) != m.mxConstants.NONE ||
+          m.mxUtils.getValue(
             state.style,
-            mxConstants.STYLE_GRADIENTCOLOR,
-            mxConstants.NONE,
-          ) != mxConstants.NONE)) ||
-        mxUtils.getValue(sourceCellStyle, mxConstants.STYLE_SHAPE) == "image" ||
+            m.mxConstants.STYLE_GRADIENTCOLOR,
+            m.mxConstants.NONE,
+          ) != m.mxConstants.NONE)) ||
+        m.mxUtils.getValue(sourceCellStyle, m.mxConstants.STYLE_SHAPE) == "image" ||
         timeOnTarget > 1500 ||
         graph.model.isEdge(state.cell)) &&
       timeOnTarget > this.dropTargetDelay &&
@@ -6212,8 +6216,8 @@ Sidebar.prototype.createDragSource = function (
       currentStyleTarget = state;
       var tmp = graph.model.isEdge(state.cell)
         ? graph.view.getPoint(state)
-        : new mxPoint(state.getCenterX(), state.getCenterY());
-      tmp = new mxRectangle(
+        : new m.mxPoint(state.getCenterX(), state.getCenterY());
+      tmp = new m.mxRectangle(
         tmp.x - this.refreshTarget.width / 2,
         tmp.y - this.refreshTarget.height / 2,
         this.refreshTarget.width,
@@ -6233,8 +6237,8 @@ Sidebar.prototype.createDragSource = function (
     // Does not reset on ignored edges
     else if (
       currentStyleTarget == null ||
-      !mxUtils.contains(currentStyleTarget, x, y) ||
-      (timeOnTarget > 1500 && !mxEvent.isShiftDown(evt))
+      !m.mxUtils.contains(currentStyleTarget, x, y) ||
+      (timeOnTarget > 1500 && !m.mxEvent.isShiftDown(evt))
     ) {
       currentStyleTarget = null;
 
@@ -6246,11 +6250,11 @@ Sidebar.prototype.createDragSource = function (
       // Sets active Arrow as side effect
       var tmp = graph.model.isEdge(currentStyleTarget.cell)
         ? graph.view.getPoint(currentStyleTarget)
-        : new mxPoint(
+        : new m.mxPoint(
             currentStyleTarget.getCenterX(),
             currentStyleTarget.getCenterY(),
           );
-      tmp = new mxRectangle(
+      tmp = new m.mxRectangle(
         tmp.x - this.refreshTarget.width / 2,
         tmp.y - this.refreshTarget.height / 2,
         this.refreshTarget.width,
@@ -6263,11 +6267,11 @@ Sidebar.prototype.createDragSource = function (
     if (
       activeTarget &&
       currentTargetState != null &&
-      !mxEvent.isAltDown(evt) &&
+      !m.mxEvent.isAltDown(evt) &&
       activeArrow == null
     ) {
       // LATER: Use hit-detection for edges
-      bbox = mxRectangle.fromRectangle(currentTargetState);
+      bbox = m.mxRectangle.fromRectangle(currentTargetState);
 
       if (graph.model.isEdge(currentTargetState.cell)) {
         var pts = currentTargetState.absolutePoints;
@@ -6278,7 +6282,7 @@ Sidebar.prototype.createDragSource = function (
             checkArrow(
               x,
               y,
-              new mxRectangle(
+              new m.mxRectangle(
                 p0.x - this.roundDrop.width / 2,
                 p0.y - this.roundDrop.height / 2,
                 this.roundDrop.width,
@@ -6295,7 +6299,7 @@ Sidebar.prototype.createDragSource = function (
             checkArrow(
               x,
               y,
-              new mxRectangle(
+              new m.mxRectangle(
                 pe.x - this.roundDrop.width / 2,
                 pe.y - this.roundDrop.height / 2,
                 this.roundDrop.width,
@@ -6306,14 +6310,14 @@ Sidebar.prototype.createDragSource = function (
           );
         }
       } else {
-        var bds = mxRectangle.fromRectangle(currentTargetState);
+        var bds = m.mxRectangle.fromRectangle(currentTargetState);
 
         // Uses outer bounding box to take rotation into account
         if (
           currentTargetState.shape != null &&
           currentTargetState.shape.boundingBox != null
         ) {
-          bds = mxRectangle.fromRectangle(currentTargetState.shape.boundingBox);
+          bds = m.mxRectangle.fromRectangle(currentTargetState.shape.boundingBox);
         }
 
         bds.grow(this.graph.tolerance);
@@ -6345,7 +6349,7 @@ Sidebar.prototype.createDragSource = function (
           checkArrow(
             x,
             y,
-            new mxRectangle(
+            new m.mxRectangle(
               currentTargetState.getCenterX() - this.triangleUp.width / 2,
               bds.y - this.triangleUp.height,
               this.triangleUp.width,
@@ -6358,7 +6362,7 @@ Sidebar.prototype.createDragSource = function (
           checkArrow(
             x,
             y,
-            new mxRectangle(
+            new m.mxRectangle(
               bds.x + bds.width,
               currentTargetState.getCenterY() - this.triangleRight.height / 2,
               this.triangleRight.width,
@@ -6371,7 +6375,7 @@ Sidebar.prototype.createDragSource = function (
           checkArrow(
             x,
             y,
-            new mxRectangle(
+            new m.mxRectangle(
               currentTargetState.getCenterX() - this.triangleDown.width / 2,
               bds.y + bds.height,
               this.triangleDown.width,
@@ -6384,7 +6388,7 @@ Sidebar.prototype.createDragSource = function (
           checkArrow(
             x,
             y,
-            new mxRectangle(
+            new m.mxRectangle(
               bds.x - this.triangleLeft.width,
               currentTargetState.getCenterY() - this.triangleLeft.height / 2,
               this.triangleLeft.width,
@@ -6401,14 +6405,14 @@ Sidebar.prototype.createDragSource = function (
       }
     }
 
-    direction = mxConstants.DIRECTION_NORTH;
+    direction = m.mxConstants.DIRECTION_NORTH;
 
     if (activeArrow == arrowRight) {
-      direction = mxConstants.DIRECTION_EAST;
+      direction = m.mxConstants.DIRECTION_EAST;
     } else if (activeArrow == arrowDown || activeArrow == roundTarget) {
-      direction = mxConstants.DIRECTION_SOUTH;
+      direction = m.mxConstants.DIRECTION_SOUTH;
     } else if (activeArrow == arrowLeft) {
-      direction = mxConstants.DIRECTION_WEST;
+      direction = m.mxConstants.DIRECTION_WEST;
     }
 
     if (currentStyleTarget != null && activeArrow == styleTarget) {
@@ -6425,7 +6429,7 @@ Sidebar.prototype.createDragSource = function (
       (currentTargetState != null && timeOnTarget >= 5000) ||
       (currentTargetState != state &&
         (bbox == null ||
-          !mxUtils.contains(bbox, x, y) ||
+          !m.mxUtils.contains(bbox, x, y) ||
           (timeOnTarget > 500 && activeArrow == null && validTarget)))
     ) {
       activeTarget = false;
@@ -6458,7 +6462,7 @@ Sidebar.prototype.createDragSource = function (
             var p0 = pts[0];
             var pe = pts[pts.length - 1];
             var tol = graph.tolerance;
-            var box = new mxRectangle(x - tol, y - tol, 2 * tol, 2 * tol);
+            var box = new m.mxRectangle(x - tol, y - tol, 2 * tol, 2 * tol);
 
             roundSource.style.left =
               Math.floor(p0.x - this.roundDrop.width / 2) + "px";
@@ -6479,11 +6483,11 @@ Sidebar.prototype.createDragSource = function (
             }
           }
         } else {
-          var bds = mxRectangle.fromRectangle(state);
+          var bds = m.mxRectangle.fromRectangle(state);
 
           // Uses outer bounding box to take rotation into account
           if (state.shape != null && state.shape.boundingBox != null) {
-            bds = mxRectangle.fromRectangle(state.shape.boundingBox);
+            bds = m.mxRectangle.fromRectangle(state.shape.boundingBox);
           }
 
           bds.grow(this.graph.tolerance);
@@ -6573,9 +6577,9 @@ Sidebar.prototype.createDragSource = function (
 
     // Handles drop target
     var target =
-      (!mxEvent.isAltDown(evt) || mxEvent.isShiftDown(evt)) &&
+      (!m.mxEvent.isAltDown(evt) || m.mxEvent.isShiftDown(evt)) &&
       !(currentStyleTarget != null && activeArrow == styleTarget)
-        ? mxDragSource.prototype.getDropTarget.apply(this, arguments)
+        ? m.mxDragSource.prototype.getDropTarget.apply(this, arguments)
         : null;
     var model = graph.getModel();
 
@@ -6608,7 +6612,7 @@ Sidebar.prototype.createDragSource = function (
   });
 
   dragSource.stopDrag = function () {
-    mxDragSource.prototype.stopDrag.apply(this, arguments);
+    m.mxDragSource.prototype.stopDrag.apply(this, arguments);
 
     var elts = [
       roundSource,
@@ -6649,7 +6653,7 @@ Sidebar.prototype.itemClicked = function (cells, ds, evt, elt) {
 
   // Alt+Click inserts and connects
   if (
-    mxEvent.isAltDown(evt) &&
+    m.mxEvent.isAltDown(evt) &&
     graph.getSelectionCount() == 1 &&
     graph.model.isVertex(graph.getSelectionCell())
   ) {
@@ -6666,13 +6670,13 @@ Sidebar.prototype.itemClicked = function (cells, ds, evt, elt) {
         this.dropAndConnect(
           graph.getSelectionCell(),
           cells,
-          mxEvent.isMetaDown(evt) || mxEvent.isControlDown(evt)
-            ? mxEvent.isShiftDown(evt)
-              ? mxConstants.DIRECTION_WEST
-              : mxConstants.DIRECTION_NORTH
-            : mxEvent.isShiftDown(evt)
-            ? mxConstants.DIRECTION_EAST
-            : mxConstants.DIRECTION_SOUTH,
+          m.mxEvent.isMetaDown(evt) || m.mxEvent.isControlDown(evt)
+            ? m.mxEvent.isShiftDown(evt)
+              ? m.mxConstants.DIRECTION_WEST
+              : m.mxConstants.DIRECTION_NORTH
+            : m.mxEvent.isShiftDown(evt)
+            ? m.mxConstants.DIRECTION_EAST
+            : m.mxConstants.DIRECTION_SOUTH,
           firstVertex,
           evt,
         ),
@@ -6681,11 +6685,11 @@ Sidebar.prototype.itemClicked = function (cells, ds, evt, elt) {
     }
   }
   // Shift+Click updates shape
-  else if (mxEvent.isShiftDown(evt) && !graph.isSelectionEmpty()) {
+  else if (m.mxEvent.isShiftDown(evt) && !graph.isSelectionEmpty()) {
     this.updateShapes(cells[0], graph.getSelectionCells());
     graph.scrollCellToVisible(graph.getSelectionCell());
   } else {
-    var pt = mxEvent.isAltDown(evt)
+    var pt = m.mxEvent.isAltDown(evt)
       ? graph.getFreeInsertPoint()
       : graph.getCenterInsertPoint(
           graph.getBoundingBoxFromGeometry(cells, true),
@@ -6708,11 +6712,11 @@ Sidebar.prototype.addClickHandler = function (elt, ds, cells) {
 
   ds.mouseDown = function (evt) {
     oldMouseDown.apply(this, arguments);
-    first = new mxPoint(mxEvent.getClientX(evt), mxEvent.getClientY(evt));
+    first = new m.mxPoint(m.mxEvent.getClientX(evt), m.mxEvent.getClientY(evt));
 
     if (this.dragElement != null) {
       this.dragElement.style.display = "none";
-      mxUtils.setOpacity(elt, 50);
+      m.mxUtils.setOpacity(elt, 50);
     }
   };
 
@@ -6721,11 +6725,11 @@ Sidebar.prototype.addClickHandler = function (elt, ds, cells) {
       this.dragElement != null &&
       this.dragElement.style.display == "none" &&
       first != null &&
-      (Math.abs(first.x - mxEvent.getClientX(evt)) > tol ||
-        Math.abs(first.y - mxEvent.getClientY(evt)) > tol)
+      (Math.abs(first.x - m.mxEvent.getClientX(evt)) > tol ||
+        Math.abs(first.y - m.mxEvent.getClientY(evt)) > tol)
     ) {
       this.dragElement.style.display = "";
-      mxUtils.setOpacity(elt, 100);
+      m.mxUtils.setOpacity(elt, 100);
     }
 
     oldMouseMove.apply(this, arguments);
@@ -6734,7 +6738,7 @@ Sidebar.prototype.addClickHandler = function (elt, ds, cells) {
   ds.mouseUp = function (evt) {
     try {
       if (
-        !mxEvent.isPopupTrigger(evt) &&
+        !m.mxEvent.isPopupTrigger(evt) &&
         this.currentGraph == null &&
         this.dragElement != null &&
         this.dragElement.style.display == "none"
@@ -6743,7 +6747,7 @@ Sidebar.prototype.addClickHandler = function (elt, ds, cells) {
       }
 
       oldMouseUp.apply(ds, arguments);
-      mxUtils.setOpacity(elt, 100);
+      m.mxUtils.setOpacity(elt, 100);
       first = null;
 
       // Blocks tooltips on this element after single click
@@ -6777,7 +6781,7 @@ Sidebar.prototype.createVertexTemplateEntry = function (
 
   return this.addEntry(
     tags,
-    mxUtils.bind(this, function () {
+    m.mxUtils.bind(this, function () {
       return this.createVertexTemplate(
         style,
         width,
@@ -6805,9 +6809,9 @@ Sidebar.prototype.createVertexTemplate = function (
   allowCellsInserted,
 ) {
   var cells = [
-    new mxCell(
+    new m.mxCell(
       value != null ? value : "",
-      new mxGeometry(0, 0, width, height),
+      new m.mxGeometry(0, 0, width, height),
       style,
     ),
   ];
@@ -6836,10 +6840,10 @@ Sidebar.prototype.createVertexTemplateFromData = function (
   showTitle,
   allowCellsInserted,
 ) {
-  var doc = mxUtils.parseXml(Graph.decompress(data));
-  var codec = new mxCodec(doc);
+  var doc = m.mxUtils.parseXml(Graph.decompress(data));
+  var codec = new m.mxCodec(doc);
 
-  var model = new mxGraphModel();
+  var model = new m.mxGraphModel();
   codec.decode(doc.documentElement, model);
 
   var cells = this.graph.cloneCells(model.root.getChildAt(0).children);
@@ -6897,7 +6901,7 @@ Sidebar.prototype.createEdgeTemplateEntry = function (
 
   return this.addEntry(
     tags,
-    mxUtils.bind(this, function () {
+    m.mxUtils.bind(this, function () {
       return this.createEdgeTemplate(
         style,
         width,
@@ -6923,13 +6927,13 @@ Sidebar.prototype.createEdgeTemplate = function (
   showLabel,
   allowCellsInserted,
 ) {
-  var cell = new mxCell(
+  var cell = new m.mxCell(
     value != null ? value : "",
-    new mxGeometry(0, 0, width, height),
+    new m.mxGeometry(0, 0, width, height),
     style,
   );
-  cell.geometry.setTerminalPoint(new mxPoint(0, height), true);
-  cell.geometry.setTerminalPoint(new mxPoint(width, 0), false);
+  cell.geometry.setTerminalPoint(new m.mxPoint(0, height), true);
+  cell.geometry.setTerminalPoint(new m.mxPoint(width, 0), false);
   cell.geometry.relative = true;
   cell.edge = true;
 
@@ -6973,7 +6977,7 @@ Sidebar.prototype.addPaletteFunctions = function (id, title, expanded, fns) {
     id,
     title,
     expanded,
-    mxUtils.bind(this, function (content) {
+    m.mxUtils.bind(this, function (content) {
       for (var i = 0; i < fns.length; i++) {
         content.appendChild(fns[i](content));
       }
@@ -6992,7 +6996,7 @@ Sidebar.prototype.addPalette = function (id, title, expanded, onInit) {
   div.className = "geSidebar";
 
   // Disables built-in pan and zoom in IE10 and later
-  if (mxClient.IS_POINTER) {
+  if (m.mxClient.IS_POINTER) {
     div.style.touchAction = "none";
   }
 
@@ -7024,7 +7028,7 @@ Sidebar.prototype.addFoldingHandler = function (title, content, funct) {
   var initialized = false;
 
   // Avoids mixed content warning in IE6-8
-  if (!mxClient.IS_IE || document.documentMode >= 8) {
+  if (!m.mxClient.IS_IE || document.documentMode >= 8) {
     title.style.backgroundImage =
       content.style.display == "none"
         ? "url('" + this.collapsedImage + "')"
@@ -7034,10 +7038,10 @@ Sidebar.prototype.addFoldingHandler = function (title, content, funct) {
   title.style.backgroundRepeat = "no-repeat";
   title.style.backgroundPosition = "0% 50%";
 
-  mxEvent.addListener(
+  m.mxEvent.addListener(
     title,
     "click",
-    mxUtils.bind(this, function (evt) {
+    m.mxUtils.bind(this, function (evt) {
       if (content.style.display == "none") {
         if (!initialized) {
           initialized = true;
@@ -7046,7 +7050,7 @@ Sidebar.prototype.addFoldingHandler = function (title, content, funct) {
             // Wait cursor does not show up on Mac
             title.style.cursor = "wait";
             var prev = title.innerHTML;
-            title.innerHTML = mxResources.get("loading") + "...";
+            title.innerHTML = m.mxResources.get("loading") + "...";
 
             window.setTimeout(
               function () {
@@ -7054,12 +7058,12 @@ Sidebar.prototype.addFoldingHandler = function (title, content, funct) {
                 title.style.cursor = "";
                 title.innerHTML = prev;
 
-                var fo = mxClient.NO_FO;
-                mxClient.NO_FO = Editor.prototype.originalNoForeignObject;
+                var fo = m.mxClient.NO_FO;
+                m.mxClient.NO_FO = Editor.prototype.originalNoForeignObject;
                 funct(content, title);
-                mxClient.NO_FO = fo;
+                m.mxClient.NO_FO = fo;
               },
-              mxClient.IS_FF ? 20 : 0,
+              m.mxClient.IS_FF ? 20 : 0,
             );
           } else {
             content.style.display = "block";
@@ -7074,16 +7078,16 @@ Sidebar.prototype.addFoldingHandler = function (title, content, funct) {
         content.style.display = "none";
       }
 
-      mxEvent.consume(evt);
+      m.mxEvent.consume(evt);
     }),
   );
 
   // Prevents focus
-  if (!mxClient.IS_QUIRKS) {
-    mxEvent.addListener(
+  if (!m.mxClient.IS_QUIRKS) {
+    m.mxEvent.addListener(
       title,
-      mxClient.IS_POINTER ? "pointerdown" : "mousedown",
-      mxUtils.bind(this, function (evt) {
+      m.mxClient.IS_POINTER ? "pointerdown" : "mousedown",
+      m.mxUtils.bind(this, function (evt) {
         evt.preventDefault();
       }),
     );
@@ -7125,7 +7129,7 @@ Sidebar.prototype.addImagePalette = function (
   var fns = [];
 
   for (var i = 0; i < items.length; i++) {
-    mxUtils.bind(this, function (item, title, tmpTags) {
+    m.mxUtils.bind(this, function (item, title, tmpTags) {
       if (tmpTags == null) {
         var slash = item.lastIndexOf("/");
         var dot = item.lastIndexOf(".");
@@ -7206,12 +7210,12 @@ Sidebar.prototype.addStencilPalette = function (
       }
     }
 
-    mxStencilRegistry.loadStencilSet(
+    m.mxStencilRegistry.loadStencilSet(
       stencilFile,
-      mxUtils.bind(
+      m.mxUtils.bind(
         this,
         function (packageName, stencilName, displayName, w, h) {
-          if (ignore == null || mxUtils.indexOf(ignore, stencilName) < 0) {
+          if (ignore == null || m.mxUtils.indexOf(ignore, stencilName) < 0) {
             var tmp = this.getTagsForStencil(packageName, stencilName);
             var tmpTags = tags != null ? tags[stencilName] : null;
 
@@ -7244,7 +7248,7 @@ Sidebar.prototype.addStencilPalette = function (
       id,
       title,
       false,
-      mxUtils.bind(this, function (content) {
+      m.mxUtils.bind(this, function (content) {
         if (style == null) {
           style = "";
         }
@@ -7259,12 +7263,12 @@ Sidebar.prototype.addStencilPalette = function (
           }
         }
 
-        mxStencilRegistry.loadStencilSet(
+        m.mxStencilRegistry.loadStencilSet(
           stencilFile,
-          mxUtils.bind(
+          m.mxUtils.bind(
             this,
             function (packageName, stencilName, displayName, w, h) {
-              if (ignore == null || mxUtils.indexOf(ignore, stencilName) < 0) {
+              if (ignore == null || m.mxUtils.indexOf(ignore, stencilName) < 0) {
                 content.appendChild(
                   this.createVertexTemplate(
                     "shape=" + packageName + stencilName.toLowerCase() + style,
@@ -7302,36 +7306,36 @@ Sidebar.prototype.destroy = function () {
   }
 
   if (this.pointerUpHandler != null) {
-    mxEvent.removeListener(
+    m.mxEvent.removeListener(
       document,
-      mxClient.IS_POINTER ? "pointerup" : "mouseup",
+      m.mxClient.IS_POINTER ? "pointerup" : "mouseup",
       this.pointerUpHandler,
     );
     this.pointerUpHandler = null;
   }
 
   if (this.pointerDownHandler != null) {
-    mxEvent.removeListener(
+    m.mxEvent.removeListener(
       document,
-      mxClient.IS_POINTER ? "pointerdown" : "mousedown",
+      m.mxClient.IS_POINTER ? "pointerdown" : "mousedown",
       this.pointerDownHandler,
     );
     this.pointerDownHandler = null;
   }
 
   if (this.pointerMoveHandler != null) {
-    mxEvent.removeListener(
+    m.mxEvent.removeListener(
       document,
-      mxClient.IS_POINTER ? "pointermove" : "mousemove",
+      m.mxClient.IS_POINTER ? "pointermove" : "mousemove",
       this.pointerMoveHandler,
     );
     this.pointerMoveHandler = null;
   }
 
   if (this.pointerOutHandler != null) {
-    mxEvent.removeListener(
+    m.mxEvent.removeListener(
       document,
-      mxClient.IS_POINTER ? "pointerout" : "mouseout",
+      m.mxClient.IS_POINTER ? "pointerout" : "mouseout",
       this.pointerOutHandler,
     );
     this.pointerOutHandler = null;
