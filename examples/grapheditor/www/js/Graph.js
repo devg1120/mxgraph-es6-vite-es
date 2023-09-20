@@ -4153,7 +4153,7 @@ Graph.prototype.zapGremlins = function (text) {
 /**
  * Hover icons are used for hover, vertex handler and drag from sidebar.
  */
-HoverIcons = function (graph) {
+var HoverIcons = function (graph) {
   this.graph = graph;
   this.init();
 };
@@ -5703,7 +5703,7 @@ TableLayout.prototype.execute = function (parent) {
   /**
    * Reset the list of processed edges.
    */
-  var m.mxGraphViewResetValidationState =
+  var mxGraphViewResetValidationState =
     m.mxGraphView.prototype.resetValidationState;
   m.mxGraphView.prototype.resetValidationState = function () {
     m.mxGraphViewResetValidationState.apply(this, arguments);
@@ -5714,7 +5714,7 @@ TableLayout.prototype.execute = function (parent) {
   /**
    * Updates jumps for valid edges and repaints if needed.
    */
-  var m.mxGraphViewValidateCellState = m.mxGraphView.prototype.validateCellState;
+  var mxGraphViewValidateCellState = m.mxGraphView.prototype.validateCellState;
   m.mxGraphView.prototype.validateCellState = function (cell, recurse) {
     recurse = recurse != null ? recurse : true;
     var state = this.getState(cell);
@@ -5752,7 +5752,7 @@ TableLayout.prototype.execute = function (parent) {
   /**
    * Forces repaint if routed points have changed.
    */
-  var m.mxCellRendererIsShapeInvalid = m.mxCellRenderer.prototype.isShapeInvalid;
+  var mxCellRendererIsShapeInvalid = m.mxCellRenderer.prototype.isShapeInvalid;
   m.mxCellRenderer.prototype.isShapeInvalid = function (state, shape) {
     return (
       m.mxCellRendererIsShapeInvalid.apply(this, arguments) ||
@@ -5765,7 +5765,7 @@ TableLayout.prototype.execute = function (parent) {
   /**
    * Updates jumps for invalid edges.
    */
-  var m.mxGraphViewUpdateCellState = m.mxGraphView.prototype.updateCellState;
+  var mxGraphViewUpdateCellState = m.mxGraphView.prototype.updateCellState;
   m.mxGraphView.prototype.updateCellState = function (state) {
     m.mxGraphViewUpdateCellState.apply(this, arguments);
 
@@ -5933,7 +5933,7 @@ TableLayout.prototype.execute = function (parent) {
   /**
    * Overrides painting the actual shape for taking into account jump style.
    */
-  var m.mxConnectorPaintLine = m.mxConnector.prototype.paintLine;
+  var mxConnectorPaintLine = m.mxConnector.prototype.paintLine;
 
   m.mxConnector.prototype.paintLine = function (c, absPts, rounded) {
     // Required for checking dirty state
@@ -6062,7 +6062,7 @@ TableLayout.prototype.execute = function (parent) {
   /**
    * Adds support for snapToPoint style.
    */
-  var m.mxGraphViewUpdateFloatingTerminalPoint =
+  var mxGraphViewUpdateFloatingTerminalPoint =
     m.mxGraphView.prototype.updateFloatingTerminalPoint;
 
   m.mxGraphView.prototype.updateFloatingTerminalPoint = function (
@@ -6157,7 +6157,7 @@ TableLayout.prototype.execute = function (parent) {
   /**
    * Adds support for placeholders in text elements of shapes.
    */
-  var m.mxStencilEvaluateTextAttribute =
+  var mxStencilEvaluateTextAttribute =
     m.mxStencil.prototype.evaluateTextAttribute;
 
   m.mxStencil.prototype.evaluateTextAttribute = function (
@@ -6185,7 +6185,7 @@ TableLayout.prototype.execute = function (parent) {
    * Needs to be in this file to make sure its part of the embed client code. Also the check for ZLib is
    * different than for the Editor code.
    */
-  var m.mxCellRendererCreateShape = m.mxCellRenderer.prototype.createShape;
+  var mxCellRendererCreateShape = m.mxCellRenderer.prototype.createShape;
   m.mxCellRenderer.prototype.createShape = function (state) {
     if (state.style != null && typeof pako !== "undefined") {
       var shape = m.mxUtils.getValue(state.style, m.mxConstants.STYLE_SHAPE, null);
@@ -6519,7 +6519,7 @@ if (typeof m.mxVertexHandler != "undefined") {
 
     // Extends connection handler to enable ctrl+drag for cloning source cell
     // since copyOnConnect is now disabled by default
-    var m.mxConnectionHandlerCreateTarget =
+    var mxConnectionHandlerCreateTarget =
       m.mxConnectionHandler.prototype.isCreateTarget;
     m.mxConnectionHandler.prototype.isCreateTarget = function (evt) {
       return (
@@ -6575,7 +6575,7 @@ if (typeof m.mxVertexHandler != "undefined") {
     };
 
     // Overrides connection handler to ignore edges instead of not allowing connections
-    var m.mxConnectionHandlerCreateMarker =
+    var mxConnectionHandlerCreateMarker =
       m.mxConnectionHandler.prototype.createMarker;
     m.mxConnectionHandler.prototype.createMarker = function () {
       var marker = m.mxConnectionHandlerCreateMarker.apply(this, arguments);
@@ -9782,7 +9782,7 @@ if (typeof m.mxVertexHandler != "undefined") {
      * NOTE: Since it's easier to set this when the label is created we assume that it does
      * not change during the lifetime of the mxText instance.
      */
-    var m.mxCellRendererInitializeLabel =
+    var mxCellRendererInitializeLabel =
       m.mxCellRenderer.prototype.initializeLabel;
     m.mxCellRenderer.prototype.initializeLabel = function (state) {
       if (state.text != null) {
@@ -9793,7 +9793,7 @@ if (typeof m.mxVertexHandler != "undefined") {
       m.mxCellRendererInitializeLabel.apply(this, arguments);
     };
 
-    var m.mxConstraintHandlerUpdate = m.mxConstraintHandler.prototype.update;
+    var mxConstraintHandlerUpdate = m.mxConstraintHandler.prototype.update;
     m.mxConstraintHandler.prototype.update = function (me, source) {
       if (this.isKeepFocusEvent(me) || !m.mxEvent.isAltDown(me.getEvent())) {
         m.mxConstraintHandlerUpdate.apply(this, arguments);
@@ -9823,7 +9823,7 @@ if (typeof m.mxVertexHandler != "undefined") {
     /**
      * Overridden to set CSS classes.
      */
-    var m.mxCellEditorStartEditing = m.mxCellEditor.prototype.startEditing;
+    var mxCellEditorStartEditing = m.mxCellEditor.prototype.startEditing;
     m.mxCellEditor.prototype.startEditing = function (cell, trigger) {
       cell = this.graph.getStartEditingCell(cell, trigger);
 
@@ -10150,7 +10150,7 @@ if (typeof m.mxVertexHandler != "undefined") {
       }
     };
 
-    var m.mxCellEditorResize = m.mxCellEditor.prototype.resize;
+    var mxCellEditorResize = m.mxCellEditor.prototype.resize;
     m.mxCellEditor.prototype.resize = function (state, trigger) {
       if (this.textarea != null) {
         var state = this.graph.getView().getState(this.editingCell);
@@ -10229,7 +10229,7 @@ if (typeof m.mxVertexHandler != "undefined") {
       }
     };
 
-    m.mxCellEditorGetInitialValue = m.mxCellEditor.prototype.getInitialValue;
+    var mxCellEditorGetInitialValue = m.mxCellEditor.prototype.getInitialValue;
     m.mxCellEditor.prototype.getInitialValue = function (state, trigger) {
       if (m.mxUtils.getValue(state.style, "html", "0") == "0") {
         return m.mxCellEditorGetInitialValue.apply(this, arguments);
@@ -10246,7 +10246,7 @@ if (typeof m.mxVertexHandler != "undefined") {
       }
     };
 
-    m.mxCellEditorGetCurrentValue = m.mxCellEditor.prototype.getCurrentValue;
+    var mxCellEditorGetCurrentValue = m.mxCellEditor.prototype.getCurrentValue;
     m.mxCellEditor.prototype.getCurrentValue = function (state) {
       if (m.mxUtils.getValue(state.style, "html", "0") == "0") {
         return m.mxCellEditorGetCurrentValue.apply(this, arguments);
@@ -10263,7 +10263,7 @@ if (typeof m.mxVertexHandler != "undefined") {
       }
     };
 
-    var m.mxCellEditorStopEditing = m.mxCellEditor.prototype.stopEditing;
+    var mxCellEditorStopEditing = m.mxCellEditor.prototype.stopEditing;
     m.mxCellEditor.prototype.stopEditing = function (cancel) {
       // Restores default view mode before applying value
       if (this.codeViewMode) {
@@ -10284,7 +10284,7 @@ if (typeof m.mxVertexHandler != "undefined") {
       }
     };
 
-    var m.mxCellEditorApplyValue = m.mxCellEditor.prototype.applyValue;
+    var mxCellEditorApplyValue = m.mxCellEditor.prototype.applyValue;
     m.mxCellEditor.prototype.applyValue = function (state, value) {
       // Removes empty relative child labels in edges
       this.graph.getModel().beginUpdate();
@@ -10351,7 +10351,7 @@ if (typeof m.mxVertexHandler != "undefined") {
     /**
      * Hold Alt to ignore drop target.
      */
-    m.mxGraphHandlerIsValidDropTarget =
+    var mxGraphHandlerIsValidDropTarget =
       m.mxGraphHandler.prototype.isValidDropTarget;
     m.mxGraphHandler.prototype.isValidDropTarget = function (target, me) {
       return (
@@ -11574,7 +11574,7 @@ if (typeof m.mxVertexHandler != "undefined") {
     };
 
     // Removes preview
-    var m.mxRubberbandReset = m.mxRubberband.prototype.reset;
+    var mxRubberbandReset = m.mxRubberband.prototype.reset;
     m.mxRubberband.prototype.reset = function () {
       if (this.secondDiv != null) {
         this.secondDiv.parentNode.removeChild(this.secondDiv);
@@ -11588,7 +11588,7 @@ if (typeof m.mxVertexHandler != "undefined") {
     var startTime = new Date().getTime();
     var timeOnTarget = 0;
 
-    var m.mxEdgeHandlerUpdatePreviewState =
+    var mxEdgeHandlerUpdatePreviewState =
       m.mxEdgeHandler.prototype.updatePreviewState;
 
     m.mxEdgeHandler.prototype.updatePreviewState = function (
@@ -11610,7 +11610,7 @@ if (typeof m.mxVertexHandler != "undefined") {
     };
 
     // Timer-based outline connect
-    var m.mxEdgeHandlerIsOutlineConnectEvent =
+    var mxEdgeHandlerIsOutlineConnectEvent =
       m.mxEdgeHandler.prototype.isOutlineConnectEvent;
 
     m.mxEdgeHandler.prototype.isOutlineConnectEvent = function (me) {
@@ -11700,7 +11700,7 @@ if (typeof m.mxVertexHandler != "undefined") {
     };
 
     // Special case for single edge label handle moving in which case the text bounding box is used
-    var m.mxGraphHandlerGetBoundingBox = m.mxGraphHandler.prototype.getBoundingBox;
+    var mxGraphHandlerGetBoundingBox = m.mxGraphHandler.prototype.getBoundingBox;
     m.mxGraphHandler.prototype.getBoundingBox = function (cells) {
       if (cells != null && cells.length == 1) {
         var model = this.graph.getModel();
@@ -11726,7 +11726,7 @@ if (typeof m.mxVertexHandler != "undefined") {
     };
 
     // Ignores child cells with part style as guides
-    var m.mxGraphHandlerGetGuideStates = m.mxGraphHandler.prototype.getGuideStates;
+    var mxGraphHandlerGetGuideStates = m.mxGraphHandler.prototype.getGuideStates;
 
     m.mxGraphHandler.prototype.getGuideStates = function () {
       var states = m.mxGraphHandlerGetGuideStates.apply(this, arguments);
@@ -11743,7 +11743,7 @@ if (typeof m.mxVertexHandler != "undefined") {
     };
 
     // Uses text bounding box for edge labels
-    var m.mxVertexHandlerGetSelectionBounds =
+    var mxVertexHandlerGetSelectionBounds =
       m.mxVertexHandler.prototype.getSelectionBounds;
     m.mxVertexHandler.prototype.getSelectionBounds = function (state) {
       var model = this.graph.getModel();
@@ -11774,7 +11774,7 @@ if (typeof m.mxVertexHandler != "undefined") {
 
     // Redirects moving of edge labels to mxGraphHandler by not starting here.
     // This will use the move preview of mxGraphHandler (see above).
-    var m.mxVertexHandlerMouseDown = m.mxVertexHandler.prototype.mouseDown;
+    var mxVertexHandlerMouseDown = m.mxVertexHandler.prototype.mouseDown;
     m.mxVertexHandler.prototype.mouseDown = function (sender, me) {
       var model = this.graph.getModel();
       var parent = model.getParent(this.state.cell);
