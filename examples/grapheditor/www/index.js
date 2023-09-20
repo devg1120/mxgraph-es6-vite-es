@@ -4,12 +4,12 @@ import {Actions}  from "./js/Actions.js";
 import {Editor}   from "./js/Editor.js";
 import {EditorUi} from "./js/EditorUi.js";
 import {Format}   from "./js/Format.js";
-//import {Graph}    from "./js/Graph.js";
+import {Graph}    from "./js/Graph.js";
 import {Menus}    from "./js/Menus.js";
 //import {Shapes}   from "./js/Shapes.js";
 import {Sidebar}  from "./js/Sidebar.js";
 import {Toolbar}  from "./js/Toolbar.js";
-
+/*
                 let OPEN_URL = "/examples/grapheditor/www";
 
 			var editorUiInit = EditorUi.prototype.init;
@@ -33,15 +33,15 @@ import {Toolbar}  from "./js/Toolbar.js";
 					}));
 				}
 			};
+*/
 
-/*
 // Parses URL parameters. Supported parameters are:
 		// - lang=xy: Specifies the language of the user interface.
 		// - touch=1: Enables a touch-style user interface.
 		// - storage=local: Enables HTML5 local storage.
 		// - chrome=0: Chromeless mode.
 
-                mxBasePath = '../../../dist';    
+                var mxBasePath = '../../../dist';    
                 let OPEN_URL = "/examples/grapheditor/www";
                 //console.log("OPEN_URL", OPEN_URL);
 		
@@ -69,8 +69,8 @@ import {Toolbar}  from "./js/Toolbar.js";
 		})(window.location.href);
 	
 		// Default resources are included in grapheditor resources
-		mxLoadResources = false;
-	      Object.keys(window.mxgraph).forEach(mxGraphClassName => { window[mxGraphClassName] = window.mxgraph[mxGraphClassName]; });
+		var mxLoadResources = false;
+	      //Object.keys(window.mxgraph).forEach(mxGraphClassName => { window[mxGraphClassName] = window.mxgraph[mxGraphClassName]; });
 		// Extends EditorUi to update I/O action states based on availability of backend
 		(function()
 		{
@@ -84,7 +84,7 @@ import {Toolbar}  from "./js/Toolbar.js";
 				// Updates action states which require a backend
 				if (!Editor.useLocalStorage)
 				{
-					mxUtils.post(OPEN_URL, '', mxUtils.bind(this, function(req)
+					m.mxUtils.post(OPEN_URL, '', m.mxUtils.bind(this, function(req)
 					{
 						var enabled = req.getStatus() != 404;
 						this.actions.get('open').setEnabled(enabled || Graph.fileSupport);
@@ -98,15 +98,15 @@ import {Toolbar}  from "./js/Toolbar.js";
 			
 			// Adds required resources (disables loading of fallback properties, this can only
 			// be used if we know that all keys are defined in the language specific file)
-			mxResources.loadDefaultBundle = false;
-			var bundle = mxResources.getDefaultBundle(RESOURCE_BASE, mxLanguage) ||
-				mxResources.getSpecialBundle(RESOURCE_BASE, mxLanguage);
+			m.mxResources.loadDefaultBundle = false;
+			var bundle = m.mxResources.getDefaultBundle(RESOURCE_BASE, m.mxLanguage) ||
+				m.mxResources.getSpecialBundle(RESOURCE_BASE, m.mxLanguage);
 
 			// Fixes possible asynchronous requests
-			mxUtils.getAll([bundle, STYLE_PATH + '/default.xml'], function(xhr)
+			m.mxUtils.getAll([bundle, STYLE_PATH + '/default.xml'], function(xhr)
 			{
 				// Adds bundle text to resources
-				mxResources.parse(xhr[0].getText());
+				m.mxResources.parse(xhr[0].getText());
 				
 				// Configures the default graph theme
 				var themes = new Object();
@@ -119,4 +119,4 @@ import {Toolbar}  from "./js/Toolbar.js";
 				document.body.innerHTML = '<center style="margin-top:10%;">Error loading resource files. Please check browser console.</center>';
 			});
 		})();
-*/
+
