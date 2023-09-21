@@ -6,11 +6,22 @@
  */
 
 import * as m   from "../../../../../dist/mxgraph.es.js";
+import {Actions}  from "./Actions.js";
+import {Sidebar}  from "./Sidebar.js";
+import {Graph}  from "./Graph.js";
 
 //EditorUi = function (editor, container, lightbox) {
-export  function EditorUi(editor, container, lightbox) {
-  m.mxEventSource.call(this);
+//export  function EditorUi(editor, container, lightbox) {
+export  class  EditorUi  extends  m.mxEventSource {
 
+/**
+ * Global config that specifies if the compact UI elements should be used.
+ */
+compactUi = true;
+
+constructor (editor, container, lightbox) {
+  //m.mxEventSource.call(this);
+super();
   this.destroyFunctions = [];
   this.editor = editor || new Editor();
   this.container = container || document.body;
@@ -987,15 +998,16 @@ export  function EditorUi(editor, container, lightbox) {
   if (!graph.standalone) {
     this.open();
   }
-};
+}; // end constructor
 
+};// end class
 // Extends mxEventSource
-m.mxUtils.extend(EditorUi, m.mxEventSource);
+//m.mxUtils.extend(EditorUi, m.mxEventSource);
 
 /**
  * Global config that specifies if the compact UI elements should be used.
  */
-EditorUi.compactUi = true;
+//EditorUi.compactUi = true;
 
 /**
  * Specifies the size of the split bar.

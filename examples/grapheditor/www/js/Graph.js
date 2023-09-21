@@ -161,7 +161,130 @@ m.mxShape.prototype.getConstraints = function (style, w, h) {
  * Defines graph class.
  */
 //Graph = function (
-export function Graph  (
+export class Graph extends m.mxGraph {
+
+
+/**
+ * Specifies if the touch UI should be used (cannot detect touch in FF so always on for Windows/Linux)
+ */
+
+touchStyle =
+  m.mxClient.IS_TOUCH ||
+  (m.mxClient.IS_FF && m.mxClient.IS_WIN) ||
+  navigator.maxTouchPoints > 0 ||
+  navigator.msMaxTouchPoints > 0 ||
+  window.urlParams == null ||
+  urlParams["touch"] == "1";
+
+/**
+ * Shortcut for capability check.
+ */
+fileSupport =
+  window.File != null &&
+  window.FileReader != null &&
+  window.FileList != null &&
+  (window.urlParams == null || urlParams["filesupport"] != "0");
+
+/**
+ * Shortcut for capability check.
+ */
+translateDiagram = urlParams["translate-diagram"] == "1";
+
+/**
+ * Shortcut for capability check.
+ */
+diagramLanguage =
+  urlParams["diagram-language"] != null
+    ? urlParams["diagram-language"]
+    : m.mxClient.language;
+
+/**
+ * Default size for line jumps.
+ */
+lineJumpsEnabled = true;
+
+/**
+ * Default size for line jumps.
+ */
+defaultJumpSize = 6;
+
+/**
+ * Minimum width for table columns.
+ */
+minTableColumnWidth = 20;
+
+/**
+ * Minimum height for table rows.
+ */
+minTableRowHeight = 20;
+
+/**
+ * Text for foreign object warning.
+ */
+foreignObjectWarningText = "Viewer does not support full SVG 1.1";
+
+/**
+ * Link for foreign object warning.
+ */
+foreignObjectWarningLink =
+  "https://desk.draw.io/support/solutions/articles/16000042487";
+
+/**
+ * Minimum height for table rows.
+ */
+pasteStyles = [
+  "rounded",
+  "shadow",
+  "dashed",
+  "dashPattern",
+  "fontFamily",
+  "fontSource",
+  "fontSize",
+  "fontColor",
+  "fontStyle",
+  "align",
+  "verticalAlign",
+  "strokeColor",
+  "strokeWidth",
+  "fillColor",
+  "gradientColor",
+  "swimlaneFillColor",
+  "textOpacity",
+  "gradientDirection",
+  "glass",
+  "labelBackgroundColor",
+  "labelBorderColor",
+  "opacity",
+  "spacing",
+  "spacingTop",
+  "spacingLeft",
+  "spacingBottom",
+  "spacingRight",
+  "endFill",
+  "endArrow",
+  "endSize",
+  "targetPerimeterSpacing",
+  "startFill",
+  "startArrow",
+  "startSize",
+  "sourcePerimeterSpacing",
+  "arcSize",
+  "comic",
+  "sketch",
+  "fillWeight",
+  "hachureGap",
+  "hachureAngle",
+  "jiggle",
+  "disableMultiStroke",
+  "disableMultiStrokeFill",
+  "fillStyle",
+  "curveFitting",
+  "simplification",
+  "comicStyle",
+];
+
+
+constructor  (
   container,
   model,
   renderHint,
@@ -169,7 +292,8 @@ export function Graph  (
   themes,
   standalone,
 ) {
-  //m.mxGraph.call(this, container, model, renderHint, stylesheet);
+  //this.graph = new m.mxGraph(this, container, model, renderHint, stylesheet);
+  super(container, model, renderHint, stylesheet);
 
   this.themes = themes || this.defaultThemes;
   this.currentEdgeStyle = m.mxUtils.clone(this.defaultEdgeStyle);
@@ -200,7 +324,8 @@ export function Graph  (
   // backend supports HTML labels but CSS support is limited to the following:
   // http://docs.oracle.com/javase/6/docs/api/index.html?javax/swing/text/html/CSS.html
   // TODO: Wrap should not affect isHtmlLabel output (should be handled later)
-  this.isHtmlLabel = function (cell) {
+	
+   function isHtmlLabel (cell) {
     var style = this.getCurrentCellStyle(cell);
 
     return style != null
@@ -757,8 +882,242 @@ export function Graph  (
         start.handle = null;
       }),
     });
+  } // end constructor
+}
+/**
+ * Helper function for creating SVG data URI.
+ */
+static createSvgImage(w, h, data, coordWidth, coordHeight) {
+  var tmp = unescape(
+    encodeURIComponent(
+      '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="' +
+        w +
+        'px" height="' +
+        h +
+        'px" ' +
+        (coordWidth != null && coordHeight != null
+          ? 'viewBox="0 0 ' + coordWidth + " " + coordHeight + '" '
+          : "") +
+        'version="1.1">' +
+        data +
+        "</svg>",
+    ),
+  );
+
+  return new m.mxImage(
+    "data:image/svg+xml;base64," +
+      (window.btoa ? btoa(tmp) : Base64.encode(tmp, true)),
+    w,
+    h,
+  );
+};
+
+/**
+ * Removes all illegal control characters with ASCII code <32 except TAB, LF
+ * and CR.
+ */
+zapGremlins(text) {
+  var lastIndex = 0;
+  var checked = [];
+
+  for (var i = 0; i < text.length; i++) {
+    var code = text.charCodeAt(i);
+
+    // Removes all control chars except TAB, LF and CR
+    if (
+      !(
+        (code >= 32 || code == 9 || code == 10 || code == 13) &&
+        code != 0xffff &&
+        code != 0xfffe
+      )
+    ) {
+      checked.push(text.substring(lastIndex, i));
+      lastIndex = i + 1;
+    }
   }
 
+  if (lastIndex > 0 && lastIndex < text.length) {
+    checked.push(text.substring(lastIndex));
+  }
+
+  return checked.length == 0 ? text : checked.join("");
+};
+
+/**
+ * Turns the given string into an array.
+ */
+stringToBytes(str) {
+  var arr = new Array(str.length);
+
+  for (var i = 0; i < str.length; i++) {
+    arr[i] = str.charCodeAt(i);
+  }
+
+  return arr;
+};
+
+/**
+ * Turns the given array into a string.
+ */
+bytesToString(arr) {
+  var result = new Array(arr.length);
+
+  for (var i = 0; i < arr.length; i++) {
+    result[i] = String.fromCharCode(arr[i]);
+  }
+
+  return result.join("");
+};
+
+/**
+ * Turns the given array into a string.
+ */
+ase64EncodeUnicode(str) {
+  return btoa(
+    encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function (match, p1) {
+      return String.fromCharCode(parseInt(p1, 16));
+    }),
+  );
+};
+
+/**
+ * Turns the given array into a string.
+ */
+ase64DecodeUnicode(str) {
+  return decodeURIComponent(
+    Array.prototype.map
+      .call(atob(str), function (c) {
+        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join(""),
+  );
+};
+
+/**
+ * Returns a base64 encoded version of the compressed outer XML of the given node.
+ */
+compressNode(node, checked) {
+  var xml = m.mxUtils.getXml(node);
+
+  return this.compress(checked ? xml : this.zapGremlins(xml));
+};
+
+/**
+ * Returns a base64 encoded version of the compressed string.
+ */
+compress(data, deflate) {
+  if (data == null || data.length == 0 || typeof pako === "undefined") {
+    return data;
+  } else {
+    var tmp = deflate
+      ? pako.deflate(encodeURIComponent(data), { to: "string" })
+      : pako.deflateRaw(encodeURIComponent(data), { to: "string" });
+
+    return window.btoa ? btoa(tmp) : Base64.encode(tmp, true);
+  }
+};
+
+/**
+ * Returns a decompressed version of the base64 encoded string.
+ */
+decompress(data, inflate, checked) {
+  if (data == null || data.length == 0 || typeof pako === "undefined") {
+    return data;
+  } else {
+    var tmp = window.atob ? atob(data) : Base64.decode(data, true);
+
+    var inflated = decodeURIComponent(
+      inflate
+        ? pako.inflate(tmp, { to: "string" })
+        : pako.inflateRaw(tmp, { to: "string" }),
+    );
+
+    return checked ? inflated : this.zapGremlins(inflated);
+  }
+};
+
+/**
+ * Removes formatting from pasted HTML.
+ */
+removePasteFormatting (elt) {
+  while (elt != null) {
+    if (elt.firstChild != null) {
+      Graph.removePasteFormatting(elt.firstChild);
+    }
+
+    if (elt.nodeType == m.mxConstants.NODETYPE_ELEMENT && elt.style != null) {
+      elt.style.whiteSpace = "";
+
+      if (elt.style.color == "#000000") {
+        elt.style.color = "";
+      }
+    }
+
+    elt = elt.nextSibling;
+  }
+};
+
+/**
+ * Sanitizes the given HTML markup.
+ */
+sanitizeHtml (value, editing) {
+  // Uses https://code.google.com/p/google-caja/wiki/JsHtmlSanitizer
+  // NOTE: Original minimized sanitizer was modified to support
+  // data URIs for images, mailto and special data:-links.
+  // LATER: Add MathML to whitelisted tags
+  function urlX(link) {
+    if (
+      link != null &&
+      link.toString().toLowerCase().substring(0, 11) !== "javascript:"
+    ) {
+      return link;
+    }
+
+    return null;
+  }
+  function idX(id) {
+    return id;
+  }
+
+  return html_sanitize(value, urlX, idX);
+};
+
+/**
+ * Returns the CSS font family from the given computed style.
+ */
+tripQuotes(text) {
+  if (text != null) {
+    if (text.charAt(0) == "'") {
+      text = text.substring(1);
+    }
+
+    if (text.charAt(text.length - 1) == "'") {
+      text = text.substring(0, text.length - 1);
+    }
+
+    if (text.charAt(0) == '"') {
+      text = text.substring(1);
+    }
+
+    if (text.charAt(text.length - 1) == '"') {
+      text = text.substring(0, text.length - 1);
+    }
+  }
+
+  return text;
+};
+
+/**
+ * Returns true if the given string is a link.
+ *
+ * See https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
+ */
+isLink(text) {
+  return text != null && Graph.linkPattern.test(text);
+};
+
+set() {
   // HTML entities are displayed as plain text in wrapped plain text labels
   this.cellRenderer.getLabelValue = function (state) {
     var result = m.mxCellRenderer.prototype.getLabelValue.apply(this, arguments);
@@ -1296,376 +1655,14 @@ export function Graph  (
 
   //Create a unique offset object for each graph instance.
   this.currentTranslate = new m.mxPoint(0, 0);
-};
+}; //set end
+}; //class emd
 
-/**
- * Specifies if the touch UI should be used (cannot detect touch in FF so always on for Windows/Linux)
- */
-Graph.touchStyle =
-  m.mxClient.IS_TOUCH ||
-  (m.mxClient.IS_FF && m.mxClient.IS_WIN) ||
-  navigator.maxTouchPoints > 0 ||
-  navigator.msMaxTouchPoints > 0 ||
-  window.urlParams == null ||
-  urlParams["touch"] == "1";
-
-/**
- * Shortcut for capability check.
- */
-Graph.fileSupport =
-  window.File != null &&
-  window.FileReader != null &&
-  window.FileList != null &&
-  (window.urlParams == null || urlParams["filesupport"] != "0");
-
-/**
- * Shortcut for capability check.
- */
-Graph.translateDiagram = urlParams["translate-diagram"] == "1";
-
-/**
- * Shortcut for capability check.
- */
-Graph.diagramLanguage =
-  urlParams["diagram-language"] != null
-    ? urlParams["diagram-language"]
-    : m.mxClient.language;
-
-/**
- * Default size for line jumps.
- */
-Graph.lineJumpsEnabled = true;
-
-/**
- * Default size for line jumps.
- */
-Graph.defaultJumpSize = 6;
-
-/**
- * Minimum width for table columns.
- */
-Graph.minTableColumnWidth = 20;
-
-/**
- * Minimum height for table rows.
- */
-Graph.minTableRowHeight = 20;
-
-/**
- * Text for foreign object warning.
- */
-Graph.foreignObjectWarningText = "Viewer does not support full SVG 1.1";
-
-/**
- * Link for foreign object warning.
- */
-Graph.foreignObjectWarningLink =
-  "https://desk.draw.io/support/solutions/articles/16000042487";
-
-/**
- * Minimum height for table rows.
- */
-Graph.pasteStyles = [
-  "rounded",
-  "shadow",
-  "dashed",
-  "dashPattern",
-  "fontFamily",
-  "fontSource",
-  "fontSize",
-  "fontColor",
-  "fontStyle",
-  "align",
-  "verticalAlign",
-  "strokeColor",
-  "strokeWidth",
-  "fillColor",
-  "gradientColor",
-  "swimlaneFillColor",
-  "textOpacity",
-  "gradientDirection",
-  "glass",
-  "labelBackgroundColor",
-  "labelBorderColor",
-  "opacity",
-  "spacing",
-  "spacingTop",
-  "spacingLeft",
-  "spacingBottom",
-  "spacingRight",
-  "endFill",
-  "endArrow",
-  "endSize",
-  "targetPerimeterSpacing",
-  "startFill",
-  "startArrow",
-  "startSize",
-  "sourcePerimeterSpacing",
-  "arcSize",
-  "comic",
-  "sketch",
-  "fillWeight",
-  "hachureGap",
-  "hachureAngle",
-  "jiggle",
-  "disableMultiStroke",
-  "disableMultiStrokeFill",
-  "fillStyle",
-  "curveFitting",
-  "simplification",
-  "comicStyle",
-];
-
-/**
- * Helper function for creating SVG data URI.
- */
-Graph.createSvgImage = function (w, h, data, coordWidth, coordHeight) {
-  var tmp = unescape(
-    encodeURIComponent(
-      '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' +
-        '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="' +
-        w +
-        'px" height="' +
-        h +
-        'px" ' +
-        (coordWidth != null && coordHeight != null
-          ? 'viewBox="0 0 ' + coordWidth + " " + coordHeight + '" '
-          : "") +
-        'version="1.1">' +
-        data +
-        "</svg>",
-    ),
-  );
-
-  return new m.mxImage(
-    "data:image/svg+xml;base64," +
-      (window.btoa ? btoa(tmp) : Base64.encode(tmp, true)),
-    w,
-    h,
-  );
-};
-
-/**
- * Removes all illegal control characters with ASCII code <32 except TAB, LF
- * and CR.
- */
-Graph.zapGremlins = function (text) {
-  var lastIndex = 0;
-  var checked = [];
-
-  for (var i = 0; i < text.length; i++) {
-    var code = text.charCodeAt(i);
-
-    // Removes all control chars except TAB, LF and CR
-    if (
-      !(
-        (code >= 32 || code == 9 || code == 10 || code == 13) &&
-        code != 0xffff &&
-        code != 0xfffe
-      )
-    ) {
-      checked.push(text.substring(lastIndex, i));
-      lastIndex = i + 1;
-    }
-  }
-
-  if (lastIndex > 0 && lastIndex < text.length) {
-    checked.push(text.substring(lastIndex));
-  }
-
-  return checked.length == 0 ? text : checked.join("");
-};
-
-/**
- * Turns the given string into an array.
- */
-Graph.stringToBytes = function (str) {
-  var arr = new Array(str.length);
-
-  for (var i = 0; i < str.length; i++) {
-    arr[i] = str.charCodeAt(i);
-  }
-
-  return arr;
-};
-
-/**
- * Turns the given array into a string.
- */
-Graph.bytesToString = function (arr) {
-  var result = new Array(arr.length);
-
-  for (var i = 0; i < arr.length; i++) {
-    result[i] = String.fromCharCode(arr[i]);
-  }
-
-  return result.join("");
-};
-
-/**
- * Turns the given array into a string.
- */
-Graph.base64EncodeUnicode = function (str) {
-  return btoa(
-    encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function (match, p1) {
-      return String.fromCharCode(parseInt(p1, 16));
-    }),
-  );
-};
-
-/**
- * Turns the given array into a string.
- */
-Graph.base64DecodeUnicode = function (str) {
-  return decodeURIComponent(
-    Array.prototype.map
-      .call(atob(str), function (c) {
-        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-      })
-      .join(""),
-  );
-};
-
-/**
- * Returns a base64 encoded version of the compressed outer XML of the given node.
- */
-Graph.compressNode = function (node, checked) {
-  var xml = m.mxUtils.getXml(node);
-
-  return Graph.compress(checked ? xml : Graph.zapGremlins(xml));
-};
-
-/**
- * Returns a base64 encoded version of the compressed string.
- */
-Graph.compress = function (data, deflate) {
-  if (data == null || data.length == 0 || typeof pako === "undefined") {
-    return data;
-  } else {
-    var tmp = deflate
-      ? pako.deflate(encodeURIComponent(data), { to: "string" })
-      : pako.deflateRaw(encodeURIComponent(data), { to: "string" });
-
-    return window.btoa ? btoa(tmp) : Base64.encode(tmp, true);
-  }
-};
-
-/**
- * Returns a decompressed version of the base64 encoded string.
- */
-Graph.decompress = function (data, inflate, checked) {
-  if (data == null || data.length == 0 || typeof pako === "undefined") {
-    return data;
-  } else {
-    var tmp = window.atob ? atob(data) : Base64.decode(data, true);
-
-    var inflated = decodeURIComponent(
-      inflate
-        ? pako.inflate(tmp, { to: "string" })
-        : pako.inflateRaw(tmp, { to: "string" }),
-    );
-
-    return checked ? inflated : Graph.zapGremlins(inflated);
-  }
-};
-
-/**
- * Removes formatting from pasted HTML.
- */
-Graph.removePasteFormatting = function (elt) {
-  while (elt != null) {
-    if (elt.firstChild != null) {
-      Graph.removePasteFormatting(elt.firstChild);
-    }
-
-    if (elt.nodeType == m.mxConstants.NODETYPE_ELEMENT && elt.style != null) {
-      elt.style.whiteSpace = "";
-
-      if (elt.style.color == "#000000") {
-        elt.style.color = "";
-      }
-    }
-
-    elt = elt.nextSibling;
-  }
-};
-
-/**
- * Sanitizes the given HTML markup.
- */
-Graph.sanitizeHtml = function (value, editing) {
-  // Uses https://code.google.com/p/google-caja/wiki/JsHtmlSanitizer
-  // NOTE: Original minimized sanitizer was modified to support
-  // data URIs for images, mailto and special data:-links.
-  // LATER: Add MathML to whitelisted tags
-  function urlX(link) {
-    if (
-      link != null &&
-      link.toString().toLowerCase().substring(0, 11) !== "javascript:"
-    ) {
-      return link;
-    }
-
-    return null;
-  }
-  function idX(id) {
-    return id;
-  }
-
-  return html_sanitize(value, urlX, idX);
-};
-
-/**
- * Returns the CSS font family from the given computed style.
- */
-Graph.stripQuotes = function (text) {
-  if (text != null) {
-    if (text.charAt(0) == "'") {
-      text = text.substring(1);
-    }
-
-    if (text.charAt(text.length - 1) == "'") {
-      text = text.substring(0, text.length - 1);
-    }
-
-    if (text.charAt(0) == '"') {
-      text = text.substring(1);
-    }
-
-    if (text.charAt(text.length - 1) == '"') {
-      text = text.substring(0, text.length - 1);
-    }
-  }
-
-  return text;
-};
-
-/**
- * Returns true if the given string is a link.
- *
- * See https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
- */
-Graph.isLink = function (text) {
-  return text != null && Graph.linkPattern.test(text);
-};
-
-/**
- * Regular expression for links.
- */
-Graph.linkPattern = new RegExp(
-  "^(https?:\\/\\/)?" + // protocol
-    "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-    "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-    "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-    "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-    "(\\#[-a-z\\d_]*)?$",
-  "i",
-); // fragment locator
 
 /**
  * Graph inherits from mxGraph.
  */
-m.mxUtils.extend(Graph, m.mxGraph);
+//m.mxUtils.extend(Graph, m.mxGraph);
 
 /**
  * Allows all values in fit.
@@ -5707,7 +5704,7 @@ TableLayout.prototype.execute = function (parent) {
   var mxGraphViewResetValidationState =
     m.mxGraphView.prototype.resetValidationState;
   m.mxGraphView.prototype.resetValidationState = function () {
-    m.mxGraphViewResetValidationState.apply(this, arguments);
+    mxGraphViewResetValidationState.apply(this, arguments);
 
     this.validEdges = [];
   };
@@ -5733,7 +5730,7 @@ TableLayout.prototype.execute = function (parent) {
       this.graph.cellRenderer.redraw(state, false, this.isRendering());
     }
 
-    state = m.mxGraphViewValidateCellState.apply(this, arguments);
+    state = mxGraphViewValidateCellState.apply(this, arguments);
 
     // Adds to the list of edges that may intersect with later edges
     if (
@@ -5756,7 +5753,7 @@ TableLayout.prototype.execute = function (parent) {
   var mxCellRendererIsShapeInvalid = m.mxCellRenderer.prototype.isShapeInvalid;
   m.mxCellRenderer.prototype.isShapeInvalid = function (state, shape) {
     return (
-      m.mxCellRendererIsShapeInvalid.apply(this, arguments) ||
+      mxCellRendererIsShapeInvalid.apply(this, arguments) ||
       (state.routedPoints != null &&
         shape.routedPoints != null &&
         !m.mxUtils.equalPoints(shape.routedPoints, state.routedPoints))
@@ -5768,7 +5765,7 @@ TableLayout.prototype.execute = function (parent) {
    */
   var mxGraphViewUpdateCellState = m.mxGraphView.prototype.updateCellState;
   m.mxGraphView.prototype.updateCellState = function (state) {
-    m.mxGraphViewUpdateCellState.apply(this, arguments);
+    mxGraphViewUpdateCellState.apply(this, arguments);
 
     // Updates jumps on invalid edge before repaint
     if (
@@ -6210,7 +6207,7 @@ TableLayout.prototype.execute = function (parent) {
       }
     }
 
-    return m.mxCellRendererCreateShape.apply(this, arguments);
+    return mxCellRendererCreateShape.apply(this, arguments);
   };
 })();
 
@@ -6579,8 +6576,7 @@ if (typeof m.mxVertexHandler != "undefined") {
     var mxConnectionHandlerCreateMarker =
       m.mxConnectionHandler.prototype.createMarker;
     m.mxConnectionHandler.prototype.createMarker = function () {
-      //var marker = m.mxConnectionHandlerCreateMarker.apply(this, arguments);
-      var marker = new m.mxConnectionHandler(this, arguments).createMarker();
+      var marker = mxConnectionHandlerCreateMarker.apply(this, arguments);
 
       var markerGetCell = marker.getCell;
       marker.getCell = m.mxUtils.bind(this, function (me) {
@@ -12093,18 +12089,35 @@ if (typeof m.mxVertexHandler != "undefined") {
     };
 
     // Disables connection points
-    var connectionHandlerInit = m.mxConnectionHandler.prototype.init;
+ /*
+		var connectionHandlerInit = m.mxConnectionHandler.prototype.init;
+		
+		m.mxConnectionHandler.prototype.init = function()
+		{
+			connectionHandlerInit.apply(this, arguments);
+			
+			this.constraintHandler.isEnabled = m.mxUtils.bind(this, function()
+			{
+				return this.graph.connectionHandler.isEnabled();
+			});
+		};
+	*/	
+				
+      var constraintHandler = new m.mxConnectionHandler(this, arguments);
 
+      constraintHandler.isEnabled = m.mxUtils.bind(this, function () {
+        return this.graph.connectionHandler.isEnabled();
+      });
+      
+ /*   
     m.mxConnectionHandler.prototype.init = function () {
-	/*GS*/
-      //connectionHandlerInit.apply(this, arguments);
-      this.constraintHandler = new m.connectionHandler(this, arguments);
+      this.constraintHandler = new m.mxConnectionHandler(this, arguments);
 
       this.constraintHandler.isEnabled = m.mxUtils.bind(this, function () {
         return this.graph.connectionHandler.isEnabled();
       });
     };
-
+*/
     // Updates special handles
     var vertexHandlerRedrawHandles = m.mxVertexHandler.prototype.redrawHandles;
     m.mxVertexHandler.prototype.redrawHandles = function () {
@@ -12310,5 +12323,5 @@ if (typeof m.mxVertexHandler != "undefined") {
 }
 
 /*GS*/
-Graph.prototype = new m.mxGraph();
+//Graph.prototype = new m.mxGraph();
 

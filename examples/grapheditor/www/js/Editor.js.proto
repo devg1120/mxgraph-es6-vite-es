@@ -5,57 +5,41 @@
  * Editor constructor executed on page load.
  */
 import * as m   from "../../../../../dist/mxgraph.es.js";
-import {Graph}   from "./Graph.js";
+import {Graph} from "./Graph.js";
 
-export class Editor extends m.mxEventSource {
-
-constructor(chromeless, themes, model, graph, editable) {
-	super();
+//Editor = function (chromeless, themes, model, graph, editable) {
+export  function Editor(chromeless, themes, model, graph, editable) {
+  //m.mxEventSource.call(this);
   this.chromeless = chromeless != null ? chromeless : this.chromeless;
   this.initStencilRegistry();
   this.graph = graph || this.createGraph(themes, model);
   this.editable = editable != null ? editable : !chromeless;
   this.undoManager = this.createUndoManager();
   this.status = "";
-  this.pageCounter = 0;
 
-
-
-  this.graph.getModel().addListener(
-    m.mxEvent.CHANGE,
-    m.mxUtils.bind(this, function () {
-      this.graphChangeListener.apply(this, arguments);
-    }),
-  );
-
-  // Sets persistent graph state defaults
-  this.graph.resetViewOnRootChange = false;
-  this.init();
-}
-
-  getOrCreateFilename() {
+  this.getOrCreateFilename = function () {
     return (
       this.filename || m.mxResources.get("drawing", [Editor.pageCounter]) + ".xml"
     );
   };
 
-  getFilename(){
+  this.getFilename = function () {
     return this.filename;
   };
 
   // Sets the status and fires a statusChanged event
-  setStatus(value) {
+  this.setStatus = function (value) {
     this.status = value;
     this.fireEvent(new m.mxEventObject("statusChanged"));
   };
 
   // Returns the current status
-  getStatus() {
+  this.getStatus = function () {
     return this.status;
   };
 
   // Updates modified state if graph changes
-  graphChangeListener(sender, eventObject) {
+  this.graphChangeListener = function (sender, eventObject) {
     var edit = eventObject != null ? eventObject.getProperty("edit") : null;
 
     if (edit == null || !edit.ignoreEdit) {
@@ -63,7 +47,6 @@ constructor(chromeless, themes, model, graph, editable) {
     }
   };
 
-/*
   this.graph.getModel().addListener(
     m.mxEvent.CHANGE,
     m.mxUtils.bind(this, function () {
@@ -74,13 +57,15 @@ constructor(chromeless, themes, model, graph, editable) {
   // Sets persistent graph state defaults
   this.graph.resetViewOnRootChange = false;
   this.init();
-  */
 };
+
+/*GS*/
+Editor.prototype = new  m.mxEventSource();
 
 /**
  * Counts open editor tabs (must be global for cross-window access)
  */
-//Editor.pageCounter = 0;
+Editor.pageCounter = 0;
 
 // Cross-domain window access is not allowed in FF, so if we
 // were opened from another domain then this will fail.
@@ -300,7 +285,7 @@ Editor.popupsAllowed = true;
 /**
  * Editor inherits from mxEventSource
  */
-//GS   m.mxUtils.extend(Editor, m.mxEventSource);
+m.mxUtils.extend(Editor, m.mxEventSource);
 
 /**
  * Stores initial state of mxClient.NO_FO.
@@ -2739,7 +2724,7 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
   var mxConnectionHandlerCreateMarker =
     m.mxConnectionHandler.prototype.createMarker;
   m.mxConnectionHandler.prototype.createMarker = function () {
-    var marker = mxConnectionHandlerCreateMarker.apply(this, arguments);
+    var marker = m.mxConnectionHandlerCreateMarker.apply(this, arguments);
 
     marker.intersects = m.mxUtils.bind(this, function (state, evt) {
       if (this.isConnecting()) {

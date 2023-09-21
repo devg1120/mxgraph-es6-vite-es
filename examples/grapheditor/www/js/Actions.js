@@ -5,13 +5,25 @@
  * Constructs the actions object for the given UI.
  */
 import * as m   from "../../../../../dist/mxgraph.es.js";
+import {Editor} from "./Editor.js";
 
+/*
 export function Actions(editorUi) {
   this.editorUi = editorUi;
   this.actions = new Object();
   this.init();
 }
+*/
 
+export class  Actions extends m.mxEventSource {
+
+  constructor(editorUi) {
+   super();
+  this.editorUi = editorUi;
+  this.actions = new Object();
+  this.init();
+  }
+}; //class end
 /**
  * Adds the default actions.
  */
@@ -1978,6 +1990,7 @@ Actions.prototype.get = function (name) {
 /**
  * Constructs a new action for the given parameters.
  */
+/*
 function Action(label, funct, enabled, iconCls, shortcut) {
   m.mxEventSource.call(this);
   this.label = label;
@@ -1987,9 +2000,22 @@ function Action(label, funct, enabled, iconCls, shortcut) {
   this.shortcut = shortcut;
   this.visible = true;
 }
+*/
+export class  Action extends m.mxEventSource {
+
+  constructor(label, funct, enabled, iconCls, shortcut) {
+   super();
+  this.label = label;
+  this.funct = this.createFunction(funct);
+  this.enabled = enabled != null ? enabled : true;
+  this.iconCls = iconCls;
+  this.shortcut = shortcut;
+  this.visible = true;
+  }
+}; //class end
 
 // Action inherits from mxEventSource
-m.mxUtils.extend(Action, m.mxEventSource);
+//m.mxUtils.extend(Action, m.mxEventSource);
 
 /**
  * Sets the enabled state of the action and fires a stateChanged event.

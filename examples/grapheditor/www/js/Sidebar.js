@@ -6,6 +6,7 @@
  */
 
 import * as m   from "../../../../../dist/mxgraph.es.js";
+import {Editor}  from "./Editor.js";
 
 export function Sidebar(editorUi, container) {
   this.editorUi = editorUi;

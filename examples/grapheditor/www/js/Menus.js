@@ -9,6 +9,7 @@ import * as m   from "../../../../../dist/mxgraph.es.js";
 import {EditorUi}  from "./EditorUi.js";
 
 //Menus = function (editorUi) {
+/*
 export  function Menus(editorUi) {
   this.editorUi = editorUi;
   this.menus = new Object();
@@ -19,6 +20,28 @@ export  function Menus(editorUi) {
     new Image().src = this.checkmarkImage;
   }
 };
+*/
+
+export class Menus extends m.mxEventSource {
+
+constructor(editorUi) {
+	super();
+  this.editorUi = editorUi;
+  this.menus = new Object();
+  this.init();
+
+  // Pre-fetches checkmark image
+  if (!m.mxClient.IS_SVG) {
+    new Image().src = this.checkmarkImage;
+  }
+
+
+}
+
+
+
+}
+
 
 /**
  * Sets the default font family.
@@ -1813,14 +1836,26 @@ Menubar.prototype.destroy = function () {
 /**
  * Constructs a new action for the given parameters.
  */
+/*
 function Menu(funct, enabled) {
   m.mxEventSource.call(this);
   this.funct = funct;
   this.enabled = enabled != null ? enabled : true;
 }
+*/
 
+export class Menu extends m.mxEventSource{
+ constructor(funct, enabled) {
+	 super();
+  this.funct = funct;
+  this.enabled = enabled != null ? enabled : true;
+ } 
+
+
+
+}
 // Menu inherits from mxEventSource
-m.mxUtils.extend(Menu, m.mxEventSource);
+//m.mxUtils.extend(Menu, m.mxEventSource);
 
 /**
  * Sets the enabled state of the action and fires a stateChanged event.
