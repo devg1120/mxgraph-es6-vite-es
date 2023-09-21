@@ -5,11 +5,10 @@
  * Editor constructor executed on page load.
  */
 import * as m   from "../../../../../dist/mxgraph.es.js";
-import {Graph} from "./Graph.js";
 
 //Editor = function (chromeless, themes, model, graph, editable) {
 export  function Editor(chromeless, themes, model, graph, editable) {
-  //m.mxEventSource.call(this);
+  m.mxEventSource.call(this);
   this.chromeless = chromeless != null ? chromeless : this.chromeless;
   this.initStencilRegistry();
   this.graph = graph || this.createGraph(themes, model);
@@ -58,9 +57,6 @@ export  function Editor(chromeless, themes, model, graph, editable) {
   this.graph.resetViewOnRootChange = false;
   this.init();
 };
-
-/*GS*/
-Editor.prototype = new  m.mxEventSource();
 
 /**
  * Counts open editor tabs (must be global for cross-window access)

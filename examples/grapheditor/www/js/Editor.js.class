@@ -5,47 +5,20 @@
  * Editor constructor executed on page load.
  */
 import * as m   from "../../../../../dist/mxgraph.es.js";
-import {Graph} from "./Graph.js";
 
-//Editor = function (chromeless, themes, model, graph, editable) {
-export  function Editor(chromeless, themes, model, graph, editable) {
-  //m.mxEventSource.call(this);
+export class Editor extends m.mxEventSource {
+
+constructor(chromeless, themes, model, graph, editable) {
+	super();
   this.chromeless = chromeless != null ? chromeless : this.chromeless;
   this.initStencilRegistry();
   this.graph = graph || this.createGraph(themes, model);
   this.editable = editable != null ? editable : !chromeless;
   this.undoManager = this.createUndoManager();
   this.status = "";
+  this.pageCounter = 0;
 
-  this.getOrCreateFilename = function () {
-    return (
-      this.filename || m.mxResources.get("drawing", [Editor.pageCounter]) + ".xml"
-    );
-  };
 
-  this.getFilename = function () {
-    return this.filename;
-  };
-
-  // Sets the status and fires a statusChanged event
-  this.setStatus = function (value) {
-    this.status = value;
-    this.fireEvent(new m.mxEventObject("statusChanged"));
-  };
-
-  // Returns the current status
-  this.getStatus = function () {
-    return this.status;
-  };
-
-  // Updates modified state if graph changes
-  this.graphChangeListener = function (sender, eventObject) {
-    var edit = eventObject != null ? eventObject.getProperty("edit") : null;
-
-    if (edit == null || !edit.ignoreEdit) {
-      this.setModified(true);
-    }
-  };
 
   this.graph.getModel().addListener(
     m.mxEvent.CHANGE,
@@ -57,15 +30,56 @@ export  function Editor(chromeless, themes, model, graph, editable) {
   // Sets persistent graph state defaults
   this.graph.resetViewOnRootChange = false;
   this.init();
-};
+}
 
-/*GS*/
-Editor.prototype = new  m.mxEventSource();
+  getOrCreateFilename() {
+    return (
+      this.filename || m.mxResources.get("drawing", [Editor.pageCounter]) + ".xml"
+    );
+  };
+
+  getFilename(){
+    return this.filename;
+  };
+
+  // Sets the status and fires a statusChanged event
+  setStatus(value) {
+    this.status = value;
+    this.fireEvent(new m.mxEventObject("statusChanged"));
+  };
+
+  // Returns the current status
+  getStatus() {
+    return this.status;
+  };
+
+  // Updates modified state if graph changes
+  graphChangeListener(sender, eventObject) {
+    var edit = eventObject != null ? eventObject.getProperty("edit") : null;
+
+    if (edit == null || !edit.ignoreEdit) {
+      this.setModified(true);
+    }
+  };
+
+/*
+  this.graph.getModel().addListener(
+    m.mxEvent.CHANGE,
+    m.mxUtils.bind(this, function () {
+      this.graphChangeListener.apply(this, arguments);
+    }),
+  );
+
+  // Sets persistent graph state defaults
+  this.graph.resetViewOnRootChange = false;
+  this.init();
+  */
+};
 
 /**
  * Counts open editor tabs (must be global for cross-window access)
  */
-Editor.pageCounter = 0;
+//Editor.pageCounter = 0;
 
 // Cross-domain window access is not allowed in FF, so if we
 // were opened from another domain then this will fail.

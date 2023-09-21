@@ -169,7 +169,7 @@ export function Graph  (
   themes,
   standalone,
 ) {
-  //m.mxGraph.call(this, container, model, renderHint, stylesheet);
+  m.mxGraph.call(this, container, model, renderHint, stylesheet);
 
   this.themes = themes || this.defaultThemes;
   this.currentEdgeStyle = m.mxUtils.clone(this.defaultEdgeStyle);
@@ -4383,7 +4383,6 @@ HoverIcons.prototype.init = function () {
   var connectionHandlerActive = false;
 
   // Implements a listener for hover and click handling
-	console.log(this.graph);
   this.graph.addMouseListener({
     mouseDown: m.mxUtils.bind(this, function (sender, me) {
       connectionHandlerActive = false;
@@ -6579,8 +6578,7 @@ if (typeof m.mxVertexHandler != "undefined") {
     var mxConnectionHandlerCreateMarker =
       m.mxConnectionHandler.prototype.createMarker;
     m.mxConnectionHandler.prototype.createMarker = function () {
-      //var marker = m.mxConnectionHandlerCreateMarker.apply(this, arguments);
-      var marker = new m.mxConnectionHandler(this, arguments).createMarker();
+      var marker = m.mxConnectionHandlerCreateMarker.apply(this, arguments);
 
       var markerGetCell = marker.getCell;
       marker.getCell = m.mxUtils.bind(this, function (me) {
@@ -12096,9 +12094,7 @@ if (typeof m.mxVertexHandler != "undefined") {
     var connectionHandlerInit = m.mxConnectionHandler.prototype.init;
 
     m.mxConnectionHandler.prototype.init = function () {
-	/*GS*/
-      //connectionHandlerInit.apply(this, arguments);
-      this.constraintHandler = new m.connectionHandler(this, arguments);
+      connectionHandlerInit.apply(this, arguments);
 
       this.constraintHandler.isEnabled = m.mxUtils.bind(this, function () {
         return this.graph.connectionHandler.isEnabled();
@@ -12308,7 +12304,3 @@ if (typeof m.mxVertexHandler != "undefined") {
     };
   })();
 }
-
-/*GS*/
-Graph.prototype = new m.mxGraph();
-
