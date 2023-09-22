@@ -4382,7 +4382,6 @@ HoverIcons.prototype.init = function () {
   var connectionHandlerActive = false;
 
   // Implements a listener for hover and click handling
-	console.log(this.graph);
   this.graph.addMouseListener({
     mouseDown: m.mxUtils.bind(this, function (sender, me) {
       connectionHandlerActive = false;

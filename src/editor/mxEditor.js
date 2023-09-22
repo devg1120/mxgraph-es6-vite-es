@@ -397,7 +397,7 @@ export class mxEditor extends mxEventSource {
       dec.decode(node, this);
       this.resetHistory();
     } else {
-      console.log("node null");
+      //console.log("node null");
 
     }
   }
