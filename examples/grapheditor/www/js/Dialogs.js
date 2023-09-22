@@ -4,6 +4,9 @@
 /**
  * Constructs a new open dialog.
  */
+
+import * as m   from "../../../../../dist/mxgraph.es.js";
+
 //export var OpenDialog = function () {
 export  function OpenDialog() {
   var iframe = document.createElement("iframe");
@@ -16,7 +19,7 @@ export  function OpenDialog() {
 
   // Adds padding as a workaround for box model in older IE versions
   var dx =
-    mxClient.IS_VML &&
+    m.mxClient.IS_VML &&
     (document.documentMode == null || document.documentMode < 8)
       ? 20
       : 0;
@@ -45,7 +48,7 @@ var ColorDialog = function (editorUi, color, apply, cancelFn) {
   input.style.width = "216px";
 
   // Required for picker to render in IE
-  if (mxClient.IS_IE) {
+  if (m.mxClient.IS_IE) {
     input.style.marginTop = "10px";
     document.body.appendChild(input);
   }
@@ -68,26 +71,26 @@ var ColorDialog = function (editorUi, color, apply, cancelFn) {
       applyFunction(color);
       editorUi.hideDialog();
     } else {
-      editorUi.handleError({ message: mxResources.get("invalidInput") });
+      editorUi.handleError({ message: m.mxResources.get("invalidInput") });
     }
   }
 
   this.init = function () {
-    if (!mxClient.IS_TOUCH) {
+    if (!m.mxClient.IS_TOUCH) {
       input.focus();
     }
   };
 
-  var picker = new mxJSColor.color(input);
+  var picker = new m.mxJSColor.color(input);
   picker.pickerOnfocus = false;
   picker.showPicker();
 
   var div = document.createElement("div");
-  mxJSColor.picker.box.style.position = "relative";
-  mxJSColor.picker.box.style.width = "230px";
-  mxJSColor.picker.box.style.height = "100px";
-  mxJSColor.picker.box.style.paddingBottom = "10px";
-  div.appendChild(mxJSColor.picker.box);
+  m.mxJSColor.picker.box.style.position = "relative";
+  m.mxJSColor.picker.box.style.width = "230px";
+  m.mxJSColor.picker.box.style.height = "100px";
+  m.mxJSColor.picker.box.style.paddingBottom = "10px";
+  div.appendChild(m.mxJSColor.picker.box);
 
   var center = document.createElement("center");
 
@@ -144,7 +147,7 @@ var ColorDialog = function (editorUi, color, apply, cancelFn) {
           if (clr != null) {
             td.style.cursor = "pointer";
 
-            mxEvent.addListener(td, "click", function () {
+            m.mxEvent.addListener(td, "click", function () {
               if (clr == "none") {
                 picker.fromString("ffffff");
                 input.value = "none";
@@ -153,7 +156,7 @@ var ColorDialog = function (editorUi, color, apply, cancelFn) {
               }
             });
 
-            mxEvent.addListener(td, "dblclick", doApply);
+            m.mxEvent.addListener(td, "dblclick", doApply);
           }
         })(presets[row * rowLength + i]);
       }
@@ -163,7 +166,7 @@ var ColorDialog = function (editorUi, color, apply, cancelFn) {
 
     if (addResetOption) {
       var td = document.createElement("td");
-      td.setAttribute("title", mxResources.get("reset"));
+      td.setAttribute("title", m.mxResources.get("reset"));
       td.style.border = "1px solid black";
       td.style.padding = "0px";
       td.style.width = "16px";
@@ -175,7 +178,7 @@ var ColorDialog = function (editorUi, color, apply, cancelFn) {
 
       tr.appendChild(td);
 
-      mxEvent.addListener(td, "click", function () {
+      m.mxEvent.addListener(td, "click", function () {
         ColorDialog.resetRecentColors();
         table.parentNode.replaceChild(createRecentColorTable(), table);
       });
@@ -187,7 +190,7 @@ var ColorDialog = function (editorUi, color, apply, cancelFn) {
   }
 
   div.appendChild(input);
-  mxUtils.br(div);
+  m.mxUtils.br(div);
 
   // Adds recent colors
   createRecentColorTable();
@@ -204,7 +207,7 @@ var ColorDialog = function (editorUi, color, apply, cancelFn) {
   buttons.style.textAlign = "right";
   buttons.style.whiteSpace = "nowrap";
 
-  var cancelBtn = mxUtils.button(mxResources.get("cancel"), function () {
+  var cancelBtn = m.mxUtils.button(m.mxResources.get("cancel"), function () {
     editorUi.hideDialog();
 
     if (cancelFn != null) {
@@ -217,7 +220,7 @@ var ColorDialog = function (editorUi, color, apply, cancelFn) {
     buttons.appendChild(cancelBtn);
   }
 
-  var applyBtn = mxUtils.button(mxResources.get("apply"), doApply);
+  var applyBtn = m.mxUtils.button(m.mxResources.get("apply"), doApply);
   applyBtn.className = "geBtn gePrimaryBtn";
   buttons.appendChild(applyBtn);
 
@@ -240,7 +243,7 @@ var ColorDialog = function (editorUi, color, apply, cancelFn) {
 
   // LATER: Only fires if input if focused, should always
   // fire if this dialog is showing.
-  mxEvent.addListener(div, "keydown", function (e) {
+  m.mxEvent.addListener(div, "keydown", function (e) {
     if (e.keyCode == 27) {
       editorUi.hideDialog();
 
@@ -248,7 +251,7 @@ var ColorDialog = function (editorUi, color, apply, cancelFn) {
         cancelFn();
       }
 
-      mxEvent.consume(e);
+      m.mxEvent.consume(e);
     }
   });
 
@@ -415,14 +418,14 @@ ColorDialog.prototype.defaultColors = [
  * Creates function to apply value
  */
 ColorDialog.prototype.createApplyFunction = function () {
-  return mxUtils.bind(this, function (color) {
+  return m.mxUtils.bind(this, function (color) {
     var graph = this.editorUi.editor.graph;
 
     graph.getModel().beginUpdate();
     try {
       graph.setCellStyles(this.currentColorKey, color);
       this.editorUi.fireEvent(
-        new mxEventObject(
+        new m.mxEventObject(
           "styleChanged",
           "keys",
           [this.currentColorKey],
@@ -448,7 +451,7 @@ ColorDialog.recentColors = [];
  */
 ColorDialog.addRecentColor = function (color, max) {
   if (color != null) {
-    mxUtils.remove(color, ColorDialog.recentColors);
+    m.mxUtils.remove(color, ColorDialog.recentColors);
     ColorDialog.recentColors.splice(0, 0, color);
 
     if (ColorDialog.recentColors.length >= max) {
@@ -471,7 +474,7 @@ var AboutDialog = function (editorUi) {
   var div = document.createElement("div");
   div.setAttribute("align", "center");
   var h3 = document.createElement("h3");
-  mxUtils.write(h3, mxResources.get("about") + " GraphEditor");
+  m.mxUtils.write(h3, m.mxResources.get("about") + " GraphEditor");
   div.appendChild(h3);
   var img = document.createElement("img");
   img.style.border = "0px";
@@ -479,17 +482,17 @@ var AboutDialog = function (editorUi) {
   img.setAttribute("width", "151");
   img.setAttribute("src", IMAGE_PATH + "/logo.png");
   div.appendChild(img);
-  mxUtils.br(div);
-  mxUtils.write(div, "Powered by mxGraph " + mxClient.VERSION);
-  mxUtils.br(div);
+  m.mxUtils.br(div);
+  m.mxUtils.write(div, "Powered by mxGraph " + m.mxClient.VERSION);
+  m.mxUtils.br(div);
   var link = document.createElement("a");
   link.setAttribute("href", "http://www.jgraph.com/");
   link.setAttribute("target", "_blank");
-  mxUtils.write(link, "www.jgraph.com");
+  m.mxUtils.write(link, "www.jgraph.com");
   div.appendChild(link);
-  mxUtils.br(div);
-  mxUtils.br(div);
-  var closeBtn = mxUtils.button(mxResources.get("close"), function () {
+  m.mxUtils.br(div);
+  m.mxUtils.br(div);
+  var closeBtn = m.mxUtils.button(m.mxResources.get("close"), function () {
     editorUi.hideDialog();
   });
   closeBtn.className = "geBtn gePrimaryBtn";
@@ -530,7 +533,7 @@ var TextareaDialog = function (
   td = document.createElement("td");
   td.style.fontSize = "10pt";
   td.style.width = "100px";
-  mxUtils.write(td, title);
+  m.mxUtils.write(td, title);
 
   row.appendChild(td);
   tbody.appendChild(row);
@@ -549,7 +552,7 @@ var TextareaDialog = function (
   nameInput.setAttribute("autocomplete", "off");
   nameInput.setAttribute("autocapitalize", "off");
 
-  mxUtils.write(nameInput, url || "");
+  m.mxUtils.write(nameInput, url || "");
   nameInput.style.resize = "none";
   nameInput.style.width = w + "px";
   nameInput.style.height = h + "px";
@@ -573,7 +576,7 @@ var TextareaDialog = function (
   td.setAttribute("align", "right");
 
   if (helpLink != null) {
-    var helpBtn = mxUtils.button(mxResources.get("help"), function () {
+    var helpBtn = m.mxUtils.button(m.mxResources.get("help"), function () {
       editorUi.editor.graph.openLink(helpLink);
     });
     helpBtn.className = "geBtn";
@@ -807,7 +810,7 @@ var ExportDialog = function (editorUi) {
 
   var table = document.createElement("table");
   var tbody = document.createElement("tbody");
-  table.setAttribute("cellpadding", mxClient.IS_SF ? "0" : "2");
+  table.setAttribute("cellpadding", m.mxClient.IS_SF ? "0" : "2");
 
   row = document.createElement("tr");
 
@@ -1395,7 +1398,7 @@ var EditDataDialog = function (ui, cell) {
     var img = mxUtils.createImage(Dialog.prototype.closeImage);
     img.style.height = "9px";
     img.style.fontSize = "9px";
-    img.style.marginBottom = mxClient.IS_IE11 ? "-1px" : "5px";
+    img.style.marginBottom = m.mxClient.IS_IE11 ? "-1px" : "5px";
 
     removeAttr.className = "geButton";
     removeAttr.setAttribute("title", mxResources.get("delete"));
@@ -1506,7 +1509,7 @@ var EditDataDialog = function (ui, cell) {
   nameInput.setAttribute("type", "text");
   nameInput.setAttribute(
     "size",
-    mxClient.IS_IE || mxClient.IS_IE11 ? "36" : "40",
+    m.mxClient.IS_IE || m.mxClient.IS_IE11 ? "36" : "40",
   );
   nameInput.style.boxSizing = "border-box";
   nameInput.style.marginLeft = "2px";
@@ -1674,7 +1677,7 @@ var EditDataDialog = function (ui, cell) {
       icon.style.width = "16px";
       icon.setAttribute("border", "0");
       icon.setAttribute("valign", "middle");
-      icon.style.marginTop = mxClient.IS_IE11 ? "0px" : "-4px";
+      icon.style.marginTop = m.mxClient.IS_IE11 ? "0px" : "-4px";
       icon.setAttribute("src", Editor.helpImage);
       link.appendChild(icon);
 
@@ -1729,7 +1732,7 @@ var LinkDialog = function (editorUi, initialValue, btnLabel, fn) {
   inner.style.textOverflow = "clip";
   inner.style.cursor = "default";
 
-  if (!mxClient.IS_VML) {
+  if (!m.mxClient.IS_VML) {
     inner.style.paddingRight = "20px";
   }
 
@@ -1754,8 +1757,8 @@ var LinkDialog = function (editorUi, initialValue, btnLabel, fn) {
   cross.style.cursor = "pointer";
 
   // Workaround for inline-block not supported in IE
-  cross.style.display = mxClient.IS_VML ? "inline" : "inline-block";
-  cross.style.top = (mxClient.IS_VML ? 0 : 3) + "px";
+  cross.style.display = m.mxClient.IS_VML ? "inline" : "inline-block";
+  cross.style.top = (m.mxClient.IS_VML ? 0 : 3) + "px";
 
   // Needed to block event transparency in IE
   cross.style.background = "url(" + IMAGE_PATH + "/transparent.gif)";
@@ -1773,10 +1776,10 @@ var LinkDialog = function (editorUi, initialValue, btnLabel, fn) {
     linkInput.focus();
 
     if (
-      mxClient.IS_GC ||
-      mxClient.IS_FF ||
+      m.mxClient.IS_GC ||
+      m.mxClient.IS_FF ||
       document.documentMode >= 5 ||
-      mxClient.IS_QUIRKS
+      m.mxClient.IS_QUIRKS
     ) {
       linkInput.select();
     } else {
@@ -2069,14 +2072,14 @@ var LayersWindow = function (editorUi, x, y, w, h) {
   ldiv.style.display = "block";
   ldiv.style.whiteSpace = "nowrap";
 
-  if (mxClient.IS_QUIRKS) {
+  if (m.mxClient.IS_QUIRKS) {
     ldiv.style.filter = "none";
   }
 
   var link = document.createElement("a");
   link.className = "geButton";
 
-  if (mxClient.IS_QUIRKS) {
+  if (m.mxClient.IS_QUIRKS) {
     link.style.filter = "none";
   }
 
@@ -2305,7 +2308,7 @@ var LayersWindow = function (editorUi, x, y, w, h) {
         dragSource = ldiv;
 
         // Workaround for no DnD on DIV in FF
-        if (mxClient.IS_FF) {
+        if (m.mxClient.IS_FF) {
           // LATER: Check what triggers a parse as XML on this in FF after drop
           evt.dataTransfer.setData("Text", "<layer/>");
         }
@@ -2392,10 +2395,10 @@ var LayersWindow = function (editorUi, x, y, w, h) {
       if (graph.isEnabled()) {
         // Fallback if no drag and drop is available
         if (
-          mxClient.IS_TOUCH ||
-          mxClient.IS_POINTER ||
-          mxClient.IS_VML ||
-          (mxClient.IS_IE && document.documentMode < 10)
+          m.mxClient.IS_TOUCH ||
+          m.mxClient.IS_POINTER ||
+          m.mxClient.IS_VML ||
+          (m.mxClient.IS_IE && document.documentMode < 10)
         ) {
           var right = document.createElement("div");
           right.style.display = "block";
@@ -2458,8 +2461,8 @@ var LayersWindow = function (editorUi, x, y, w, h) {
         }
 
         if (
-          mxClient.IS_SVG &&
-          (!mxClient.IS_IE || document.documentMode >= 10)
+          m.mxClient.IS_SVG &&
+          (!m.mxClient.IS_IE || document.documentMode >= 10)
         ) {
           ldiv.setAttribute("draggable", "true");
           ldiv.style.cursor = "move";

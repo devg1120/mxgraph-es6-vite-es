@@ -41,7 +41,8 @@ Toolbar.prototype.dropdownImage = !m.mxClient.IS_SVG
  */
 Toolbar.prototype.dropdownImageHtml =
   '<img border="0" style="position:absolute;right:4px;top:' +
-  (!EditorUi.compactUi ? 8 : 6) +
+//  (!EditorUi.compactUi ? 8 : 6) +
+	8 +    /*GS-PD*/
   'px;" src="' +
   Toolbar.prototype.dropdownImage +
   '" valign="middle"/>';

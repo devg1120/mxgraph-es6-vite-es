@@ -9,6 +9,11 @@ import * as m   from "../../../../../dist/mxgraph.es.js";
 import {Actions}  from "./Actions.js";
 import {Sidebar}  from "./Sidebar.js";
 import {Graph}  from "./Graph.js";
+import {HoverIcons}  from "./Graph.js";
+import {Format}  from "./Format.js";
+import {Toolbar}  from "./Toolbar.js";
+import {Dialog}  from "./Editor.js";
+import {ErrorDialog}  from "./Editor.js";
 
 //EditorUi = function (editor, container, lightbox) {
 //export  function EditorUi(editor, container, lightbox) {
@@ -4223,6 +4228,7 @@ EditorUi.prototype.handleError = function (
   invokeFnOnClose,
   notFoundMessage,
 ) {
+
   var e = resp != null && resp.error != null ? resp.error : resp;
 
   if (e != null || title != null) {

@@ -6,6 +6,8 @@
 //
 
 import * as m   from "../../../../../dist/mxgraph.es.js";
+import {Sidebar} from "./Sidebar.js";
+import {Editor} from "./Editor.js";
 
 if (typeof html4 !== "undefined") {
   html4.ATTRIBS["a::target"] = 0;
@@ -4150,7 +4152,7 @@ Graph.prototype.zapGremlins = function (text) {
 /**
  * Hover icons are used for hover, vertex handler and drag from sidebar.
  */
-var HoverIcons = function (graph) {
+export  function HoverIcons(graph) {
   this.graph = graph;
   this.init();
 };
@@ -5944,7 +5946,7 @@ TableLayout.prototype.execute = function (parent) {
       this.state.routedPoints == null ||
       this.state.routedPoints.length == 0
     ) {
-      m.mxConnectorPaintLine.apply(this, arguments);
+      mxConnectorPaintLine.apply(this, arguments);
     } else {
       var arcSize =
         m.mxUtils.getValue(
@@ -9788,13 +9790,13 @@ if (typeof m.mxVertexHandler != "undefined") {
           m.mxUtils.getValue(state.style, "nl2Br", "1") != "0";
       }
 
-      m.mxCellRendererInitializeLabel.apply(this, arguments);
+       mxCellRendererInitializeLabel.apply(this, arguments);
     };
 
     var mxConstraintHandlerUpdate = m.mxConstraintHandler.prototype.update;
     m.mxConstraintHandler.prototype.update = function (me, source) {
       if (this.isKeepFocusEvent(me) || !m.mxEvent.isAltDown(me.getEvent())) {
-        m.mxConstraintHandlerUpdate.apply(this, arguments);
+        mxConstraintHandlerUpdate.apply(this, arguments);
       } else {
         this.reset();
       }
@@ -11247,14 +11249,14 @@ if (typeof m.mxVertexHandler != "undefined") {
       HoverIcons.prototype.secondaryHandle;
     m.mxOutline.prototype.sizerImage = HoverIcons.prototype.mainHandle;
 
-    if (window.Sidebar != null) {
+    //if (window.Sidebar != null) {
       Sidebar.prototype.triangleUp = HoverIcons.prototype.triangleUp;
       Sidebar.prototype.triangleRight = HoverIcons.prototype.triangleRight;
       Sidebar.prototype.triangleDown = HoverIcons.prototype.triangleDown;
       Sidebar.prototype.triangleLeft = HoverIcons.prototype.triangleLeft;
       Sidebar.prototype.refreshTarget = HoverIcons.prototype.refreshTarget;
       Sidebar.prototype.roundDrop = HoverIcons.prototype.roundDrop;
-    }
+    //}
 
     // Pre-fetches images (only needed for non data-uris)
     if (!m.mxClient.IS_SVG) {
@@ -11766,7 +11768,7 @@ if (typeof m.mxVertexHandler != "undefined") {
           Math.round(bbox.height),
         );
       } else {
-        return m.mxVertexHandlerGetSelectionBounds.apply(this, arguments);
+        return mxVertexHandlerGetSelectionBounds.apply(this, arguments);
       }
     };
 
@@ -11790,7 +11792,7 @@ if (typeof m.mxVertexHandler != "undefined") {
         this.state.width >= 2 ||
         this.state.height >= 2
       ) {
-        m.mxVertexHandlerMouseDown.apply(this, arguments);
+        mxVertexHandlerMouseDown.apply(this, arguments);
       }
     };
 

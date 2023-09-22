@@ -7,8 +7,10 @@
 
 import * as m   from "../../../../../dist/mxgraph.es.js";
 import {Editor}  from "./Editor.js";
+import {Graph} from "./Graph.js";
 
-export function Sidebar(editorUi, container) {
+export class Sidebar {
+constructor(editorUi, container) {
   this.editorUi = editorUi;
   this.container = container;
   this.palettes = new Object();
@@ -89,7 +91,9 @@ export function Sidebar(editorUi, container) {
   );
 
   this.init();
-}
+};  // constructor end
+
+}; // class end
 
 /**
  * Adds all palettes to the sidebar.
@@ -5941,8 +5945,7 @@ Sidebar.prototype.createDragSource = function (
     if (tooltip != null) {
       arrow.setAttribute("title", tooltip);
     }
-
-    m.mxUtils.setOpacity(arrow, img == this.refreshTarget ? 30 : 20);
+    //m.mxUtils.setOpacity(arrow, img == this.refreshTarget ? 30 : 20);    /*GS-PD*/
     arrow.style.position = "absolute";
     arrow.style.cursor = "crosshair";
 
@@ -5954,6 +5957,8 @@ Sidebar.prototype.createDragSource = function (
   var currentStyleTarget = null;
   var activeTarget = false;
 
+    //console.dir(this);
+    //console.dir(this.refreshTarget);
   var arrowUp = createArrow(this.triangleUp, m.mxResources.get("connect"));
   var arrowRight = createArrow(this.triangleRight, m.mxResources.get("connect"));
   var arrowDown = createArrow(this.triangleDown, m.mxResources.get("connect"));

@@ -3,7 +3,9 @@
  */
 
 import * as m   from "../../../../../dist/mxgraph.es.js";
-
+import {Editor} from "./Editor.js";
+import {Dialog} from "./Editor.js";
+import {PageSetupDialog} from "./Editor.js";
 
 //Format = function (editorUi, container) {
 export function Format(editorUi, container) {
@@ -1304,7 +1306,8 @@ BaseFormatPanel.prototype.addArrow = function (elt, height) {
   height = height != null ? height : 10;
 
   var arrow = document.createElement("div");
-  arrow.style.display = m.mxClient.IS_QUIRKS ? "inline" : "inline-block";
+  //arrow.style.display = m.mxClient.IS_QUIRKS ? "inline" : "inline-block";
+  arrow.style.display =  "inline-block";   /* GS-PD */
   arrow.style.padding = "6px";
   arrow.style.paddingRight = "4px";
 
@@ -1320,12 +1323,23 @@ BaseFormatPanel.prototype.addArrow = function (elt, height) {
 
   arrow.style.height = height + "px";
   arrow.style.borderLeft = "1px solid #a0a0a0";
+/* GS-PD
   arrow.innerHTML =
     '<img border="0" src="' +
     (m.mxClient.IS_SVG
       ? "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAHBJREFUeNpidHB2ZyAGsACxDRBPIKCuA6TwCBB/h2rABu4A8SYmKCcXiP/iUFgAxL9gCi8A8SwsirZCMQMTkmANEH9E4v+CmsaArvAdyNFI/FlQ92EoBIE+qCRIUz168DBgsU4OqhinQpgHMABAgAEALY4XLIsJ20oAAAAASUVORK5CYII="
       : IMAGE_PATH + "/dropdown.png") +
     '" style="margin-bottom:4px;">';
+
+  m.mxUtils.setOpacity(arrow, 70);
+*/
+ /* GS-PD */
+  arrow.innerHTML =
+    '<img border="0" src="' +
+       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAHBJREFUeNpidHB2ZyAGsACxDRBPIKCuA6TwCBB/h2rABu4A8SYmKCcXiP/iUFgAxL9gCi8A8SwsirZCMQMTkmANEH9E4v+CmsaArvAdyNFI/FlQ92EoBIE+qCRIUz168DBgsU4OqhinQpgHMABAgAEALY4XLIsJ20oAAAAASUVORK5CYII="
+       +
+    '" style="margin-bottom:4px;">';
+
   m.mxUtils.setOpacity(arrow, 70);
 
   var symbol = elt.getElementsByTagName("div")[0];
@@ -7766,7 +7780,7 @@ DiagramFormatPanel.prototype.addView = function (div) {
   if (DiagramFormatPanel.showPageView) {
     div.appendChild(
       this.createOption(
-        mxResources.get("pageView"),
+        m.mxResources.get("pageView"),
         function () {
           return graph.pageVisible;
         },
@@ -8168,7 +8182,7 @@ DiagramFormatPanel.prototype.addPaperSize = function (div) {
  */
 DiagramFormatPanel.prototype.addStyleOps = function (div) {
   var btn = m.mxUtils.button(
-    mxResources.get("editData"),
+    m.mxResources.get("editData"),
     m.mxUtils.bind(this, function (evt) {
       this.editorUi.actions.get("editData").funct();
     }),

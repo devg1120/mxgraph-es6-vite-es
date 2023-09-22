@@ -794,7 +794,7 @@ OpenFile.prototype.cancel = function (cancel) {
 /**
  * Basic dialogs that are available in the viewer (print dialog).
  */
-function Dialog(
+export function Dialog(
   editorUi,
   elt,
   w,
@@ -1065,7 +1065,7 @@ Dialog.prototype.close = function (cancel, isEsc) {
 /**
  *
  */
-var ErrorDialog = function (
+export function ErrorDialog (
   editorUi,
   title,
   message,
@@ -1078,6 +1078,10 @@ var ErrorDialog = function (
   buttonText3,
   fn3,
 ) {
+
+  console.log("ErrorDialog", title,message, fn);
+
+
   hide = hide != null ? hide : true;
 
   var div = document.createElement("div");
@@ -1457,7 +1461,8 @@ PrintDialog.previewEnabled = true;
 /**
  * Constructs a new page setup dialog.
  */
-var PageSetupDialog = function (editorUi) {
+//var PageSetupDialog = function (editorUi) {
+export function  PageSetupDialog (editorUi) {
   var graph = editorUi.editor.graph;
   var row, td;
 
