@@ -5,15 +5,12 @@
 import * as m   from "../../../../../dist/mxgraph.es.js";
 import {Editor} from "./Editor.js";
 import {Dialog} from "./Editor.js";
-import {Graph} from "./Graph.js";
 import {PageSetupDialog} from "./Editor.js";
 
 //Format = function (editorUi, container) {
 export function Format(editorUi, container) {
   this.editorUi = editorUi;
   this.container = container;
-  //console.log(m.mxUtils);
-  //m.mxUtils.gtest("Format gtest TEST OK");   /* GS-PD */
 };
 
 /**
@@ -620,16 +617,13 @@ Format.prototype.refresh = function () {
  * Base class for format panels.
  */
 //BaseFormatPanel = function (format, editorUi, container) {
-//export function BaseFormatPanel(format, editorUi, container) {
-export class BaseFormatPanel {
-constructor(format, editorUi, container) {
+export function BaseFormatPanel(format, editorUi, container) {
   this.format = format;
   this.editorUi = editorUi;
   this.container = container;
   this.listeners = [];
-  //m.mxUtils.gtest("BaseFormatPortal gtest TEST OK");   /* GS-PD */
 };
-};
+
 /**
  *
  */
@@ -1312,24 +1306,24 @@ BaseFormatPanel.prototype.addArrow = function (elt, height) {
   height = height != null ? height : 10;
 
   var arrow = document.createElement("div");
-  arrow.style.display = m.mxClient.IS_QUIRKS ? "inline" : "inline-block";
-  //arrow.style.display =  "inline-block";   /* GS-PD */
+  //arrow.style.display = m.mxClient.IS_QUIRKS ? "inline" : "inline-block";
+  arrow.style.display =  "inline-block";   /* GS-PD */
   arrow.style.padding = "6px";
   arrow.style.paddingRight = "4px";
 
-  var _m = 10 - height;
+  var m = 10 - height;
 
-  if (_m == 2) {
+  if (m == 2) {
     arrow.style.paddingTop = 6 + "px";
-  } else if (_m > 0) {
-    arrow.style.paddingTop = 6 - _m + "px";
+  } else if (m > 0) {
+    arrow.style.paddingTop = 6 - m + "px";
   } else {
     arrow.style.marginTop = "-2px";
   }
 
   arrow.style.height = height + "px";
   arrow.style.borderLeft = "1px solid #a0a0a0";
-
+/* GS-PD
   arrow.innerHTML =
     '<img border="0" src="' +
     (m.mxClient.IS_SVG
@@ -1338,17 +1332,17 @@ BaseFormatPanel.prototype.addArrow = function (elt, height) {
     '" style="margin-bottom:4px;">';
 
   m.mxUtils.setOpacity(arrow, 70);
-
+*/
  /* GS-PD */
-  //arrow.innerHTML =
-  //  '<img border="0" src="' +
-  //     "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAHBJREFUeNpidHB2ZyAGsACxDRBPIKCuA6TwCBB/h2rABu4A8SYmKCcXiP/iUFgAxL9gCi8A8SwsirZCMQMTkmANEH9E4v+CmsaArvAdyNFI/FlQ92EoBIE+qCRIUz168DBgsU4OqhinQpgHMABAgAEALY4XLIsJ20oAAAAASUVORK5CYII="
-  //     +
-  //  '" style="margin-bottom:4px;">';
+  arrow.innerHTML =
+    '<img border="0" src="' +
+       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAHBJREFUeNpidHB2ZyAGsACxDRBPIKCuA6TwCBB/h2rABu4A8SYmKCcXiP/iUFgAxL9gCi8A8SwsirZCMQMTkmANEH9E4v+CmsaArvAdyNFI/FlQ92EoBIE+qCRIUz168DBgsU4OqhinQpgHMABAgAEALY4XLIsJ20oAAAAASUVORK5CYII="
+       +
+    '" style="margin-bottom:4px;">';
 
-  ////console.log(m.mxUtils);
-  ////m.mxUtils.gtest("TEST OK");   /* GS-PD */
-  //m.mxUtils.setOpacity(arrow, 70);   /* GS-PD */
+  console.log(m.mxUtils);
+  m.mxUtils.gtest("TEST OK");   /* GS-PD */
+  m.mxUtils.setOpacity(arrow, 70);   /* GS-PD */
 
   var symbol = elt.getElementsByTagName("div")[0];
 
@@ -1356,12 +1350,12 @@ BaseFormatPanel.prototype.addArrow = function (elt, height) {
     symbol.style.paddingRight = "6px";
     symbol.style.marginLeft = "4px";
     symbol.style.marginTop = "-1px";
-    symbol.style.display = m.mxClient.IS_QUIRKS ? "inline" : "inline-block";
-    //symbol.style.display = "inline-block";  /* GS-PD */
-    m.mxUtils.setOpacity(symbol, 60);
+    //symbol.style.display = m.mxClient.IS_QUIRKS ? "inline" : "inline-block";
+    symbol.style.display = "inline-block";  /* GS-PD */
+    //m.mxUtils.setOpacity(symbol, 60);
   }
 
-  m.mxUtils.setOpacity(elt, 100); /* GS-PD */
+  //m.mxUtils.setOpacity(elt, 100); /* GS-PD */
   elt.style.border = "1px solid #a0a0a0";
   elt.style.backgroundColor = this.buttonBackgroundColor;
   elt.style.backgroundImage = "none";
@@ -1587,24 +1581,16 @@ BaseFormatPanel.prototype.destroy = function () {
   }
 };
 
-
-
-
-
-
 /**
  * Adds the label menu items to the given menu and parent.
  */
 //ArrangePanel = function (format, editorUi, container) {
-//export function ArrangePanel(format, editorUi, container) {
-export class ArrangePanel extends BaseFormatPanel {
-constructor(format, editorUi, container) {
-  super( format, editorUi, container);
+export function ArrangePanel(format, editorUi, container) {
+  BaseFormatPanel.call(this, format, editorUi, container);
   this.init();
 };
-};
 
-//m.mxUtils.extend(ArrangePanel, BaseFormatPanel);
+m.mxUtils.extend(ArrangePanel, BaseFormatPanel);
 
 /**
  * Adds the label menu items to the given menu and parent.
@@ -2861,25 +2847,12 @@ ArrangePanel.prototype.addEdgeGeometry = function (container) {
  * Adds the label menu items to the given menu and parent.
  */
 //TextFormatPanel = function (format, editorUi, container) {
-/*
 export function TextFormatPanel(format, editorUi, container) {
   BaseFormatPanel.call(this, format, editorUi, container);
   this.init();
 };
 
 m.mxUtils.extend(TextFormatPanel, BaseFormatPanel);
-*/
-
-
-
-export class TextFormatPanel extends BaseFormatPanel {
-
-constructor(format, editorUi, container) {
-   super(format, editorUi, container);
-  this.init();
-};
-};
-
 
 /**
  * Adds the label menu items to the given menu and parent.
@@ -3445,8 +3418,7 @@ TextFormatPanel.prototype.addFont = function (container) {
   var inputUpdate = this.installInputHandler(
     input,
     m.mxConstants.STYLE_FONTSIZE,
-    //Menus.prototype.defaultFontSize,
-	  12,   // GS-PD
+    Menus.prototype.defaultFontSize,
     1,
     999,
     " pt",
@@ -3573,8 +3545,7 @@ TextFormatPanel.prototype.addFont = function (container) {
     1,
     10,
     true,
-    //Menus.prototype.defaultFontSize,
-	  12,  //GS-PD
+    Menus.prototype.defaultFontSize,
   );
   stepper.style.display = input.style.display;
   stepper.style.marginTop = "4px";
@@ -4288,8 +4259,7 @@ TextFormatPanel.prototype.addFont = function (container) {
     fontMenu.firstChild.nodeValue = m.mxUtils.getValue(
       ss.style,
       m.mxConstants.STYLE_FONTFAMILY,
-      //Menus.prototype.defaultFont,
-	    12,  //GS-PD
+      Menus.prototype.defaultFont,
     );
 
     setSelected(
@@ -4302,8 +4272,7 @@ TextFormatPanel.prototype.addFont = function (container) {
         m.mxUtils.getValue(
           ss.style,
           m.mxConstants.STYLE_FONTSIZE,
-          //Menus.prototype.defaultFontSize,
-		12,
+          Menus.prototype.defaultFontSize,
         ),
       );
       input.value = isNaN(tmp) ? "" : tmp + " pt";
@@ -4770,21 +4739,13 @@ TextFormatPanel.prototype.addFont = function (container) {
  * Adds the label menu items to the given menu and parent.
  */
 //StyleFormatPanel = function (format, editorUi, container) {
-/*
 export function StyleFormatPanel(format, editorUi, container) {
   BaseFormatPanel.call(this, format, editorUi, container);
   this.init();
 };
 
 m.mxUtils.extend(StyleFormatPanel, BaseFormatPanel);
-*/
 
-export class  StyleFormatPanel  extends BaseFormatPanel {
-constructor(format, editorUi, container) {
-  super( format, editorUi, container);
-  this.init();
-};
-};
 /**
  *
  */
@@ -6725,7 +6686,7 @@ StyleFormatPanel.prototype.addStroke = function (container) {
       stylePanel.style.display = "";
     }
 
-    function updateArrow(that, marker, fill, elt, prefix) {
+    function updateArrow(marker, fill, elt, prefix) {
       var markerDiv = elt.getElementsByTagName("div")[0];
 
       if (markerDiv != null) {
@@ -6743,7 +6704,7 @@ StyleFormatPanel.prototype.addStroke = function (container) {
           markerDiv.style.marginTop = "5px";
           markerDiv.style.fontSize = "10px";
           markerDiv.style.filter = "none";
-          markerDiv.style.color = that.defaultStrokeColor;
+          markerDiv.style.color = this.defaultStrokeColor;
           markerDiv.nextSibling.style.marginTop = "0px";
         }
       }
@@ -6752,14 +6713,12 @@ StyleFormatPanel.prototype.addStroke = function (container) {
     }
 
     var sourceDiv = updateArrow(
-	    this,
       m.mxUtils.getValue(ss.style, m.mxConstants.STYLE_STARTARROW, null),
       m.mxUtils.getValue(ss.style, "startFill", "1"),
       lineStart,
       "start",
     );
     var targetDiv = updateArrow(
-	    this,
       m.mxUtils.getValue(ss.style, m.mxConstants.STYLE_ENDARROW, null),
       m.mxUtils.getValue(ss.style, "endFill", "1"),
       lineEnd,
@@ -7135,20 +7094,12 @@ StyleFormatPanel.prototype.addStyleOps = function (div) {
  * Adds the label menu items to the given menu and parent.
  */
 //DiagramStylePanel = function (format, editorUi, container) {
-/*
 export function DiagramStylePanel(format, editorUi, container) {
   BaseFormatPanel.call(this, format, editorUi, container);
   this.init();
 };
 
 m.mxUtils.extend(DiagramStylePanel, BaseFormatPanel);
-*/
-export class DiagramStylePanel extends BaseFormatPanel {
-constructor(format, editorUi, container) {
-  super(format, editorUi, container) ;
-  this.init();
-};
-};
 
 /**
  * Adds the label menu items to the given menu and parent.
@@ -7781,21 +7732,13 @@ DiagramStylePanel.prototype.addView = function (div) {
  * Adds the label menu items to the given menu and parent.
  */
 //DiagramFormatPanel = function (format, editorUi, container) {
-/*
 export function DiagramFormatPanel(format, editorUi, container) {
   BaseFormatPanel.call(this, format, editorUi, container);
   this.init();
 };
 
 m.mxUtils.extend(DiagramFormatPanel, BaseFormatPanel);
-*/
 
-export class  DiagramFormatPanel extends BaseFormatPanel {
-constructor(format, editorUi, container) {
-super(format, editorUi, container) ;
-  this.init();
-};
-};
 /**
  * Switch to disable page view.
  */

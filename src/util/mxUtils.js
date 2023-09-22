@@ -20,6 +20,9 @@ export class mxUtils {
   static closeResource = mxClient.language != 'none' ? 'close' : '';
   static errorImage = mxClient.imageBasePath + '/error.gif';
 
+  static gtest(msg) {
+     console.log("mxUtils gtest:",msg);
+  }
   static removeCursors(element) {
     if (element.style != null) {
       element.style.cursor = '';

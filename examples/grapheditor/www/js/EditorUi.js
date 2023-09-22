@@ -27,6 +27,8 @@ compactUi = true;
 constructor (editor, container, lightbox) {
   //m.mxEventSource.call(this);
 super();
+//	 console.log(m.mxUtils);
+//	 m.mxUtils.gtest("gtest TEST OK");
   this.destroyFunctions = [];
   this.editor = editor || new Editor();
   this.container = container || document.body;
@@ -4239,7 +4241,7 @@ EditorUi.prototype.handleError = function (
     if (e != null && e.message != null) {
       msg = m.mxUtils.htmlEntities(e.message);
     }
-
+    console.log(title,msg, resp)  //DEBUG   GS
     this.showError(
       title,
       msg,

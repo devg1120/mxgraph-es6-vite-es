@@ -6114,7 +6114,7 @@ TableLayout.prototype.execute = function (parent) {
         source,
       );
     } else {
-      m.mxGraphViewUpdateFloatingTerminalPoint.apply(this, arguments);
+      mxGraphViewUpdateFloatingTerminalPoint.apply(this, arguments);
     }
   };
 
@@ -10270,7 +10270,7 @@ if (typeof m.mxVertexHandler != "undefined") {
         this.toggleViewMode();
       }
 
-      m.mxCellEditorStopEditing.apply(this, arguments);
+      mxCellEditorStopEditing.apply(this, arguments);
 
       // Tries to move focus back to container after editing if possible
       this.focusContainer();
@@ -11722,14 +11722,14 @@ if (typeof m.mxVertexHandler != "undefined") {
         }
       }
 
-      return m.mxGraphHandlerGetBoundingBox.apply(this, arguments);
+      return mxGraphHandlerGetBoundingBox.apply(this, arguments);
     };
 
     // Ignores child cells with part style as guides
     var mxGraphHandlerGetGuideStates = m.mxGraphHandler.prototype.getGuideStates;
 
     m.mxGraphHandler.prototype.getGuideStates = function () {
-      var states = m.mxGraphHandlerGetGuideStates.apply(this, arguments);
+      var states = mxGraphHandlerGetGuideStates.apply(this, arguments);
       var result = [];
 
       // NOTE: Could do via isStateIgnored hook
