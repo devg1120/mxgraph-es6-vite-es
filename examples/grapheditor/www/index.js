@@ -6,9 +6,10 @@ import {EditorUi} from "./js/EditorUi.js";
 import {Format}   from "./js/Format.js";
 import {Graph}    from "./js/Graph.js";
 import {Menus}    from "./js/Menus.js";
-//import {Shapes}   from "./js/Shapes.js";
+//import * as s   from "./js/Shapes.js";
 import {Sidebar}  from "./js/Sidebar.js";
 import {Toolbar}  from "./js/Toolbar.js";
+import * as s   from "./js/Shapes.js";
 /*
                 let OPEN_URL = "/examples/grapheditor/www";
 
