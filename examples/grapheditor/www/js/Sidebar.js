@@ -5,95 +5,94 @@
  * Construcs a new sidebar for the given editor.
  */
 
-import * as m   from "../../../../../dist/mxgraph.es.js";
-import {Editor}  from "./Editor.js";
-import {Graph} from "./Graph.js";
+import * as m from "../../../../../dist/mxgraph.es.js";
+import { Editor } from "./Editor.js";
+import { Graph } from "./Graph.js";
 
 export class Sidebar {
-constructor(editorUi, container) {
-  this.editorUi = editorUi;
-  this.container = container;
-  this.palettes = new Object();
-  this.taglist = new Object();
-  this.showTooltips = true;
-  this.graph = editorUi.createTemporaryGraph(
-    this.editorUi.editor.graph.getStylesheet(),
-  );
-  this.graph.cellRenderer.minSvgStrokeWidth = this.minThumbStrokeWidth;
-  this.graph.cellRenderer.antiAlias = this.thumbAntiAlias;
-  this.graph.container.style.visibility = "hidden";
-  this.graph.foldingEnabled = false;
-
-  document.body.appendChild(this.graph.container);
-
-  this.pointerUpHandler = m.mxUtils.bind(this, function () {
+  constructor(editorUi, container) {
+    this.editorUi = editorUi;
+    this.container = container;
+    this.palettes = new Object();
+    this.taglist = new Object();
     this.showTooltips = true;
-  });
+    this.graph = editorUi.createTemporaryGraph(
+      this.editorUi.editor.graph.getStylesheet(),
+    );
+    this.graph.cellRenderer.minSvgStrokeWidth = this.minThumbStrokeWidth;
+    this.graph.cellRenderer.antiAlias = this.thumbAntiAlias;
+    this.graph.container.style.visibility = "hidden";
+    this.graph.foldingEnabled = false;
 
-  m.mxEvent.addListener(
-    document,
-    m.mxClient.IS_POINTER ? "pointerup" : "mouseup",
-    this.pointerUpHandler,
-  );
+    document.body.appendChild(this.graph.container);
 
-  this.pointerDownHandler = m.mxUtils.bind(this, function () {
-    this.showTooltips = false;
-    this.hideTooltip();
-  });
+    this.pointerUpHandler = m.mxUtils.bind(this, function () {
+      this.showTooltips = true;
+    });
 
-  m.mxEvent.addListener(
-    document,
-    m.mxClient.IS_POINTER ? "pointerdown" : "mousedown",
-    this.pointerDownHandler,
-  );
+    m.mxEvent.addListener(
+      document,
+      m.mxClient.IS_POINTER ? "pointerup" : "mouseup",
+      this.pointerUpHandler,
+    );
 
-  this.pointerMoveHandler = m.mxUtils.bind(this, function (evt) {
-    var src = m.mxEvent.getSource(evt);
+    this.pointerDownHandler = m.mxUtils.bind(this, function () {
+      this.showTooltips = false;
+      this.hideTooltip();
+    });
 
-    while (src != null) {
-      if (src == this.currentElt) {
-        return;
+    m.mxEvent.addListener(
+      document,
+      m.mxClient.IS_POINTER ? "pointerdown" : "mousedown",
+      this.pointerDownHandler,
+    );
+
+    this.pointerMoveHandler = m.mxUtils.bind(this, function (evt) {
+      var src = m.mxEvent.getSource(evt);
+
+      while (src != null) {
+        if (src == this.currentElt) {
+          return;
+        }
+
+        src = src.parentNode;
       }
 
-      src = src.parentNode;
-    }
-
-    this.hideTooltip();
-  });
-
-  m.mxEvent.addListener(
-    document,
-    m.mxClient.IS_POINTER ? "pointermove" : "mousemove",
-    this.pointerMoveHandler,
-  );
-
-  // Handles mouse leaving the window
-  this.pointerOutHandler = m.mxUtils.bind(this, function (evt) {
-    if (evt.toElement == null && evt.relatedTarget == null) {
       this.hideTooltip();
-    }
-  });
+    });
 
-  m.mxEvent.addListener(
-    document,
-    m.mxClient.IS_POINTER ? "pointerout" : "mouseout",
-    this.pointerOutHandler,
-  );
+    m.mxEvent.addListener(
+      document,
+      m.mxClient.IS_POINTER ? "pointermove" : "mousemove",
+      this.pointerMoveHandler,
+    );
 
-  // Enables tooltips after scroll
-  m.mxEvent.addListener(
-    container,
-    "scroll",
-    m.mxUtils.bind(this, function () {
-      this.showTooltips = true;
-      this.hideTooltip();
-    }),
-  );
+    // Handles mouse leaving the window
+    this.pointerOutHandler = m.mxUtils.bind(this, function (evt) {
+      if (evt.toElement == null && evt.relatedTarget == null) {
+        this.hideTooltip();
+      }
+    });
 
-  this.init();
-};  // constructor end
+    m.mxEvent.addListener(
+      document,
+      m.mxClient.IS_POINTER ? "pointerout" : "mouseout",
+      this.pointerOutHandler,
+    );
 
-}; // class end
+    // Enables tooltips after scroll
+    m.mxEvent.addListener(
+      container,
+      "scroll",
+      m.mxUtils.bind(this, function () {
+        this.showTooltips = true;
+        this.hideTooltip();
+      }),
+    );
+
+    this.init();
+  } // constructor end
+} // class end
 
 /**
  * Adds all palettes to the sidebar.
@@ -4339,7 +4338,12 @@ Sidebar.prototype.addUmlPalette = function (expand) {
     ),
   ];
 
-  this.addPaletteFunctions("uml", m.mxResources.get("uml"), expand || false, fns);
+  this.addPaletteFunctions(
+    "uml",
+    m.mxResources.get("uml"),
+    expand || false,
+    fns,
+  );
   this.setCurrentSearchEntryLibrary();
 };
 
@@ -5957,13 +5961,19 @@ Sidebar.prototype.createDragSource = function (
   var currentStyleTarget = null;
   var activeTarget = false;
 
-    //console.dir(this);
-    //console.dir(this.refreshTarget);
+  //console.dir(this);
+  //console.dir(this.refreshTarget);
   var arrowUp = createArrow(this.triangleUp, m.mxResources.get("connect"));
-  var arrowRight = createArrow(this.triangleRight, m.mxResources.get("connect"));
+  var arrowRight = createArrow(
+    this.triangleRight,
+    m.mxResources.get("connect"),
+  );
   var arrowDown = createArrow(this.triangleDown, m.mxResources.get("connect"));
   var arrowLeft = createArrow(this.triangleLeft, m.mxResources.get("connect"));
-  var styleTarget = createArrow(this.refreshTarget, m.mxResources.get("replace"));
+  var styleTarget = createArrow(
+    this.refreshTarget,
+    m.mxResources.get("replace"),
+  );
   // Workaround for actual parentNode not being updated in old IE
   var styleTargetParent = null;
   var roundSource = createArrow(this.roundDrop);
@@ -6211,7 +6221,8 @@ Sidebar.prototype.createDragSource = function (
             m.mxConstants.STYLE_GRADIENTCOLOR,
             m.mxConstants.NONE,
           ) != m.mxConstants.NONE)) ||
-        m.mxUtils.getValue(sourceCellStyle, m.mxConstants.STYLE_SHAPE) == "image" ||
+        m.mxUtils.getValue(sourceCellStyle, m.mxConstants.STYLE_SHAPE) ==
+          "image" ||
         timeOnTarget > 1500 ||
         graph.model.isEdge(state.cell)) &&
       timeOnTarget > this.dropTargetDelay &&
@@ -6323,7 +6334,9 @@ Sidebar.prototype.createDragSource = function (
           currentTargetState.shape != null &&
           currentTargetState.shape.boundingBox != null
         ) {
-          bds = m.mxRectangle.fromRectangle(currentTargetState.shape.boundingBox);
+          bds = m.mxRectangle.fromRectangle(
+            currentTargetState.shape.boundingBox,
+          );
         }
 
         bds.grow(this.graph.tolerance);
@@ -7274,7 +7287,10 @@ Sidebar.prototype.addStencilPalette = function (
           m.mxUtils.bind(
             this,
             function (packageName, stencilName, displayName, w, h) {
-              if (ignore == null || m.mxUtils.indexOf(ignore, stencilName) < 0) {
+              if (
+                ignore == null ||
+                m.mxUtils.indexOf(ignore, stencilName) < 0
+              ) {
                 content.appendChild(
                   this.createVertexTemplate(
                     "shape=" + packageName + stencilName.toLowerCase() + style,

@@ -5,9 +5,9 @@
 // see https://code.google.com/p/google-caja/issues/detail?can=2&q=&colspec=ID%20Type%20Status%20Priority%20Owner%20Summary&groupby=&sort=&id=1296
 //
 
-import * as m   from "../../../../../dist/mxgraph.es.js";
-import {Sidebar} from "./Sidebar.js";
-import {Editor} from "./Editor.js";
+import * as m from "../../../../../dist/mxgraph.es.js";
+import { Sidebar } from "./Sidebar.js";
+import { Editor } from "./Editor.js";
 
 if (typeof html4 !== "undefined") {
   html4.ATTRIBS["a::target"] = 0;
@@ -164,326 +164,711 @@ m.mxShape.prototype.getConstraints = function (style, w, h) {
  */
 //Graph = function (
 export class Graph extends m.mxGraph {
+  /**
+   * Specifies if the touch UI should be used (cannot detect touch in FF so always on for Windows/Linux)
+   */
 
+  touchStyle =
+    m.mxClient.IS_TOUCH ||
+    (m.mxClient.IS_FF && m.mxClient.IS_WIN) ||
+    navigator.maxTouchPoints > 0 ||
+    navigator.msMaxTouchPoints > 0 ||
+    window.urlParams == null ||
+    urlParams["touch"] == "1";
 
-/**
- * Specifies if the touch UI should be used (cannot detect touch in FF so always on for Windows/Linux)
- */
+  /**
+   * Shortcut for capability check.
+   */
+  fileSupport =
+    window.File != null &&
+    window.FileReader != null &&
+    window.FileList != null &&
+    (window.urlParams == null || urlParams["filesupport"] != "0");
 
-touchStyle =
-  m.mxClient.IS_TOUCH ||
-  (m.mxClient.IS_FF && m.mxClient.IS_WIN) ||
-  navigator.maxTouchPoints > 0 ||
-  navigator.msMaxTouchPoints > 0 ||
-  window.urlParams == null ||
-  urlParams["touch"] == "1";
+  /**
+   * Shortcut for capability check.
+   */
+  translateDiagram = urlParams["translate-diagram"] == "1";
 
-/**
- * Shortcut for capability check.
- */
-fileSupport =
-  window.File != null &&
-  window.FileReader != null &&
-  window.FileList != null &&
-  (window.urlParams == null || urlParams["filesupport"] != "0");
+  /**
+   * Shortcut for capability check.
+   */
+  diagramLanguage =
+    urlParams["diagram-language"] != null
+      ? urlParams["diagram-language"]
+      : m.mxClient.language;
 
-/**
- * Shortcut for capability check.
- */
-translateDiagram = urlParams["translate-diagram"] == "1";
+  /**
+   * Default size for line jumps.
+   */
+  lineJumpsEnabled = true;
 
-/**
- * Shortcut for capability check.
- */
-diagramLanguage =
-  urlParams["diagram-language"] != null
-    ? urlParams["diagram-language"]
-    : m.mxClient.language;
+  /**
+   * Default size for line jumps.
+   */
+  defaultJumpSize = 6;
 
-/**
- * Default size for line jumps.
- */
-lineJumpsEnabled = true;
+  /**
+   * Minimum width for table columns.
+   */
+  minTableColumnWidth = 20;
 
-/**
- * Default size for line jumps.
- */
-defaultJumpSize = 6;
+  /**
+   * Minimum height for table rows.
+   */
+  minTableRowHeight = 20;
 
-/**
- * Minimum width for table columns.
- */
-minTableColumnWidth = 20;
+  /**
+   * Text for foreign object warning.
+   */
+  foreignObjectWarningText = "Viewer does not support full SVG 1.1";
 
-/**
- * Minimum height for table rows.
- */
-minTableRowHeight = 20;
+  /**
+   * Link for foreign object warning.
+   */
+  foreignObjectWarningLink =
+    "https://desk.draw.io/support/solutions/articles/16000042487";
 
-/**
- * Text for foreign object warning.
- */
-foreignObjectWarningText = "Viewer does not support full SVG 1.1";
+  /**
+   * Minimum height for table rows.
+   */
+  pasteStyles = [
+    "rounded",
+    "shadow",
+    "dashed",
+    "dashPattern",
+    "fontFamily",
+    "fontSource",
+    "fontSize",
+    "fontColor",
+    "fontStyle",
+    "align",
+    "verticalAlign",
+    "strokeColor",
+    "strokeWidth",
+    "fillColor",
+    "gradientColor",
+    "swimlaneFillColor",
+    "textOpacity",
+    "gradientDirection",
+    "glass",
+    "labelBackgroundColor",
+    "labelBorderColor",
+    "opacity",
+    "spacing",
+    "spacingTop",
+    "spacingLeft",
+    "spacingBottom",
+    "spacingRight",
+    "endFill",
+    "endArrow",
+    "endSize",
+    "targetPerimeterSpacing",
+    "startFill",
+    "startArrow",
+    "startSize",
+    "sourcePerimeterSpacing",
+    "arcSize",
+    "comic",
+    "sketch",
+    "fillWeight",
+    "hachureGap",
+    "hachureAngle",
+    "jiggle",
+    "disableMultiStroke",
+    "disableMultiStrokeFill",
+    "fillStyle",
+    "curveFitting",
+    "simplification",
+    "comicStyle",
+  ];
 
-/**
- * Link for foreign object warning.
- */
-foreignObjectWarningLink =
-  "https://desk.draw.io/support/solutions/articles/16000042487";
+  constructor(container, model, renderHint, stylesheet, themes, standalone) {
+    //this.graph = new m.mxGraph(this, container, model, renderHint, stylesheet);
+    super(container, model, renderHint, stylesheet);
 
-/**
- * Minimum height for table rows.
- */
-pasteStyles = [
-  "rounded",
-  "shadow",
-  "dashed",
-  "dashPattern",
-  "fontFamily",
-  "fontSource",
-  "fontSize",
-  "fontColor",
-  "fontStyle",
-  "align",
-  "verticalAlign",
-  "strokeColor",
-  "strokeWidth",
-  "fillColor",
-  "gradientColor",
-  "swimlaneFillColor",
-  "textOpacity",
-  "gradientDirection",
-  "glass",
-  "labelBackgroundColor",
-  "labelBorderColor",
-  "opacity",
-  "spacing",
-  "spacingTop",
-  "spacingLeft",
-  "spacingBottom",
-  "spacingRight",
-  "endFill",
-  "endArrow",
-  "endSize",
-  "targetPerimeterSpacing",
-  "startFill",
-  "startArrow",
-  "startSize",
-  "sourcePerimeterSpacing",
-  "arcSize",
-  "comic",
-  "sketch",
-  "fillWeight",
-  "hachureGap",
-  "hachureAngle",
-  "jiggle",
-  "disableMultiStroke",
-  "disableMultiStrokeFill",
-  "fillStyle",
-  "curveFitting",
-  "simplification",
-  "comicStyle",
-];
+    this.themes = themes || this.defaultThemes;
+    this.currentEdgeStyle = m.mxUtils.clone(this.defaultEdgeStyle);
+    this.currentVertexStyle = m.mxUtils.clone(this.defaultVertexStyle);
+    this.standalone = standalone != null ? standalone : false;
 
+    // Sets the base domain URL and domain path URL for relative links.
+    var b = this.baseUrl;
+    var p = b.indexOf("//");
+    this.domainUrl = "";
+    this.domainPathUrl = "";
 
-constructor  (
-  container,
-  model,
-  renderHint,
-  stylesheet,
-  themes,
-  standalone,
-) {
-  //this.graph = new m.mxGraph(this, container, model, renderHint, stylesheet);
-  super(container, model, renderHint, stylesheet);
+    if (p > 0) {
+      var d = b.indexOf("/", p + 2);
 
-  this.themes = themes || this.defaultThemes;
-  this.currentEdgeStyle = m.mxUtils.clone(this.defaultEdgeStyle);
-  this.currentVertexStyle = m.mxUtils.clone(this.defaultVertexStyle);
-  this.standalone = standalone != null ? standalone : false;
+      if (d > 0) {
+        this.domainUrl = b.substring(0, d);
+      }
 
-  // Sets the base domain URL and domain path URL for relative links.
-  var b = this.baseUrl;
-  var p = b.indexOf("//");
-  this.domainUrl = "";
-  this.domainPathUrl = "";
+      d = b.lastIndexOf("/");
 
-  if (p > 0) {
-    var d = b.indexOf("/", p + 2);
-
-    if (d > 0) {
-      this.domainUrl = b.substring(0, d);
+      if (d > 0) {
+        this.domainPathUrl = b.substring(0, d + 1);
+      }
     }
 
-    d = b.lastIndexOf("/");
+    // Adds support for HTML labels via style. Note: Currently, only the Java
+    // backend supports HTML labels but CSS support is limited to the following:
+    // http://docs.oracle.com/javase/6/docs/api/index.html?javax/swing/text/html/CSS.html
+    // TODO: Wrap should not affect isHtmlLabel output (should be handled later)
 
-    if (d > 0) {
-      this.domainPathUrl = b.substring(0, d + 1);
+    function isHtmlLabel(cell) {
+      var style = this.getCurrentCellStyle(cell);
+
+      return style != null
+        ? style["html"] == "1" ||
+            style[m.mxConstants.STYLE_WHITE_SPACE] == "wrap"
+        : false;
     }
-  }
 
-  // Adds support for HTML labels via style. Note: Currently, only the Java
-  // backend supports HTML labels but CSS support is limited to the following:
-  // http://docs.oracle.com/javase/6/docs/api/index.html?javax/swing/text/html/CSS.html
-  // TODO: Wrap should not affect isHtmlLabel output (should be handled later)
-	
-   function isHtmlLabel (cell) {
-    var style = this.getCurrentCellStyle(cell);
+    // Implements a listener for hover and click handling on edges
+    if (this.edgeMode) {
+      var start = {
+        point: null,
+        event: null,
+        state: null,
+        handle: null,
+        selected: false,
+      };
 
-    return style != null
-      ? style["html"] == "1" || style[m.mxConstants.STYLE_WHITE_SPACE] == "wrap"
-      : false;
-  };
+      // Uses this event to process mouseDown to check the selection state before it is changed
+      this.addListener(
+        m.mxEvent.FIRE_MOUSE_EVENT,
+        m.mxUtils.bind(this, function (sender, evt) {
+          if (evt.getProperty("eventName") == "mouseDown" && this.isEnabled()) {
+            var me = evt.getProperty("event");
+            var state = me.getState();
 
-  // Implements a listener for hover and click handling on edges
-  if (this.edgeMode) {
-    var start = {
-      point: null,
-      event: null,
-      state: null,
-      handle: null,
-      selected: false,
-    };
+            if (!m.mxEvent.isAltDown(me.getEvent()) && state != null) {
+              // Checks if state was removed in call to stopEditing above
+              if (this.model.isEdge(state.cell)) {
+                start.point = new m.mxPoint(me.getGraphX(), me.getGraphY());
+                start.selected = this.isCellSelected(state.cell);
+                start.state = state;
+                start.event = me;
 
-    // Uses this event to process mouseDown to check the selection state before it is changed
-    this.addListener(
-      m.mxEvent.FIRE_MOUSE_EVENT,
-      m.mxUtils.bind(this, function (sender, evt) {
-        if (evt.getProperty("eventName") == "mouseDown" && this.isEnabled()) {
-          var me = evt.getProperty("event");
-          var state = me.getState();
+                if (
+                  state.text != null &&
+                  state.text.boundingBox != null &&
+                  m.mxUtils.contains(
+                    state.text.boundingBox,
+                    me.getGraphX(),
+                    me.getGraphY(),
+                  )
+                ) {
+                  start.handle = m.mxEvent.LABEL_HANDLE;
+                } else {
+                  var handler = this.selectionCellsHandler.getHandler(
+                    state.cell,
+                  );
 
-          if (!m.mxEvent.isAltDown(me.getEvent()) && state != null) {
-            // Checks if state was removed in call to stopEditing above
-            if (this.model.isEdge(state.cell)) {
-              start.point = new m.mxPoint(me.getGraphX(), me.getGraphY());
-              start.selected = this.isCellSelected(state.cell);
-              start.state = state;
-              start.event = me;
+                  if (
+                    handler != null &&
+                    handler.bends != null &&
+                    handler.bends.length > 0
+                  ) {
+                    start.handle = handler.getHandleForEvent(me);
+                  }
+                }
+              } else if (
+                !this.panningHandler.isActive() &&
+                !m.mxEvent.isControlDown(me.getEvent())
+              ) {
+                var handler = this.selectionCellsHandler.getHandler(state.cell);
+
+                // Cell handles have precedence over row and col resize
+                if (handler == null || handler.getHandleForEvent(me) == null) {
+                  var box = new m.mxRectangle(
+                    me.getGraphX() - 1,
+                    me.getGraphY() - 1,
+                  );
+                  box.grow(
+                    m.mxEvent.isTouchEvent(me.getEvent())
+                      ? m.mxShape.prototype.svgStrokeTolerance - 1
+                      : (m.mxShape.prototype.svgStrokeTolerance + 1) / 2,
+                  );
+
+                  if (
+                    this.isTableCell(state.cell) &&
+                    !this.isCellSelected(state.cell)
+                  ) {
+                    var row = this.model.getParent(state.cell);
+                    var table = this.model.getParent(row);
+
+                    if (!this.isCellSelected(table)) {
+                      if (
+                        (m.mxUtils.intersects(
+                          box,
+                          new m.mxRectangle(
+                            state.x,
+                            state.y - 2,
+                            state.width,
+                            3,
+                          ),
+                        ) &&
+                          this.model.getChildAt(table, 0) != row) ||
+                        m.mxUtils.intersects(
+                          box,
+                          new m.mxRectangle(
+                            state.x,
+                            state.y + state.height - 2,
+                            state.width,
+                            3,
+                          ),
+                        ) ||
+                        (m.mxUtils.intersects(
+                          box,
+                          new m.mxRectangle(
+                            state.x - 2,
+                            state.y,
+                            2,
+                            state.height,
+                          ),
+                        ) &&
+                          this.model.getChildAt(row, 0) != state.cell) ||
+                        m.mxUtils.intersects(
+                          box,
+                          new m.mxRectangle(
+                            state.x + state.width - 2,
+                            state.y,
+                            2,
+                            state.height,
+                          ),
+                        )
+                      ) {
+                        var wasSelected =
+                          this.selectionCellsHandler.isHandled(table);
+                        this.selectCellForEvent(table, me.getEvent());
+                        handler = this.selectionCellsHandler.getHandler(table);
+
+                        if (handler != null) {
+                          var handle = handler.getHandleForEvent(me);
+
+                          if (handle != null) {
+                            handler.start(
+                              me.getGraphX(),
+                              me.getGraphY(),
+                              handle,
+                            );
+                            handler.blockDelayedSelection = !wasSelected;
+                            me.consume();
+                          }
+                        }
+                      }
+                    }
+                  }
+
+                  // Hover for swimlane start sizes inside tables
+                  var current = state;
+
+                  while (
+                    !me.isConsumed() &&
+                    current != null &&
+                    (this.isTableCell(current.cell) ||
+                      this.isTableRow(current.cell) ||
+                      this.isTable(current.cell))
+                  ) {
+                    if (this.isSwimlane(current.cell)) {
+                      var offset = this.getActualStartSize(current.cell);
+                      var s = this.view.scale;
+
+                      if (
+                        ((offset.x > 0 || offset.width > 0) &&
+                          m.mxUtils.intersects(
+                            box,
+                            new m.mxRectangle(
+                              current.x +
+                                (offset.x - offset.width - 1) * s +
+                                (offset.x == 0 ? current.width : 0),
+                              current.y,
+                              1,
+                              current.height,
+                            ),
+                          )) ||
+                        ((offset.y > 0 || offset.height > 0) &&
+                          m.mxUtils.intersects(
+                            box,
+                            new m.mxRectangle(
+                              current.x,
+                              current.y +
+                                (offset.y - offset.height - 1) * s +
+                                (offset.y == 0 ? current.height : 0),
+                              current.width,
+                              1,
+                            ),
+                          ))
+                      ) {
+                        this.selectCellForEvent(current.cell, me.getEvent());
+                        handler = this.selectionCellsHandler.getHandler(
+                          current.cell,
+                        );
+
+                        if (handler != null) {
+                          // Swimlane start size handle is last custom handle
+                          var handle =
+                            m.mxEvent.CUSTOM_HANDLE -
+                            handler.customHandles.length +
+                            1;
+                          handler.start(me.getGraphX(), me.getGraphY(), handle);
+                          me.consume();
+                        }
+                      }
+                    }
+
+                    current = this.view.getState(
+                      this.model.getParent(current.cell),
+                    );
+                  }
+                }
+              }
+            }
+          }
+        }),
+      );
+
+      var mouseDown = null;
+
+      this.addMouseListener({
+        mouseDown: function (sender, me) {},
+        mouseMove: m.mxUtils.bind(this, function (sender, me) {
+          // Checks if any other handler is active
+          var handlerMap = this.selectionCellsHandler.handlers.map;
+
+          for (var key in handlerMap) {
+            if (handlerMap[key].index != null) {
+              return;
+            }
+          }
+
+          if (
+            this.isEnabled() &&
+            !this.panningHandler.isActive() &&
+            !m.mxEvent.isAltDown(me.getEvent())
+          ) {
+            var tol = this.tolerance;
+
+            if (
+              start.point != null &&
+              start.state != null &&
+              start.event != null
+            ) {
+              var state = start.state;
 
               if (
-                state.text != null &&
-                state.text.boundingBox != null &&
-                m.mxUtils.contains(
-                  state.text.boundingBox,
-                  me.getGraphX(),
-                  me.getGraphY(),
-                )
+                Math.abs(start.point.x - me.getGraphX()) > tol ||
+                Math.abs(start.point.y - me.getGraphY()) > tol
               ) {
-                start.handle = m.mxEvent.LABEL_HANDLE;
-              } else {
                 var handler = this.selectionCellsHandler.getHandler(state.cell);
+
+                if (handler == null && this.model.isEdge(state.cell)) {
+                  handler = this.createHandler(state);
+                }
 
                 if (
                   handler != null &&
                   handler.bends != null &&
                   handler.bends.length > 0
                 ) {
-                  start.handle = handler.getHandleForEvent(me);
-                }
-              }
-            } else if (
-              !this.panningHandler.isActive() &&
-              !m.mxEvent.isControlDown(me.getEvent())
-            ) {
-              var handler = this.selectionCellsHandler.getHandler(state.cell);
+                  var handle = handler.getHandleForEvent(start.event);
+                  var edgeStyle = this.view.getEdgeStyle(state);
+                  var entity = edgeStyle == m.mxEdgeStyle.EntityRelation;
 
-              // Cell handles have precedence over row and col resize
-              if (handler == null || handler.getHandleForEvent(me) == null) {
-                var box = new m.mxRectangle(
-                  me.getGraphX() - 1,
-                  me.getGraphY() - 1,
-                );
-                box.grow(
-                  m.mxEvent.isTouchEvent(me.getEvent())
-                    ? m.mxShape.prototype.svgStrokeTolerance - 1
-                    : (m.mxShape.prototype.svgStrokeTolerance + 1) / 2,
-                );
+                  // Handles special case where label was clicked on unselected edge in which
+                  // case the label will be moved regardless of the handle that is returned
+                  if (
+                    !start.selected &&
+                    start.handle == m.mxEvent.LABEL_HANDLE
+                  ) {
+                    handle = start.handle;
+                  }
 
-                if (
-                  this.isTableCell(state.cell) &&
-                  !this.isCellSelected(state.cell)
-                ) {
-                  var row = this.model.getParent(state.cell);
-                  var table = this.model.getParent(row);
-
-                  if (!this.isCellSelected(table)) {
+                  if (
+                    !entity ||
+                    handle == 0 ||
+                    handle == handler.bends.length - 1 ||
+                    handle == m.mxEvent.LABEL_HANDLE
+                  ) {
+                    // Source or target handle or connected for direct handle access or orthogonal line
+                    // with just two points where the central handle is moved regardless of mouse position
                     if (
-                      (m.mxUtils.intersects(
-                        box,
-                        new m.mxRectangle(state.x, state.y - 2, state.width, 3),
-                      ) &&
-                        this.model.getChildAt(table, 0) != row) ||
-                      m.mxUtils.intersects(
-                        box,
-                        new m.mxRectangle(
-                          state.x,
-                          state.y + state.height - 2,
-                          state.width,
-                          3,
-                        ),
-                      ) ||
-                      (m.mxUtils.intersects(
-                        box,
-                        new m.mxRectangle(state.x - 2, state.y, 2, state.height),
-                      ) &&
-                        this.model.getChildAt(row, 0) != state.cell) ||
-                      m.mxUtils.intersects(
-                        box,
-                        new m.mxRectangle(
-                          state.x + state.width - 2,
-                          state.y,
-                          2,
-                          state.height,
-                        ),
+                      handle == m.mxEvent.LABEL_HANDLE ||
+                      handle == 0 ||
+                      state.visibleSourceState != null ||
+                      handle == handler.bends.length - 1 ||
+                      state.visibleTargetState != null
+                    ) {
+                      if (!entity && handle != m.mxEvent.LABEL_HANDLE) {
+                        var pts = state.absolutePoints;
+
+                        // Default case where handles are at corner points handles
+                        // drag of corner as drag of existing point
+                        if (
+                          pts != null &&
+                          ((edgeStyle == null && handle == null) ||
+                            edgeStyle == m.mxEdgeStyle.OrthConnector)
+                        ) {
+                          // Does not use handles if they were not initially visible
+                          handle = start.handle;
+
+                          if (handle == null) {
+                            var box = new m.mxRectangle(
+                              start.point.x,
+                              start.point.y,
+                            );
+                            box.grow(
+                              m.mxEdgeHandler.prototype.handleImage.width / 2,
+                            );
+
+                            if (m.mxUtils.contains(box, pts[0].x, pts[0].y)) {
+                              // Moves source terminal handle
+                              handle = 0;
+                            } else if (
+                              m.mxUtils.contains(
+                                box,
+                                pts[pts.length - 1].x,
+                                pts[pts.length - 1].y,
+                              )
+                            ) {
+                              // Moves target terminal handle
+                              handle = handler.bends.length - 1;
+                            } else {
+                              // Checks if edge has no bends
+                              var nobends =
+                                edgeStyle != null &&
+                                (pts.length == 2 ||
+                                  (pts.length == 3 &&
+                                    ((Math.round(pts[0].x - pts[1].x) == 0 &&
+                                      Math.round(pts[1].x - pts[2].x) == 0) ||
+                                      (Math.round(pts[0].y - pts[1].y) == 0 &&
+                                        Math.round(pts[1].y - pts[2].y) ==
+                                          0))));
+
+                              if (nobends) {
+                                // Moves central handle for straight orthogonal edges
+                                handle = 2;
+                              } else {
+                                // Finds and moves vertical or horizontal segment
+                                handle = m.mxUtils.findNearestSegment(
+                                  state,
+                                  start.point.x,
+                                  start.point.y,
+                                );
+
+                                // Converts segment to virtual handle index
+                                if (edgeStyle == null) {
+                                  handle = m.mxEvent.VIRTUAL_HANDLE - handle;
+                                }
+                                // Maps segment to handle
+                                else {
+                                  handle += 1;
+                                }
+                              }
+                            }
+                          }
+                        }
+
+                        // Creates a new waypoint and starts moving it
+                        if (handle == null) {
+                          handle = m.mxEvent.VIRTUAL_HANDLE;
+                        }
+                      }
+
+                      handler.start(me.getGraphX(), me.getGraphX(), handle);
+                      me.consume();
+
+                      // Removes preview rectangle in graph handler
+                      this.graphHandler.reset();
+                    }
+                  } else if (
+                    entity &&
+                    (state.visibleSourceState != null ||
+                      state.visibleTargetState != null)
+                  ) {
+                    // Disables moves on entity to make it consistent
+                    this.graphHandler.reset();
+                    me.consume();
+                  }
+                }
+
+                if (handler != null) {
+                  // Lazy selection for edges inside groups
+                  if (this.selectionCellsHandler.isHandlerActive(handler)) {
+                    if (!this.isCellSelected(state.cell)) {
+                      this.selectionCellsHandler.handlers.put(
+                        state.cell,
+                        handler,
+                      );
+                      this.selectCellForEvent(state.cell, me.getEvent());
+                    }
+                  } else if (!this.isCellSelected(state.cell)) {
+                    // Destroy temporary handler
+                    handler.destroy();
+                  }
+                }
+
+                // Reset start state
+                start.selected = false;
+                start.handle = null;
+                start.state = null;
+                start.event = null;
+                start.point = null;
+              }
+            } else {
+              // Updates cursor for unselected edges under the mouse
+              var state = me.getState();
+
+              if (state != null) {
+                var cursor = null;
+
+                // Checks if state was removed in call to stopEditing above
+                if (this.model.isEdge(state.cell)) {
+                  var box = new m.mxRectangle(me.getGraphX(), me.getGraphY());
+                  box.grow(m.mxEdgeHandler.prototype.handleImage.width / 2);
+                  var pts = state.absolutePoints;
+
+                  if (pts != null) {
+                    if (
+                      state.text != null &&
+                      state.text.boundingBox != null &&
+                      m.mxUtils.contains(
+                        state.text.boundingBox,
+                        me.getGraphX(),
+                        me.getGraphY(),
                       )
                     ) {
-                      var wasSelected =
-                        this.selectionCellsHandler.isHandled(table);
-                      this.selectCellForEvent(table, me.getEvent());
-                      handler = this.selectionCellsHandler.getHandler(table);
+                      cursor = "move";
+                    } else if (
+                      m.mxUtils.contains(box, pts[0].x, pts[0].y) ||
+                      m.mxUtils.contains(
+                        box,
+                        pts[pts.length - 1].x,
+                        pts[pts.length - 1].y,
+                      )
+                    ) {
+                      cursor = "pointer";
+                    } else if (
+                      state.visibleSourceState != null ||
+                      state.visibleTargetState != null
+                    ) {
+                      // Moving is not allowed for entity relation but still indicate hover state
+                      var tmp = this.view.getEdgeStyle(state);
+                      cursor = "crosshair";
 
-                      if (handler != null) {
-                        var handle = handler.getHandleForEvent(me);
+                      if (
+                        tmp != m.mxEdgeStyle.EntityRelation &&
+                        this.isOrthogonal(state)
+                      ) {
+                        var idx = m.mxUtils.findNearestSegment(
+                          state,
+                          me.getGraphX(),
+                          me.getGraphY(),
+                        );
 
-                        if (handle != null) {
-                          handler.start(me.getGraphX(), me.getGraphY(), handle);
-                          handler.blockDelayedSelection = !wasSelected;
-                          me.consume();
+                        if (idx < pts.length - 1 && idx >= 0) {
+                          cursor =
+                            Math.round(pts[idx].x - pts[idx + 1].x) == 0
+                              ? "col-resize"
+                              : "row-resize";
                         }
                       }
                     }
                   }
-                }
+                } else if (!m.mxEvent.isControlDown(me.getEvent())) {
+                  var box = new m.mxRectangle(
+                    me.getGraphX() - 1,
+                    me.getGraphY() - 1,
+                  );
+                  box.grow(m.mxShape.prototype.svgStrokeTolerance / 2);
 
-                // Hover for swimlane start sizes inside tables
-                var current = state;
+                  if (this.isTableCell(state.cell)) {
+                    var row = this.model.getParent(state.cell);
+                    var table = this.model.getParent(row);
 
-                while (
-                  !me.isConsumed() &&
-                  current != null &&
-                  (this.isTableCell(current.cell) ||
-                    this.isTableRow(current.cell) ||
-                    this.isTable(current.cell))
-                ) {
-                  if (this.isSwimlane(current.cell)) {
-                    var offset = this.getActualStartSize(current.cell);
-                    var s = this.view.scale;
+                    if (!this.isCellSelected(table)) {
+                      if (
+                        (m.mxUtils.intersects(
+                          box,
+                          new m.mxRectangle(
+                            state.x - 2,
+                            state.y,
+                            2,
+                            state.height,
+                          ),
+                        ) &&
+                          this.model.getChildAt(row, 0) != state.cell) ||
+                        m.mxUtils.intersects(
+                          box,
+                          new m.mxRectangle(
+                            state.x + state.width - 2,
+                            state.y,
+                            2,
+                            state.height,
+                          ),
+                        )
+                      ) {
+                        cursor = "col-resize";
+                      } else if (
+                        (m.mxUtils.intersects(
+                          box,
+                          new m.mxRectangle(
+                            state.x,
+                            state.y - 2,
+                            state.width,
+                            3,
+                          ),
+                        ) &&
+                          this.model.getChildAt(table, 0) != row) ||
+                        m.mxUtils.intersects(
+                          box,
+                          new m.mxRectangle(
+                            state.x,
+                            state.y + state.height - 2,
+                            state.width,
+                            3,
+                          ),
+                        )
+                      ) {
+                        cursor = "row-resize";
+                      }
+                    }
+                  }
 
-                    if (
-                      ((offset.x > 0 || offset.width > 0) &&
+                  // Hover for swimlane start sizes inside tables
+                  var current = state;
+
+                  while (
+                    cursor == null &&
+                    current != null &&
+                    (this.isTableCell(current.cell) ||
+                      this.isTableRow(current.cell) ||
+                      this.isTable(current.cell))
+                  ) {
+                    if (this.isSwimlane(current.cell)) {
+                      var offset = this.getActualStartSize(current.cell);
+                      var s = this.view.scale;
+
+                      if (
+                        (offset.x > 0 || offset.width > 0) &&
                         m.mxUtils.intersects(
                           box,
                           new m.mxRectangle(
                             current.x +
                               (offset.x - offset.width - 1) * s +
-                              (offset.x == 0 ? current.width : 0),
+                              (offset.x == 0 ? current.width * s : 0),
                             current.y,
                             1,
                             current.height,
                           ),
-                        )) ||
-                      ((offset.y > 0 || offset.height > 0) &&
+                        )
+                      ) {
+                        cursor = "col-resize";
+                      } else if (
+                        (offset.y > 0 || offset.height > 0) &&
                         m.mxUtils.intersects(
                           box,
                           new m.mxRectangle(
@@ -494,1172 +879,819 @@ constructor  (
                             current.width,
                             1,
                           ),
-                        ))
-                    ) {
-                      this.selectCellForEvent(current.cell, me.getEvent());
-                      handler = this.selectionCellsHandler.getHandler(
-                        current.cell,
-                      );
-
-                      if (handler != null) {
-                        // Swimlane start size handle is last custom handle
-                        var handle =
-                          m.mxEvent.CUSTOM_HANDLE -
-                          handler.customHandles.length +
-                          1;
-                        handler.start(me.getGraphX(), me.getGraphY(), handle);
-                        me.consume();
-                      }
-                    }
-                  }
-
-                  current = this.view.getState(
-                    this.model.getParent(current.cell),
-                  );
-                }
-              }
-            }
-          }
-        }
-      }),
-    );
-
-    var mouseDown = null;
-
-    this.addMouseListener({
-      mouseDown: function (sender, me) {},
-      mouseMove: m.mxUtils.bind(this, function (sender, me) {
-        // Checks if any other handler is active
-        var handlerMap = this.selectionCellsHandler.handlers.map;
-
-        for (var key in handlerMap) {
-          if (handlerMap[key].index != null) {
-            return;
-          }
-        }
-
-        if (
-          this.isEnabled() &&
-          !this.panningHandler.isActive() &&
-          !m.mxEvent.isAltDown(me.getEvent())
-        ) {
-          var tol = this.tolerance;
-
-          if (
-            start.point != null &&
-            start.state != null &&
-            start.event != null
-          ) {
-            var state = start.state;
-
-            if (
-              Math.abs(start.point.x - me.getGraphX()) > tol ||
-              Math.abs(start.point.y - me.getGraphY()) > tol
-            ) {
-              var handler = this.selectionCellsHandler.getHandler(state.cell);
-
-              if (handler == null && this.model.isEdge(state.cell)) {
-                handler = this.createHandler(state);
-              }
-
-              if (
-                handler != null &&
-                handler.bends != null &&
-                handler.bends.length > 0
-              ) {
-                var handle = handler.getHandleForEvent(start.event);
-                var edgeStyle = this.view.getEdgeStyle(state);
-                var entity = edgeStyle == m.mxEdgeStyle.EntityRelation;
-
-                // Handles special case where label was clicked on unselected edge in which
-                // case the label will be moved regardless of the handle that is returned
-                if (!start.selected && start.handle == m.mxEvent.LABEL_HANDLE) {
-                  handle = start.handle;
-                }
-
-                if (
-                  !entity ||
-                  handle == 0 ||
-                  handle == handler.bends.length - 1 ||
-                  handle == m.mxEvent.LABEL_HANDLE
-                ) {
-                  // Source or target handle or connected for direct handle access or orthogonal line
-                  // with just two points where the central handle is moved regardless of mouse position
-                  if (
-                    handle == m.mxEvent.LABEL_HANDLE ||
-                    handle == 0 ||
-                    state.visibleSourceState != null ||
-                    handle == handler.bends.length - 1 ||
-                    state.visibleTargetState != null
-                  ) {
-                    if (!entity && handle != m.mxEvent.LABEL_HANDLE) {
-                      var pts = state.absolutePoints;
-
-                      // Default case where handles are at corner points handles
-                      // drag of corner as drag of existing point
-                      if (
-                        pts != null &&
-                        ((edgeStyle == null && handle == null) ||
-                          edgeStyle == m.mxEdgeStyle.OrthConnector)
+                        )
                       ) {
-                        // Does not use handles if they were not initially visible
-                        handle = start.handle;
-
-                        if (handle == null) {
-                          var box = new m.mxRectangle(
-                            start.point.x,
-                            start.point.y,
-                          );
-                          box.grow(
-                            m.mxEdgeHandler.prototype.handleImage.width / 2,
-                          );
-
-                          if (m.mxUtils.contains(box, pts[0].x, pts[0].y)) {
-                            // Moves source terminal handle
-                            handle = 0;
-                          } else if (
-                            m.mxUtils.contains(
-                              box,
-                              pts[pts.length - 1].x,
-                              pts[pts.length - 1].y,
-                            )
-                          ) {
-                            // Moves target terminal handle
-                            handle = handler.bends.length - 1;
-                          } else {
-                            // Checks if edge has no bends
-                            var nobends =
-                              edgeStyle != null &&
-                              (pts.length == 2 ||
-                                (pts.length == 3 &&
-                                  ((Math.round(pts[0].x - pts[1].x) == 0 &&
-                                    Math.round(pts[1].x - pts[2].x) == 0) ||
-                                    (Math.round(pts[0].y - pts[1].y) == 0 &&
-                                      Math.round(pts[1].y - pts[2].y) == 0))));
-
-                            if (nobends) {
-                              // Moves central handle for straight orthogonal edges
-                              handle = 2;
-                            } else {
-                              // Finds and moves vertical or horizontal segment
-                              handle = m.mxUtils.findNearestSegment(
-                                state,
-                                start.point.x,
-                                start.point.y,
-                              );
-
-                              // Converts segment to virtual handle index
-                              if (edgeStyle == null) {
-                                handle = m.mxEvent.VIRTUAL_HANDLE - handle;
-                              }
-                              // Maps segment to handle
-                              else {
-                                handle += 1;
-                              }
-                            }
-                          }
-                        }
-                      }
-
-                      // Creates a new waypoint and starts moving it
-                      if (handle == null) {
-                        handle = m.mxEvent.VIRTUAL_HANDLE;
+                        cursor = "row-resize";
                       }
                     }
 
-                    handler.start(me.getGraphX(), me.getGraphX(), handle);
-                    me.consume();
-
-                    // Removes preview rectangle in graph handler
-                    this.graphHandler.reset();
-                  }
-                } else if (
-                  entity &&
-                  (state.visibleSourceState != null ||
-                    state.visibleTargetState != null)
-                ) {
-                  // Disables moves on entity to make it consistent
-                  this.graphHandler.reset();
-                  me.consume();
-                }
-              }
-
-              if (handler != null) {
-                // Lazy selection for edges inside groups
-                if (this.selectionCellsHandler.isHandlerActive(handler)) {
-                  if (!this.isCellSelected(state.cell)) {
-                    this.selectionCellsHandler.handlers.put(
-                      state.cell,
-                      handler,
+                    current = this.view.getState(
+                      this.model.getParent(current.cell),
                     );
-                    this.selectCellForEvent(state.cell, me.getEvent());
-                  }
-                } else if (!this.isCellSelected(state.cell)) {
-                  // Destroy temporary handler
-                  handler.destroy();
-                }
-              }
-
-              // Reset start state
-              start.selected = false;
-              start.handle = null;
-              start.state = null;
-              start.event = null;
-              start.point = null;
-            }
-          } else {
-            // Updates cursor for unselected edges under the mouse
-            var state = me.getState();
-
-            if (state != null) {
-              var cursor = null;
-
-              // Checks if state was removed in call to stopEditing above
-              if (this.model.isEdge(state.cell)) {
-                var box = new m.mxRectangle(me.getGraphX(), me.getGraphY());
-                box.grow(m.mxEdgeHandler.prototype.handleImage.width / 2);
-                var pts = state.absolutePoints;
-
-                if (pts != null) {
-                  if (
-                    state.text != null &&
-                    state.text.boundingBox != null &&
-                    m.mxUtils.contains(
-                      state.text.boundingBox,
-                      me.getGraphX(),
-                      me.getGraphY(),
-                    )
-                  ) {
-                    cursor = "move";
-                  } else if (
-                    m.mxUtils.contains(box, pts[0].x, pts[0].y) ||
-                    m.mxUtils.contains(
-                      box,
-                      pts[pts.length - 1].x,
-                      pts[pts.length - 1].y,
-                    )
-                  ) {
-                    cursor = "pointer";
-                  } else if (
-                    state.visibleSourceState != null ||
-                    state.visibleTargetState != null
-                  ) {
-                    // Moving is not allowed for entity relation but still indicate hover state
-                    var tmp = this.view.getEdgeStyle(state);
-                    cursor = "crosshair";
-
-                    if (
-                      tmp != m.mxEdgeStyle.EntityRelation &&
-                      this.isOrthogonal(state)
-                    ) {
-                      var idx = m.mxUtils.findNearestSegment(
-                        state,
-                        me.getGraphX(),
-                        me.getGraphY(),
-                      );
-
-                      if (idx < pts.length - 1 && idx >= 0) {
-                        cursor =
-                          Math.round(pts[idx].x - pts[idx + 1].x) == 0
-                            ? "col-resize"
-                            : "row-resize";
-                      }
-                    }
-                  }
-                }
-              } else if (!m.mxEvent.isControlDown(me.getEvent())) {
-                var box = new m.mxRectangle(
-                  me.getGraphX() - 1,
-                  me.getGraphY() - 1,
-                );
-                box.grow(m.mxShape.prototype.svgStrokeTolerance / 2);
-
-                if (this.isTableCell(state.cell)) {
-                  var row = this.model.getParent(state.cell);
-                  var table = this.model.getParent(row);
-
-                  if (!this.isCellSelected(table)) {
-                    if (
-                      (m.mxUtils.intersects(
-                        box,
-                        new m.mxRectangle(state.x - 2, state.y, 2, state.height),
-                      ) &&
-                        this.model.getChildAt(row, 0) != state.cell) ||
-                      m.mxUtils.intersects(
-                        box,
-                        new m.mxRectangle(
-                          state.x + state.width - 2,
-                          state.y,
-                          2,
-                          state.height,
-                        ),
-                      )
-                    ) {
-                      cursor = "col-resize";
-                    } else if (
-                      (m.mxUtils.intersects(
-                        box,
-                        new m.mxRectangle(state.x, state.y - 2, state.width, 3),
-                      ) &&
-                        this.model.getChildAt(table, 0) != row) ||
-                      m.mxUtils.intersects(
-                        box,
-                        new m.mxRectangle(
-                          state.x,
-                          state.y + state.height - 2,
-                          state.width,
-                          3,
-                        ),
-                      )
-                    ) {
-                      cursor = "row-resize";
-                    }
                   }
                 }
 
-                // Hover for swimlane start sizes inside tables
-                var current = state;
-
-                while (
-                  cursor == null &&
-                  current != null &&
-                  (this.isTableCell(current.cell) ||
-                    this.isTableRow(current.cell) ||
-                    this.isTable(current.cell))
-                ) {
-                  if (this.isSwimlane(current.cell)) {
-                    var offset = this.getActualStartSize(current.cell);
-                    var s = this.view.scale;
-
-                    if (
-                      (offset.x > 0 || offset.width > 0) &&
-                      m.mxUtils.intersects(
-                        box,
-                        new m.mxRectangle(
-                          current.x +
-                            (offset.x - offset.width - 1) * s +
-                            (offset.x == 0 ? current.width * s : 0),
-                          current.y,
-                          1,
-                          current.height,
-                        ),
-                      )
-                    ) {
-                      cursor = "col-resize";
-                    } else if (
-                      (offset.y > 0 || offset.height > 0) &&
-                      m.mxUtils.intersects(
-                        box,
-                        new m.mxRectangle(
-                          current.x,
-                          current.y +
-                            (offset.y - offset.height - 1) * s +
-                            (offset.y == 0 ? current.height : 0),
-                          current.width,
-                          1,
-                        ),
-                      )
-                    ) {
-                      cursor = "row-resize";
-                    }
-                  }
-
-                  current = this.view.getState(
-                    this.model.getParent(current.cell),
-                  );
+                if (cursor != null) {
+                  state.setCursor(cursor);
                 }
-              }
-
-              if (cursor != null) {
-                state.setCursor(cursor);
               }
             }
           }
-        }
-      }),
-      mouseUp: m.mxUtils.bind(this, function (sender, me) {
-        start.state = null;
-        start.event = null;
-        start.point = null;
-        start.handle = null;
-      }),
-    });
-  } // end constructor
-}
-/**
- * Helper function for creating SVG data URI.
- */
-static createSvgImage(w, h, data, coordWidth, coordHeight) {
-  var tmp = unescape(
-    encodeURIComponent(
-      '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' +
-        '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="' +
-        w +
-        'px" height="' +
-        h +
-        'px" ' +
-        (coordWidth != null && coordHeight != null
-          ? 'viewBox="0 0 ' + coordWidth + " " + coordHeight + '" '
-          : "") +
-        'version="1.1">' +
-        data +
-        "</svg>",
-    ),
-  );
-
-  return new m.mxImage(
-    "data:image/svg+xml;base64," +
-      (window.btoa ? btoa(tmp) : Base64.encode(tmp, true)),
-    w,
-    h,
-  );
-};
-
-/**
- * Removes all illegal control characters with ASCII code <32 except TAB, LF
- * and CR.
- */
-zapGremlins(text) {
-  var lastIndex = 0;
-  var checked = [];
-
-  for (var i = 0; i < text.length; i++) {
-    var code = text.charCodeAt(i);
-
-    // Removes all control chars except TAB, LF and CR
-    if (
-      !(
-        (code >= 32 || code == 9 || code == 10 || code == 13) &&
-        code != 0xffff &&
-        code != 0xfffe
-      )
-    ) {
-      checked.push(text.substring(lastIndex, i));
-      lastIndex = i + 1;
-    }
+        }),
+        mouseUp: m.mxUtils.bind(this, function (sender, me) {
+          start.state = null;
+          start.event = null;
+          start.point = null;
+          start.handle = null;
+        }),
+      });
+    } // end constructor
   }
-
-  if (lastIndex > 0 && lastIndex < text.length) {
-    checked.push(text.substring(lastIndex));
-  }
-
-  return checked.length == 0 ? text : checked.join("");
-};
-
-/**
- * Turns the given string into an array.
- */
-stringToBytes(str) {
-  var arr = new Array(str.length);
-
-  for (var i = 0; i < str.length; i++) {
-    arr[i] = str.charCodeAt(i);
-  }
-
-  return arr;
-};
-
-/**
- * Turns the given array into a string.
- */
-bytesToString(arr) {
-  var result = new Array(arr.length);
-
-  for (var i = 0; i < arr.length; i++) {
-    result[i] = String.fromCharCode(arr[i]);
-  }
-
-  return result.join("");
-};
-
-/**
- * Turns the given array into a string.
- */
-ase64EncodeUnicode(str) {
-  return btoa(
-    encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function (match, p1) {
-      return String.fromCharCode(parseInt(p1, 16));
-    }),
-  );
-};
-
-/**
- * Turns the given array into a string.
- */
-ase64DecodeUnicode(str) {
-  return decodeURIComponent(
-    Array.prototype.map
-      .call(atob(str), function (c) {
-        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-      })
-      .join(""),
-  );
-};
-
-/**
- * Returns a base64 encoded version of the compressed outer XML of the given node.
- */
-compressNode(node, checked) {
-  var xml = m.mxUtils.getXml(node);
-
-  return this.compress(checked ? xml : this.zapGremlins(xml));
-};
-
-/**
- * Returns a base64 encoded version of the compressed string.
- */
-compress(data, deflate) {
-  if (data == null || data.length == 0 || typeof pako === "undefined") {
-    return data;
-  } else {
-    var tmp = deflate
-      ? pako.deflate(encodeURIComponent(data), { to: "string" })
-      : pako.deflateRaw(encodeURIComponent(data), { to: "string" });
-
-    return window.btoa ? btoa(tmp) : Base64.encode(tmp, true);
-  }
-};
-
-/**
- * Returns a decompressed version of the base64 encoded string.
- */
-decompress(data, inflate, checked) {
-  if (data == null || data.length == 0 || typeof pako === "undefined") {
-    return data;
-  } else {
-    var tmp = window.atob ? atob(data) : Base64.decode(data, true);
-
-    var inflated = decodeURIComponent(
-      inflate
-        ? pako.inflate(tmp, { to: "string" })
-        : pako.inflateRaw(tmp, { to: "string" }),
+  /**
+   * Helper function for creating SVG data URI.
+   */
+  static createSvgImage(w, h, data, coordWidth, coordHeight) {
+    var tmp = unescape(
+      encodeURIComponent(
+        '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' +
+          '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="' +
+          w +
+          'px" height="' +
+          h +
+          'px" ' +
+          (coordWidth != null && coordHeight != null
+            ? 'viewBox="0 0 ' + coordWidth + " " + coordHeight + '" '
+            : "") +
+          'version="1.1">' +
+          data +
+          "</svg>",
+      ),
     );
 
-    return checked ? inflated : this.zapGremlins(inflated);
+    return new m.mxImage(
+      "data:image/svg+xml;base64," +
+        (window.btoa ? btoa(tmp) : Base64.encode(tmp, true)),
+      w,
+      h,
+    );
   }
-};
 
-/**
- * Removes formatting from pasted HTML.
- */
-removePasteFormatting (elt) {
-  while (elt != null) {
-    if (elt.firstChild != null) {
-      Graph.removePasteFormatting(elt.firstChild);
-    }
+  /**
+   * Removes all illegal control characters with ASCII code <32 except TAB, LF
+   * and CR.
+   */
+static  zapGremlins(text) {
+    var lastIndex = 0;
+    var checked = [];
 
-    if (elt.nodeType == m.mxConstants.NODETYPE_ELEMENT && elt.style != null) {
-      elt.style.whiteSpace = "";
+    for (var i = 0; i < text.length; i++) {
+      var code = text.charCodeAt(i);
 
-      if (elt.style.color == "#000000") {
-        elt.style.color = "";
+      // Removes all control chars except TAB, LF and CR
+      if (
+        !(
+          (code >= 32 || code == 9 || code == 10 || code == 13) &&
+          code != 0xffff &&
+          code != 0xfffe
+        )
+      ) {
+        checked.push(text.substring(lastIndex, i));
+        lastIndex = i + 1;
       }
     }
 
-    elt = elt.nextSibling;
-  }
-};
-
-/**
- * Sanitizes the given HTML markup.
- */
-sanitizeHtml (value, editing) {
-  // Uses https://code.google.com/p/google-caja/wiki/JsHtmlSanitizer
-  // NOTE: Original minimized sanitizer was modified to support
-  // data URIs for images, mailto and special data:-links.
-  // LATER: Add MathML to whitelisted tags
-  function urlX(link) {
-    if (
-      link != null &&
-      link.toString().toLowerCase().substring(0, 11) !== "javascript:"
-    ) {
-      return link;
+    if (lastIndex > 0 && lastIndex < text.length) {
+      checked.push(text.substring(lastIndex));
     }
 
-    return null;
-  }
-  function idX(id) {
-    return id;
+    return checked.length == 0 ? text : checked.join("");
   }
 
-  return html_sanitize(value, urlX, idX);
-};
+  /**
+   * Turns the given string into an array.
+   */
+  stringToBytes(str) {
+    var arr = new Array(str.length);
 
-/**
- * Returns the CSS font family from the given computed style.
- */
-tripQuotes(text) {
-  if (text != null) {
-    if (text.charAt(0) == "'") {
-      text = text.substring(1);
+    for (var i = 0; i < str.length; i++) {
+      arr[i] = str.charCodeAt(i);
     }
 
-    if (text.charAt(text.length - 1) == "'") {
-      text = text.substring(0, text.length - 1);
+    return arr;
+  }
+
+  /**
+   * Turns the given array into a string.
+   */
+  bytesToString(arr) {
+    var result = new Array(arr.length);
+
+    for (var i = 0; i < arr.length; i++) {
+      result[i] = String.fromCharCode(arr[i]);
     }
 
-    if (text.charAt(0) == '"') {
-      text = text.substring(1);
-    }
+    return result.join("");
+  }
 
-    if (text.charAt(text.length - 1) == '"') {
-      text = text.substring(0, text.length - 1);
+  /**
+   * Turns the given array into a string.
+   */
+  ase64EncodeUnicode(str) {
+    return btoa(
+      encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function (match, p1) {
+        return String.fromCharCode(parseInt(p1, 16));
+      }),
+    );
+  }
+
+  /**
+   * Turns the given array into a string.
+   */
+  ase64DecodeUnicode(str) {
+    return decodeURIComponent(
+      Array.prototype.map
+        .call(atob(str), function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join(""),
+    );
+  }
+
+  /**
+   * Returns a base64 encoded version of the compressed outer XML of the given node.
+   */
+  compressNode(node, checked) {
+    var xml = m.mxUtils.getXml(node);
+
+    return this.compress(checked ? xml : this.zapGremlins(xml));
+  }
+
+  /**
+   * Returns a base64 encoded version of the compressed string.
+   */
+  compress(data, deflate) {
+    if (data == null || data.length == 0 || typeof pako === "undefined") {
+      return data;
+    } else {
+      var tmp = deflate
+        ? pako.deflate(encodeURIComponent(data), { to: "string" })
+        : pako.deflateRaw(encodeURIComponent(data), { to: "string" });
+
+      return window.btoa ? btoa(tmp) : Base64.encode(tmp, true);
     }
   }
 
-  return text;
-};
+  /**
+   * Returns a decompressed version of the base64 encoded string.
+   */
+static  decompress(data, inflate, checked) {
+    if (data == null || data.length == 0 || typeof pako === "undefined") {
+      return data;
+    } else {
+      var tmp = window.atob ? atob(data) : Base64.decode(data, true);
 
-/**
- * Returns true if the given string is a link.
- *
- * See https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
- */
-isLink(text) {
-  return text != null && Graph.linkPattern.test(text);
-};
+      var inflated = decodeURIComponent(
+        inflate
+          ? pako.inflate(tmp, { to: "string" })
+          : pako.inflateRaw(tmp, { to: "string" }),
+      );
 
-set() {
-  // HTML entities are displayed as plain text in wrapped plain text labels
-  this.cellRenderer.getLabelValue = function (state) {
-    var result = m.mxCellRenderer.prototype.getLabelValue.apply(this, arguments);
+      return checked ? inflated : this.zapGremlins(inflated);
+    }
+  }
 
-    if (state.view.graph.isHtmlLabel(state.cell)) {
-      if (state.style["html"] != 1) {
-        result = m.mxUtils.htmlEntities(result, false);
-      } else {
-        result = state.view.graph.sanitizeHtml(result);
+  /**
+   * Removes formatting from pasted HTML.
+   */
+  removePasteFormatting(elt) {
+    while (elt != null) {
+      if (elt.firstChild != null) {
+        Graph.removePasteFormatting(elt.firstChild);
+      }
+
+      if (elt.nodeType == m.mxConstants.NODETYPE_ELEMENT && elt.style != null) {
+        elt.style.whiteSpace = "";
+
+        if (elt.style.color == "#000000") {
+          elt.style.color = "";
+        }
+      }
+
+      elt = elt.nextSibling;
+    }
+  }
+
+  /**
+   * Sanitizes the given HTML markup.
+   */
+  sanitizeHtml(value, editing) {
+    // Uses https://code.google.com/p/google-caja/wiki/JsHtmlSanitizer
+    // NOTE: Original minimized sanitizer was modified to support
+    // data URIs for images, mailto and special data:-links.
+    // LATER: Add MathML to whitelisted tags
+    function urlX(link) {
+      if (
+        link != null &&
+        link.toString().toLowerCase().substring(0, 11) !== "javascript:"
+      ) {
+        return link;
+      }
+
+      return null;
+    }
+    function idX(id) {
+      return id;
+    }
+
+    return html_sanitize(value, urlX, idX);
+  }
+
+  /**
+   * Returns the CSS font family from the given computed style.
+   */
+  tripQuotes(text) {
+    if (text != null) {
+      if (text.charAt(0) == "'") {
+        text = text.substring(1);
+      }
+
+      if (text.charAt(text.length - 1) == "'") {
+        text = text.substring(0, text.length - 1);
+      }
+
+      if (text.charAt(0) == '"') {
+        text = text.substring(1);
+      }
+
+      if (text.charAt(text.length - 1) == '"') {
+        text = text.substring(0, text.length - 1);
       }
     }
 
-    return result;
-  };
+    return text;
+  }
 
-  // All code below not available and not needed in embed mode
-  if (typeof m.mxVertexHandler !== "undefined") {
-    this.setConnectable(true);
-    this.setDropEnabled(true);
-    this.setPanning(true);
-    this.setTooltips(true);
-    this.setAllowLoops(true);
-    this.allowAutoPanning = true;
-    this.resetEdgesOnConnect = false;
-    this.constrainChildren = false;
-    this.constrainRelativeChildren = true;
+  /**
+   * Returns true if the given string is a link.
+   *
+   * See https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
+   */
+  isLink(text) {
+    return text != null && Graph.linkPattern.test(text);
+  }
 
-    // Do not scroll after moving cells
-    this.graphHandler.scrollOnMove = false;
-    this.graphHandler.scaleGrid = true;
+  set() {
+    // HTML entities are displayed as plain text in wrapped plain text labels
+    this.cellRenderer.getLabelValue = function (state) {
+      var result = m.mxCellRenderer.prototype.getLabelValue.apply(
+        this,
+        arguments,
+      );
 
-    // Disables cloning of connection sources by default
-    this.connectionHandler.setCreateTarget(false);
-    this.connectionHandler.insertBeforeSource = true;
-
-    // Disables built-in connection starts
-    this.connectionHandler.isValidSource = function (cell, me) {
-      return false;
-    };
-
-    // Sets the style to be used when an elbow edge is double clicked
-    this.alternateEdgeStyle = "vertical";
-
-    if (stylesheet == null) {
-      this.loadStylesheet();
-    }
-
-    // Adds page centers to the guides for moving cells
-    var graphHandlerGetGuideStates = this.graphHandler.getGuideStates;
-    this.graphHandler.getGuideStates = function () {
-      var result = graphHandlerGetGuideStates.apply(this, arguments);
-
-      // Create virtual cell state for page centers
-      if (this.graph.pageVisible) {
-        var guides = [];
-
-        var pf = this.graph.pageFormat;
-        var ps = this.graph.pageScale;
-        var pw = pf.width * ps;
-        var ph = pf.height * ps;
-        var t = this.graph.view.translate;
-        var s = this.graph.view.scale;
-
-        var layout = this.graph.getPageLayout();
-
-        for (var i = 0; i < layout.width; i++) {
-          guides.push(
-            new m.mxRectangle(
-              ((layout.x + i) * pw + t.x) * s,
-              (layout.y * ph + t.y) * s,
-              pw * s,
-              ph * s,
-            ),
-          );
+      if (state.view.graph.isHtmlLabel(state.cell)) {
+        if (state.style["html"] != 1) {
+          result = m.mxUtils.htmlEntities(result, false);
+        } else {
+          result = state.view.graph.sanitizeHtml(result);
         }
-
-        for (var j = 1; j < layout.height; j++) {
-          guides.push(
-            new m.mxRectangle(
-              (layout.x * pw + t.x) * s,
-              ((layout.y + j) * ph + t.y) * s,
-              pw * s,
-              ph * s,
-            ),
-          );
-        }
-
-        // Page center guides have precedence over normal guides
-        result = guides.concat(result);
       }
 
       return result;
     };
 
-    // Overrides zIndex for dragElement
-    m.mxDragSource.prototype.dragElementZIndex = m.mxPopupMenu.prototype.zIndex;
+    // All code below not available and not needed in embed mode
+    if (typeof m.mxVertexHandler !== "undefined") {
+      this.setConnectable(true);
+      this.setDropEnabled(true);
+      this.setPanning(true);
+      this.setTooltips(true);
+      this.setAllowLoops(true);
+      this.allowAutoPanning = true;
+      this.resetEdgesOnConnect = false;
+      this.constrainChildren = false;
+      this.constrainRelativeChildren = true;
 
-    // Overrides color for virtual guides for page centers
-    m.mxGuide.prototype.getGuideColor = function (state, horizontal) {
-      return state.cell == null
-        ? "#ffa500" /* orange */
-        : m.mxConstants.GUIDE_COLOR;
-    };
+      // Do not scroll after moving cells
+      this.graphHandler.scrollOnMove = false;
+      this.graphHandler.scaleGrid = true;
 
-    // Changes color of move preview for black backgrounds
-    this.graphHandler.createPreviewShape = function (bounds) {
-      this.previewColor =
-        this.graph.background == "#000000"
-          ? "#ffffff"
-          : m.mxGraphHandler.prototype.previewColor;
+      // Disables cloning of connection sources by default
+      this.connectionHandler.setCreateTarget(false);
+      this.connectionHandler.insertBeforeSource = true;
 
-      return m.mxGraphHandler.prototype.createPreviewShape.apply(this, arguments);
-    };
+      // Disables built-in connection starts
+      this.connectionHandler.isValidSource = function (cell, me) {
+        return false;
+      };
 
-    // Handles parts of cells by checking if part=1 is in the style and returning the parent
-    // if the parent is not already in the list of cells. container style is used to disable
-    // step into swimlanes and dropTarget style is used to disable acting as a drop target.
-    // LATER: Handle recursive parts
-    var graphHandlerGetCells = this.graphHandler.getCells;
+      // Sets the style to be used when an elbow edge is double clicked
+      this.alternateEdgeStyle = "vertical";
 
-    this.graphHandler.getCells = function (initialCell) {
-      var cells = graphHandlerGetCells.apply(this, arguments);
-      var lookup = new m.mxDictionary();
-      var newCells = [];
-
-      for (var i = 0; i < cells.length; i++) {
-        // Propagates to composite parents or moves selected table rows
-        var cell =
-          this.graph.isTableCell(initialCell) &&
-          this.graph.isTableCell(cells[i]) &&
-          this.graph.isCellSelected(cells[i])
-            ? this.graph.model.getParent(cells[i])
-            : this.graph.isTableRow(initialCell) &&
-              this.graph.isTableRow(cells[i]) &&
-              this.graph.isCellSelected(cells[i])
-            ? cells[i]
-            : this.graph.getCompositeParent(cells[i]);
-
-        if (cell != null && !lookup.get(cell)) {
-          lookup.put(cell, true);
-          newCells.push(cell);
-        }
+      if (stylesheet == null) {
+        this.loadStylesheet();
       }
 
-      return newCells;
-    };
+      // Adds page centers to the guides for moving cells
+      var graphHandlerGetGuideStates = this.graphHandler.getGuideStates;
+      this.graphHandler.getGuideStates = function () {
+        var result = graphHandlerGetGuideStates.apply(this, arguments);
 
-    // Handles parts and selected rows in tables of cells for drag and drop
-    var graphHandlerStart = this.graphHandler.start;
+        // Create virtual cell state for page centers
+        if (this.graph.pageVisible) {
+          var guides = [];
 
-    this.graphHandler.start = function (cell, x, y, cells) {
-      // Propagates to selected table row to start move
-      var ignoreParent = false;
+          var pf = this.graph.pageFormat;
+          var ps = this.graph.pageScale;
+          var pw = pf.width * ps;
+          var ph = pf.height * ps;
+          var t = this.graph.view.translate;
+          var s = this.graph.view.scale;
 
-      if (this.graph.isTableCell(cell)) {
-        if (!this.graph.isCellSelected(cell)) {
-          cell = this.graph.model.getParent(cell);
+          var layout = this.graph.getPageLayout();
+
+          for (var i = 0; i < layout.width; i++) {
+            guides.push(
+              new m.mxRectangle(
+                ((layout.x + i) * pw + t.x) * s,
+                (layout.y * ph + t.y) * s,
+                pw * s,
+                ph * s,
+              ),
+            );
+          }
+
+          for (var j = 1; j < layout.height; j++) {
+            guides.push(
+              new m.mxRectangle(
+                (layout.x * pw + t.x) * s,
+                ((layout.y + j) * ph + t.y) * s,
+                pw * s,
+                ph * s,
+              ),
+            );
+          }
+
+          // Page center guides have precedence over normal guides
+          result = guides.concat(result);
+        }
+
+        return result;
+      };
+
+      // Overrides zIndex for dragElement
+      m.mxDragSource.prototype.dragElementZIndex =
+        m.mxPopupMenu.prototype.zIndex;
+
+      // Overrides color for virtual guides for page centers
+      m.mxGuide.prototype.getGuideColor = function (state, horizontal) {
+        return state.cell == null
+          ? "#ffa500" /* orange */
+          : m.mxConstants.GUIDE_COLOR;
+      };
+
+      // Changes color of move preview for black backgrounds
+      this.graphHandler.createPreviewShape = function (bounds) {
+        this.previewColor =
+          this.graph.background == "#000000"
+            ? "#ffffff"
+            : m.mxGraphHandler.prototype.previewColor;
+
+        return m.mxGraphHandler.prototype.createPreviewShape.apply(
+          this,
+          arguments,
+        );
+      };
+
+      // Handles parts of cells by checking if part=1 is in the style and returning the parent
+      // if the parent is not already in the list of cells. container style is used to disable
+      // step into swimlanes and dropTarget style is used to disable acting as a drop target.
+      // LATER: Handle recursive parts
+      var graphHandlerGetCells = this.graphHandler.getCells;
+
+      this.graphHandler.getCells = function (initialCell) {
+        var cells = graphHandlerGetCells.apply(this, arguments);
+        var lookup = new m.mxDictionary();
+        var newCells = [];
+
+        for (var i = 0; i < cells.length; i++) {
+          // Propagates to composite parents or moves selected table rows
+          var cell =
+            this.graph.isTableCell(initialCell) &&
+            this.graph.isTableCell(cells[i]) &&
+            this.graph.isCellSelected(cells[i])
+              ? this.graph.model.getParent(cells[i])
+              : this.graph.isTableRow(initialCell) &&
+                this.graph.isTableRow(cells[i]) &&
+                this.graph.isCellSelected(cells[i])
+              ? cells[i]
+              : this.graph.getCompositeParent(cells[i]);
+
+          if (cell != null && !lookup.get(cell)) {
+            lookup.put(cell, true);
+            newCells.push(cell);
+          }
+        }
+
+        return newCells;
+      };
+
+      // Handles parts and selected rows in tables of cells for drag and drop
+      var graphHandlerStart = this.graphHandler.start;
+
+      this.graphHandler.start = function (cell, x, y, cells) {
+        // Propagates to selected table row to start move
+        var ignoreParent = false;
+
+        if (this.graph.isTableCell(cell)) {
+          if (!this.graph.isCellSelected(cell)) {
+            cell = this.graph.model.getParent(cell);
+          } else {
+            ignoreParent = true;
+          }
+        }
+
+        if (
+          !ignoreParent &&
+          (!this.graph.isTableRow(cell) || !this.graph.isCellSelected(cell))
+        ) {
+          cell = this.graph.getCompositeParent(cell);
+        }
+
+        graphHandlerStart.apply(this, arguments);
+      };
+
+      // Handles parts of cells when cloning the source for new connections
+      this.connectionHandler.createTargetVertex = function (evt, source) {
+        source = this.graph.getCompositeParent(source);
+
+        return m.mxConnectionHandler.prototype.createTargetVertex.apply(
+          this,
+          arguments,
+        );
+      };
+
+      var rubberband = new m.mxRubberband(this);
+
+      this.getRubberband = function () {
+        return rubberband;
+      };
+
+      // Timer-based activation of outline connect in connection handler
+      var startTime = new Date().getTime();
+      var timeOnTarget = 0;
+
+      var connectionHandlerMouseMove = this.connectionHandler.mouseMove;
+
+      this.connectionHandler.mouseMove = function () {
+        var prev = this.currentState;
+        connectionHandlerMouseMove.apply(this, arguments);
+
+        if (prev != this.currentState) {
+          startTime = new Date().getTime();
+          timeOnTarget = 0;
         } else {
-          ignoreParent = true;
+          timeOnTarget = new Date().getTime() - startTime;
         }
-      }
+      };
 
-      if (
-        !ignoreParent &&
-        (!this.graph.isTableRow(cell) || !this.graph.isCellSelected(cell))
-      ) {
-        cell = this.graph.getCompositeParent(cell);
-      }
+      // Activates outline connect after 1500ms with touch event or if alt is pressed inside the shape
+      // outlineConnect=0 is a custom style that means do not connect to strokes inside the shape,
+      // or in other words, connect to the shape's perimeter if the highlight is under the mouse
+      // (the name is because the highlight, including all strokes, is called outline in the code)
+      var connectionHandleIsOutlineConnectEvent =
+        this.connectionHandler.isOutlineConnectEvent;
 
-      graphHandlerStart.apply(this, arguments);
-    };
+      this.connectionHandler.isOutlineConnectEvent = function (me) {
+        return (
+          (this.currentState != null &&
+            me.getState() == this.currentState &&
+            timeOnTarget > 2000) ||
+          ((this.currentState == null ||
+            m.mxUtils.getValue(
+              this.currentState.style,
+              "outlineConnect",
+              "1",
+            ) != "0") &&
+            connectionHandleIsOutlineConnectEvent.apply(this, arguments))
+        );
+      };
 
-    // Handles parts of cells when cloning the source for new connections
-    this.connectionHandler.createTargetVertex = function (evt, source) {
-      source = this.graph.getCompositeParent(source);
+      // Adds shift+click to toggle selection state
+      var isToggleEvent = this.isToggleEvent;
+      this.isToggleEvent = function (evt) {
+        return (
+          isToggleEvent.apply(this, arguments) ||
+          (!m.mxClient.IS_CHROMEOS && m.mxEvent.isShiftDown(evt))
+        );
+      };
 
-      return m.mxConnectionHandler.prototype.createTargetVertex.apply(
-        this,
-        arguments,
+      // Workaround for Firefox where first mouse down is received
+      // after tap and hold if scrollbars are visible, which means
+      // start rubberband immediately if no cell is under mouse.
+      var isForceRubberBandEvent = rubberband.isForceRubberbandEvent;
+      rubberband.isForceRubberbandEvent = function (me) {
+        return (
+          (isForceRubberBandEvent.apply(this, arguments) &&
+            !m.mxEvent.isShiftDown(me.getEvent()) &&
+            !m.mxEvent.isControlDown(me.getEvent())) ||
+          (m.mxClient.IS_CHROMEOS && m.mxEvent.isShiftDown(me.getEvent())) ||
+          (m.mxUtils.hasScrollbars(this.graph.container) &&
+            m.mxClient.IS_FF &&
+            m.mxClient.IS_WIN &&
+            me.getState() == null &&
+            m.mxEvent.isTouchEvent(me.getEvent()))
+        );
+      };
+
+      // Shows hand cursor while panning
+      var prevCursor = null;
+
+      this.panningHandler.addListener(
+        m.mxEvent.PAN_START,
+        m.mxUtils.bind(this, function () {
+          if (this.isEnabled()) {
+            prevCursor = this.container.style.cursor;
+            this.container.style.cursor = "move";
+          }
+        }),
       );
-    };
 
-    var rubberband = new m.mxRubberband(this);
-
-    this.getRubberband = function () {
-      return rubberband;
-    };
-
-    // Timer-based activation of outline connect in connection handler
-    var startTime = new Date().getTime();
-    var timeOnTarget = 0;
-
-    var connectionHandlerMouseMove = this.connectionHandler.mouseMove;
-
-    this.connectionHandler.mouseMove = function () {
-      var prev = this.currentState;
-      connectionHandlerMouseMove.apply(this, arguments);
-
-      if (prev != this.currentState) {
-        startTime = new Date().getTime();
-        timeOnTarget = 0;
-      } else {
-        timeOnTarget = new Date().getTime() - startTime;
-      }
-    };
-
-    // Activates outline connect after 1500ms with touch event or if alt is pressed inside the shape
-    // outlineConnect=0 is a custom style that means do not connect to strokes inside the shape,
-    // or in other words, connect to the shape's perimeter if the highlight is under the mouse
-    // (the name is because the highlight, including all strokes, is called outline in the code)
-    var connectionHandleIsOutlineConnectEvent =
-      this.connectionHandler.isOutlineConnectEvent;
-
-    this.connectionHandler.isOutlineConnectEvent = function (me) {
-      return (
-        (this.currentState != null &&
-          me.getState() == this.currentState &&
-          timeOnTarget > 2000) ||
-        ((this.currentState == null ||
-          m.mxUtils.getValue(this.currentState.style, "outlineConnect", "1") !=
-            "0") &&
-          connectionHandleIsOutlineConnectEvent.apply(this, arguments))
+      this.panningHandler.addListener(
+        m.mxEvent.PAN_END,
+        m.mxUtils.bind(this, function () {
+          if (this.isEnabled()) {
+            this.container.style.cursor = prevCursor;
+          }
+        }),
       );
-    };
 
-    // Adds shift+click to toggle selection state
-    var isToggleEvent = this.isToggleEvent;
-    this.isToggleEvent = function (evt) {
-      return (
-        isToggleEvent.apply(this, arguments) ||
-        (!m.mxClient.IS_CHROMEOS && m.mxEvent.isShiftDown(evt))
-      );
-    };
+      this.popupMenuHandler.autoExpand = true;
 
-    // Workaround for Firefox where first mouse down is received
-    // after tap and hold if scrollbars are visible, which means
-    // start rubberband immediately if no cell is under mouse.
-    var isForceRubberBandEvent = rubberband.isForceRubberbandEvent;
-    rubberband.isForceRubberbandEvent = function (me) {
-      return (
-        (isForceRubberBandEvent.apply(this, arguments) &&
-          !m.mxEvent.isShiftDown(me.getEvent()) &&
-          !m.mxEvent.isControlDown(me.getEvent())) ||
-        (m.mxClient.IS_CHROMEOS && m.mxEvent.isShiftDown(me.getEvent())) ||
-        (m.mxUtils.hasScrollbars(this.graph.container) &&
-          m.mxClient.IS_FF &&
-          m.mxClient.IS_WIN &&
-          me.getState() == null &&
-          m.mxEvent.isTouchEvent(me.getEvent()))
-      );
-    };
+      this.popupMenuHandler.isSelectOnPopup = function (me) {
+        return m.mxEvent.isMouseEvent(me.getEvent());
+      };
 
-    // Shows hand cursor while panning
-    var prevCursor = null;
+      // Handles links if graph is read-only or cell is locked
+      var click = this.click;
+      this.click = function (me) {
+        var locked =
+          me.state == null &&
+          me.sourceState != null &&
+          this.isCellLocked(me.sourceState.cell);
 
-    this.panningHandler.addListener(
-      m.mxEvent.PAN_START,
-      m.mxUtils.bind(this, function () {
-        if (this.isEnabled()) {
-          prevCursor = this.container.style.cursor;
-          this.container.style.cursor = "move";
+        if ((!this.isEnabled() || locked) && !me.isConsumed()) {
+          var cell = locked ? me.sourceState.cell : me.getCell();
+
+          if (cell != null) {
+            var link = this.getClickableLinkForCell(cell);
+
+            if (link != null) {
+              if (this.isCustomLink(link)) {
+                this.customLinkClicked(link);
+              } else {
+                this.openLink(link);
+              }
+            }
+          }
+
+          if (this.isEnabled() && locked) {
+            this.clearSelection();
+          }
+        } else {
+          return click.apply(this, arguments);
         }
-      }),
-    );
+      };
 
-    this.panningHandler.addListener(
-      m.mxEvent.PAN_END,
-      m.mxUtils.bind(this, function () {
-        if (this.isEnabled()) {
-          this.container.style.cursor = prevCursor;
-        }
-      }),
-    );
+      // Redirects tooltips for locked cells
+      this.tooltipHandler.getStateForEvent = function (me) {
+        return me.sourceState;
+      };
 
-    this.popupMenuHandler.autoExpand = true;
+      // Opens links in tooltips in new windows
+      var tooltipHandlerShow = this.tooltipHandler.show;
+      this.tooltipHandler.show = function () {
+        tooltipHandlerShow.apply(this, arguments);
 
-    this.popupMenuHandler.isSelectOnPopup = function (me) {
-      return m.mxEvent.isMouseEvent(me.getEvent());
-    };
+        if (this.div != null) {
+          var links = this.div.getElementsByTagName("a");
 
-    // Handles links if graph is read-only or cell is locked
-    var click = this.click;
-    this.click = function (me) {
-      var locked =
-        me.state == null &&
-        me.sourceState != null &&
-        this.isCellLocked(me.sourceState.cell);
-
-      if ((!this.isEnabled() || locked) && !me.isConsumed()) {
-        var cell = locked ? me.sourceState.cell : me.getCell();
-
-        if (cell != null) {
-          var link = this.getClickableLinkForCell(cell);
-
-          if (link != null) {
-            if (this.isCustomLink(link)) {
-              this.customLinkClicked(link);
-            } else {
-              this.openLink(link);
+          for (var i = 0; i < links.length; i++) {
+            if (
+              links[i].getAttribute("href") != null &&
+              links[i].getAttribute("target") == null
+            ) {
+              links[i].setAttribute("target", "_blank");
             }
           }
         }
+      };
 
-        if (this.isEnabled() && locked) {
-          this.clearSelection();
-        }
-      } else {
-        return click.apply(this, arguments);
-      }
-    };
+      // Redirects tooltips for locked cells
+      this.tooltipHandler.getStateForEvent = function (me) {
+        return me.sourceState;
+      };
 
-    // Redirects tooltips for locked cells
-    this.tooltipHandler.getStateForEvent = function (me) {
-      return me.sourceState;
-    };
+      // Redirects cursor for locked cells
+      var getCursorForMouseEvent = this.getCursorForMouseEvent;
+      this.getCursorForMouseEvent = function (me) {
+        var locked =
+          me.state == null &&
+          me.sourceState != null &&
+          this.isCellLocked(me.sourceState.cell);
 
-    // Opens links in tooltips in new windows
-    var tooltipHandlerShow = this.tooltipHandler.show;
-    this.tooltipHandler.show = function () {
-      tooltipHandlerShow.apply(this, arguments);
+        return this.getCursorForCell(
+          locked ? me.sourceState.cell : me.getCell(),
+        );
+      };
 
-      if (this.div != null) {
-        var links = this.div.getElementsByTagName("a");
+      // Shows pointer cursor for clickable cells with links
+      // ie. if the graph is disabled and cells cannot be selected
+      var getCursorForCell = this.getCursorForCell;
+      this.getCursorForCell = function (cell) {
+        if (!this.isEnabled() || this.isCellLocked(cell)) {
+          var link = this.getClickableLinkForCell(cell);
 
-        for (var i = 0; i < links.length; i++) {
-          if (
-            links[i].getAttribute("href") != null &&
-            links[i].getAttribute("target") == null
-          ) {
-            links[i].setAttribute("target", "_blank");
+          if (link != null) {
+            return "pointer";
+          } else if (this.isCellLocked(cell)) {
+            return "default";
           }
         }
-      }
-    };
 
-    // Redirects tooltips for locked cells
-    this.tooltipHandler.getStateForEvent = function (me) {
-      return me.sourceState;
-    };
+        return getCursorForCell.apply(this, arguments);
+      };
 
-    // Redirects cursor for locked cells
-    var getCursorForMouseEvent = this.getCursorForMouseEvent;
-    this.getCursorForMouseEvent = function (me) {
-      var locked =
-        me.state == null &&
-        me.sourceState != null &&
-        this.isCellLocked(me.sourceState.cell);
+      // Changes rubberband selection ignore locked cells
+      this.selectRegion = function (rect, evt) {
+        var cells = this.getCells(
+          rect.x,
+          rect.y,
+          rect.width,
+          rect.height,
+          null,
+          null,
+          null,
+          function (state) {
+            return m.mxUtils.getValue(state.style, "locked", "0") == "1";
+          },
+          true,
+        );
 
-      return this.getCursorForCell(locked ? me.sourceState.cell : me.getCell());
-    };
+        this.selectCellsForEvent(cells, evt);
 
-    // Shows pointer cursor for clickable cells with links
-    // ie. if the graph is disabled and cells cannot be selected
-    var getCursorForCell = this.getCursorForCell;
-    this.getCursorForCell = function (cell) {
-      if (!this.isEnabled() || this.isCellLocked(cell)) {
-        var link = this.getClickableLinkForCell(cell);
+        return cells;
+      };
 
-        if (link != null) {
-          return "pointer";
-        } else if (this.isCellLocked(cell)) {
-          return "default";
+      // Never removes cells from parents that are being moved
+      var graphHandlerShouldRemoveCellsFromParent =
+        this.graphHandler.shouldRemoveCellsFromParent;
+      this.graphHandler.shouldRemoveCellsFromParent = function (
+        parent,
+        cells,
+        evt,
+      ) {
+        if (this.graph.isCellSelected(parent)) {
+          return false;
         }
-      }
 
-      return getCursorForCell.apply(this, arguments);
-    };
+        return graphHandlerShouldRemoveCellsFromParent.apply(this, arguments);
+      };
 
-    // Changes rubberband selection ignore locked cells
-    this.selectRegion = function (rect, evt) {
-      var cells = this.getCells(
-        rect.x,
-        rect.y,
-        rect.width,
-        rect.height,
-        null,
-        null,
-        null,
-        function (state) {
-          return m.mxUtils.getValue(state.style, "locked", "0") == "1";
-        },
-        true,
-      );
+      // Unlocks all cells
+      this.isCellLocked = function (cell) {
+        var pState = this.view.getState(cell);
 
-      this.selectCellsForEvent(cells, evt);
+        while (pState != null) {
+          if (m.mxUtils.getValue(pState.style, "locked", "0") == "1") {
+            return true;
+          }
 
-      return cells;
-    };
+          pState = this.view.getState(this.model.getParent(pState.cell));
+        }
 
-    // Never removes cells from parents that are being moved
-    var graphHandlerShouldRemoveCellsFromParent =
-      this.graphHandler.shouldRemoveCellsFromParent;
-    this.graphHandler.shouldRemoveCellsFromParent = function (
-      parent,
-      cells,
-      evt,
-    ) {
-      if (this.graph.isCellSelected(parent)) {
         return false;
-      }
+      };
 
-      return graphHandlerShouldRemoveCellsFromParent.apply(this, arguments);
-    };
+      var tapAndHoldSelection = null;
 
-    // Unlocks all cells
-    this.isCellLocked = function (cell) {
-      var pState = this.view.getState(cell);
+      // Uses this event to process mouseDown to check the selection state before it is changed
+      this.addListener(
+        m.mxEvent.FIRE_MOUSE_EVENT,
+        m.mxUtils.bind(this, function (sender, evt) {
+          if (evt.getProperty("eventName") == "mouseDown") {
+            var me = evt.getProperty("event");
+            var state = me.getState();
 
-      while (pState != null) {
-        if (m.mxUtils.getValue(pState.style, "locked", "0") == "1") {
-          return true;
-        }
+            if (
+              state != null &&
+              !this.isSelectionEmpty() &&
+              !this.isCellSelected(state.cell)
+            ) {
+              tapAndHoldSelection = this.getSelectionCells();
+            } else {
+              tapAndHoldSelection = null;
+            }
+          }
+        }),
+      );
 
-        pState = this.view.getState(this.model.getParent(pState.cell));
-      }
+      // Tap and hold on background starts rubberband for multiple selected
+      // cells the cell associated with the event is deselected
+      this.addListener(
+        m.mxEvent.TAP_AND_HOLD,
+        m.mxUtils.bind(this, function (sender, evt) {
+          if (!m.mxEvent.isMultiTouchEvent(evt)) {
+            var me = evt.getProperty("event");
+            var cell = evt.getProperty("cell");
 
-      return false;
-    };
+            if (cell == null) {
+              var pt = m.mxUtils.convertPoint(
+                this.container,
+                m.mxEvent.getClientX(me),
+                m.mxEvent.getClientY(me),
+              );
+              rubberband.start(pt.x, pt.y);
+            } else if (tapAndHoldSelection != null) {
+              this.addSelectionCells(tapAndHoldSelection);
+            } else if (
+              this.getSelectionCount() > 1 &&
+              this.isCellSelected(cell)
+            ) {
+              this.removeSelectionCell(cell);
+            }
 
-    var tapAndHoldSelection = null;
+            // Blocks further processing of the event
+            tapAndHoldSelection = null;
+            evt.consume();
+          }
+        }),
+      );
 
-    // Uses this event to process mouseDown to check the selection state before it is changed
-    this.addListener(
-      m.mxEvent.FIRE_MOUSE_EVENT,
-      m.mxUtils.bind(this, function (sender, evt) {
-        if (evt.getProperty("eventName") == "mouseDown") {
-          var me = evt.getProperty("event");
-          var state = me.getState();
+      // On connect the target is selected and we clone the cell of the preview edge for insert
+      this.connectionHandler.selectCells = function (edge, target) {
+        this.graph.setSelectionCell(target || edge);
+      };
+
+      // Shows connection points only if cell not selected and parent table not handled
+      this.connectionHandler.constraintHandler.isStateIgnored = function (
+        state,
+        source,
+      ) {
+        var graph = state.view.graph;
+
+        return (
+          source &&
+          (graph.isCellSelected(state.cell) ||
+            (graph.isTableRow(state.cell) &&
+              graph.selectionCellsHandler.isHandled(
+                graph.model.getParent(state.cell),
+              )))
+        );
+      };
+
+      // Updates constraint handler if the selection changes
+      this.selectionModel.addListener(
+        m.mxEvent.CHANGE,
+        m.mxUtils.bind(this, function () {
+          var ch = this.connectionHandler.constraintHandler;
 
           if (
-            state != null &&
-            !this.isSelectionEmpty() &&
-            !this.isCellSelected(state.cell)
+            ch.currentFocus != null &&
+            ch.isStateIgnored(ch.currentFocus, true)
           ) {
-            tapAndHoldSelection = this.getSelectionCells();
-          } else {
-            tapAndHoldSelection = null;
-          }
-        }
-      }),
-    );
-
-    // Tap and hold on background starts rubberband for multiple selected
-    // cells the cell associated with the event is deselected
-    this.addListener(
-      m.mxEvent.TAP_AND_HOLD,
-      m.mxUtils.bind(this, function (sender, evt) {
-        if (!m.mxEvent.isMultiTouchEvent(evt)) {
-          var me = evt.getProperty("event");
-          var cell = evt.getProperty("cell");
-
-          if (cell == null) {
-            var pt = m.mxUtils.convertPoint(
-              this.container,
-              m.mxEvent.getClientX(me),
-              m.mxEvent.getClientY(me),
-            );
-            rubberband.start(pt.x, pt.y);
-          } else if (tapAndHoldSelection != null) {
-            this.addSelectionCells(tapAndHoldSelection);
-          } else if (
-            this.getSelectionCount() > 1 &&
-            this.isCellSelected(cell)
-          ) {
-            this.removeSelectionCell(cell);
+            ch.currentFocus = null;
+            ch.constraints = null;
+            ch.destroyIcons();
           }
 
-          // Blocks further processing of the event
-          tapAndHoldSelection = null;
-          evt.consume();
-        }
-      }),
-    );
-
-    // On connect the target is selected and we clone the cell of the preview edge for insert
-    this.connectionHandler.selectCells = function (edge, target) {
-      this.graph.setSelectionCell(target || edge);
-    };
-
-    // Shows connection points only if cell not selected and parent table not handled
-    this.connectionHandler.constraintHandler.isStateIgnored = function (
-      state,
-      source,
-    ) {
-      var graph = state.view.graph;
-
-      return (
-        source &&
-        (graph.isCellSelected(state.cell) ||
-          (graph.isTableRow(state.cell) &&
-            graph.selectionCellsHandler.isHandled(
-              graph.model.getParent(state.cell),
-            )))
+          ch.destroyFocusHighlight();
+        }),
       );
-    };
 
-    // Updates constraint handler if the selection changes
-    this.selectionModel.addListener(
-      m.mxEvent.CHANGE,
-      m.mxUtils.bind(this, function () {
-        var ch = this.connectionHandler.constraintHandler;
+      // Initializes touch interface
+      if (Graph.touchStyle) {
+        this.initTouch();
+      }
 
-        if (
-          ch.currentFocus != null &&
-          ch.isStateIgnored(ch.currentFocus, true)
-        ) {
-          ch.currentFocus = null;
-          ch.constraints = null;
-          ch.destroyIcons();
+      /**
+       * Adds locking
+       */
+      var graphUpdateMouseEvent = this.updateMouseEvent;
+      this.updateMouseEvent = function (me) {
+        me = graphUpdateMouseEvent.apply(this, arguments);
+
+        if (me.state != null && this.isCellLocked(me.getCell())) {
+          me.state = null;
         }
 
-        ch.destroyFocusHighlight();
-      }),
-    );
-
-    // Initializes touch interface
-    if (Graph.touchStyle) {
-      this.initTouch();
+        return me;
+      };
     }
 
-    /**
-     * Adds locking
-     */
-    var graphUpdateMouseEvent = this.updateMouseEvent;
-    this.updateMouseEvent = function (me) {
-      me = graphUpdateMouseEvent.apply(this, arguments);
-
-      if (me.state != null && this.isCellLocked(me.getCell())) {
-        me.state = null;
-      }
-
-      return me;
-    };
-  }
-
-  //Create a unique offset object for each graph instance.
-  this.currentTranslate = new m.mxPoint(0, 0);
-}; //set end
-}; //class emd
-
+    //Create a unique offset object for each graph instance.
+    this.currentTranslate = new m.mxPoint(0, 0);
+  } //set end
+} //class emd
 
 /**
  * Graph inherits from mxGraph.
@@ -1827,7 +1859,10 @@ Graph.prototype.init = function (container) {
 
     var down = m.mxUtils.bind(this, function (evt) {
       handleClick = true;
-      first = new m.mxPoint(m.mxEvent.getClientX(evt), m.mxEvent.getClientY(evt));
+      first = new m.mxPoint(
+        m.mxEvent.getClientX(evt),
+        m.mxEvent.getClientY(evt),
+      );
     });
 
     var move = m.mxUtils.bind(this, function (evt) {
@@ -1920,7 +1955,9 @@ Graph.prototype.init = function (container) {
       cell = this.model.getChildAt(cell, 0);
 
       style = this.getCellStyle(cell);
-      size = parseInt(m.mxUtils.getValue(style, m.mxConstants.STYLE_STARTSIZE, 0));
+      size = parseInt(
+        m.mxUtils.getValue(style, m.mxConstants.STYLE_STARTSIZE, 0),
+      );
     }
 
     // Redirect editing for table rows
@@ -2581,7 +2618,11 @@ Graph.prototype.initLayoutManager = function () {
           m.mxUtils.getValue(style, "horizontalTree", "1") == "1";
         treeLayout.resizeParent =
           m.mxUtils.getValue(style, "resizeParent", "1") == "1";
-        treeLayout.groupPadding = m.mxUtils.getValue(style, "parentPadding", 20);
+        treeLayout.groupPadding = m.mxUtils.getValue(
+          style,
+          "parentPadding",
+          20,
+        );
         treeLayout.levelDistance = m.mxUtils.getValue(
           style,
           "treeLevelDistance",
@@ -2603,7 +2644,11 @@ Graph.prototype.initLayoutManager = function () {
         );
         flowLayout.resizeParent =
           m.mxUtils.getValue(style, "resizeParent", "1") == "1";
-        flowLayout.parentBorder = m.mxUtils.getValue(style, "parentPadding", 20);
+        flowLayout.parentBorder = m.mxUtils.getValue(
+          style,
+          "parentPadding",
+          20,
+        );
         flowLayout.maintainParentLocation = true;
 
         // Special undocumented styles for changing the hierarchical
@@ -2758,7 +2803,8 @@ Graph.prototype.isScrollWheelEvent = function (evt) {
  */
 Graph.prototype.isTransparentClickEvent = function (evt) {
   return (
-    m.mxEvent.isAltDown(evt) || (m.mxClient.IS_CHROMEOS && m.mxEvent.isShiftDown(evt))
+    m.mxEvent.isAltDown(evt) ||
+    (m.mxClient.IS_CHROMEOS && m.mxEvent.isShiftDown(evt))
   );
 };
 
@@ -3088,8 +3134,8 @@ Graph.prototype.replacePlaceholders = function (cell, str, vars, translate) {
 
   if (str != null) {
     var last = 0;
-
-    while ((match = this.placeholderPattern.exec(str))) {
+    var match = null;
+    while (( match = this.placeholderPattern.exec(str))) {
       var val = match[0];
 
       if (val.length > 2 && val != "%label%" && val != "%tooltip%") {
@@ -4152,10 +4198,10 @@ Graph.prototype.zapGremlins = function (text) {
 /**
  * Hover icons are used for hover, vertex handler and drag from sidebar.
  */
-export  function HoverIcons(graph) {
+export function HoverIcons(graph) {
   this.graph = graph;
   this.init();
-};
+}
 
 /**
  * Up arrow.
@@ -4322,7 +4368,10 @@ HoverIcons.prototype.init = function () {
 
   this.graph.selectionModel.addListener(m.mxEvent.CHANGE, this.resetHandler);
   this.graph.model.addListener(m.mxEvent.CHANGE, this.repaintHandler);
-  this.graph.view.addListener(m.mxEvent.SCALE_AND_TRANSLATE, this.repaintHandler);
+  this.graph.view.addListener(
+    m.mxEvent.SCALE_AND_TRANSLATE,
+    this.repaintHandler,
+  );
   this.graph.view.addListener(m.mxEvent.TRANSLATE, this.repaintHandler);
   this.graph.view.addListener(m.mxEvent.SCALE, this.repaintHandler);
   this.graph.view.addListener(m.mxEvent.DOWN, this.repaintHandler);
@@ -5026,7 +5075,8 @@ HoverIcons.prototype.getState = function (state) {
 HoverIcons.prototype.update = function (state, x, y) {
   if (
     !this.graph.connectionArrowsEnabled ||
-    (state != null && m.mxUtils.getValue(state.style, "allowArrows", "1") == "0")
+    (state != null &&
+      m.mxUtils.getValue(state.style, "allowArrows", "1") == "0")
   ) {
     this.reset();
   } else {
@@ -5490,16 +5540,26 @@ Graph.prototype.setTableColumnWidth = function (col, dx, extend) {
 /**
  * Special Layout for tables.
  */
+
+/*
 function TableLayout(graph) {
   m.mxGraphLayout.call(this, graph);
 }
+*/
 
 /**
  * Extends mxGraphLayout.
  */
-TableLayout.prototype = new m.mxStackLayout();
-TableLayout.prototype.constructor = TableLayout;
 
+//TableLayout.prototype = new m.mxStackLayout();
+//TableLayout.prototype.constructor = TableLayout;
+
+//export class TableLayout extends m.mxGraphLayout {
+export class TableLayout extends m.mxStackLayout {
+   constructor(graph){
+      super(graph)
+   }
+};
 /**
  * Function: isHorizontal
  *
@@ -6164,7 +6224,7 @@ TableLayout.prototype.execute = function (parent) {
     attribute,
     shape,
   ) {
-    var result = m.mxStencilEvaluateTextAttribute.apply(this, arguments);
+    var result = mxStencilEvaluateTextAttribute.apply(this, arguments);
     var placeholders = node.getAttribute("placeholders");
 
     if (placeholders == "1" && shape.state != null) {
@@ -6187,7 +6247,11 @@ TableLayout.prototype.execute = function (parent) {
   var mxCellRendererCreateShape = m.mxCellRenderer.prototype.createShape;
   m.mxCellRenderer.prototype.createShape = function (state) {
     if (state.style != null && typeof pako !== "undefined") {
-      var shape = m.mxUtils.getValue(state.style, m.mxConstants.STYLE_SHAPE, null);
+      var shape = m.mxUtils.getValue(
+        state.style,
+        m.mxConstants.STYLE_SHAPE,
+        null,
+      );
 
       // Extracts and decodes stencil XML if shape has the form shape=stencil(value)
       if (
@@ -6416,7 +6480,11 @@ m.mxStencilRegistry.parseStencilSets = function (stencils) {
 };
 
 // Parses the given stencil set
-m.mxStencilRegistry.parseStencilSet = function (root, postStencilLoad, install) {
+m.mxStencilRegistry.parseStencilSet = function (
+  root,
+  postStencilLoad,
+  install,
+) {
   if (root.nodeName == "stencils") {
     var shapes = root.firstChild;
 
@@ -6523,13 +6591,18 @@ if (typeof m.mxVertexHandler != "undefined") {
     m.mxConnectionHandler.prototype.isCreateTarget = function (evt) {
       return (
         this.graph.isCloneEvent(evt) ||
-        m.mxConnectionHandlerCreateTarget.apply(this, arguments)
+        mxConnectionHandlerCreateTarget.apply(this, arguments)
       );
     };
 
     // Overrides highlight shape for connection points
     m.mxConstraintHandler.prototype.createHighlightShape = function () {
-      var hl = new m.mxEllipse(null, this.highlightColor, this.highlightColor, 0);
+      var hl = new m.mxEllipse(
+        null,
+        this.highlightColor,
+        this.highlightColor,
+        0,
+      );
       hl.opacity = m.mxConstants.HIGHLIGHT_OPACITY;
 
       return hl;
@@ -8208,7 +8281,12 @@ if (typeof m.mxVertexHandler != "undefined") {
               links[i].setAttribute("href", href);
 
               if (beforeClick != null) {
-                m.mxEvent.addGestureListeners(links[i], null, null, beforeClick);
+                m.mxEvent.addGestureListeners(
+                  links[i],
+                  null,
+                  null,
+                  beforeClick,
+                );
               }
             }
           }
@@ -8226,7 +8304,9 @@ if (typeof m.mxVertexHandler != "undefined") {
         currentState: null,
         currentLink: null,
         highlight:
-          highlight != null && highlight != "" && highlight != m.mxConstants.NONE
+          highlight != null &&
+          highlight != "" &&
+          highlight != m.mxConstants.NONE
             ? new m.mxCellHighlight(graph, highlight, 4)
             : null,
         startX: 0,
@@ -8577,7 +8657,8 @@ if (typeof m.mxVertexHandler != "undefined") {
         !this.isTableCell(cell) &&
         !this.isTableRow(cell) &&
         (result ||
-          (m.mxUtils.getValue(style, m.mxConstants.STYLE_RESIZABLE, "1") != "0" &&
+          (m.mxUtils.getValue(style, m.mxConstants.STYLE_RESIZABLE, "1") !=
+            "0" &&
             style[m.mxConstants.STYLE_WHITE_SPACE] == "wrap"))
       );
     };
@@ -9655,23 +9736,26 @@ if (typeof m.mxVertexHandler != "undefined") {
       // Shows popup menu if cell was selected or selection was empty and background was clicked
       // FIXME: Conflicts with mxPopupMenuHandler.prototype.getCellForPopupEvent in Editor.js by
       // selecting parent for selected children in groups before this check can be made.
-      this.popupMenuHandler.mouseUp = m.mxUtils.bind(this, function (sender, me) {
-        this.popupMenuHandler.popupTrigger =
-          !this.isEditing() &&
-          this.isEnabled() &&
-          (me.getState() == null || !me.isSource(me.getState().control)) &&
-          (this.popupMenuHandler.popupTrigger ||
-            (!menuShowing &&
-              !m.mxEvent.isMouseEvent(me.getEvent()) &&
-              ((selectionEmpty &&
-                me.getCell() == null &&
-                this.isSelectionEmpty()) ||
-                (cellSelected && this.isCellSelected(me.getCell())))));
-        m.mxPopupMenuHandler.prototype.mouseUp.apply(
-          this.popupMenuHandler,
-          arguments,
-        );
-      });
+      this.popupMenuHandler.mouseUp = m.mxUtils.bind(
+        this,
+        function (sender, me) {
+          this.popupMenuHandler.popupTrigger =
+            !this.isEditing() &&
+            this.isEnabled() &&
+            (me.getState() == null || !me.isSource(me.getState().control)) &&
+            (this.popupMenuHandler.popupTrigger ||
+              (!menuShowing &&
+                !m.mxEvent.isMouseEvent(me.getEvent()) &&
+                ((selectionEmpty &&
+                  me.getCell() == null &&
+                  this.isSelectionEmpty()) ||
+                  (cellSelected && this.isCellSelected(me.getCell())))));
+          m.mxPopupMenuHandler.prototype.mouseUp.apply(
+            this.popupMenuHandler,
+            arguments,
+          );
+        },
+      );
     };
 
     /**
@@ -9789,7 +9873,7 @@ if (typeof m.mxVertexHandler != "undefined") {
           m.mxUtils.getValue(state.style, "nl2Br", "1") != "0";
       }
 
-       mxCellRendererInitializeLabel.apply(this, arguments);
+      mxCellRendererInitializeLabel.apply(this, arguments);
     };
 
     var mxConstraintHandlerUpdate = m.mxConstraintHandler.prototype.update;
@@ -9826,7 +9910,7 @@ if (typeof m.mxVertexHandler != "undefined") {
     m.mxCellEditor.prototype.startEditing = function (cell, trigger) {
       cell = this.graph.getStartEditingCell(cell, trigger);
 
-      m.mxCellEditorStartEditing.apply(this, arguments);
+      mxCellEditorStartEditing.apply(this, arguments);
 
       // Overrides class in case of HTML content to add
       // dashed borders for divs and table cells
@@ -10223,7 +10307,7 @@ if (typeof m.mxVertexHandler != "undefined") {
         } else {
           this.textarea.style.height = "";
           this.textarea.style.overflow = "";
-          m.mxCellEditorResize.apply(this, arguments);
+          mxCellEditorResize.apply(this, arguments);
         }
       }
     };
@@ -10231,7 +10315,7 @@ if (typeof m.mxVertexHandler != "undefined") {
     var mxCellEditorGetInitialValue = m.mxCellEditor.prototype.getInitialValue;
     m.mxCellEditor.prototype.getInitialValue = function (state, trigger) {
       if (m.mxUtils.getValue(state.style, "html", "0") == "0") {
-        return m.mxCellEditorGetInitialValue.apply(this, arguments);
+        return mxCellEditorGetInitialValue.apply(this, arguments);
       } else {
         var result = this.graph.getEditingValue(state.cell, trigger);
 
@@ -10248,7 +10332,7 @@ if (typeof m.mxVertexHandler != "undefined") {
     var mxCellEditorGetCurrentValue = m.mxCellEditor.prototype.getCurrentValue;
     m.mxCellEditor.prototype.getCurrentValue = function (state) {
       if (m.mxUtils.getValue(state.style, "html", "0") == "0") {
-        return m.mxCellEditorGetCurrentValue.apply(this, arguments);
+        return mxCellEditorGetCurrentValue.apply(this, arguments);
       } else {
         var result = this.graph.sanitizeHtml(this.textarea.innerHTML, true);
 
@@ -10289,7 +10373,7 @@ if (typeof m.mxVertexHandler != "undefined") {
       this.graph.getModel().beginUpdate();
 
       try {
-        m.mxCellEditorApplyValue.apply(this, arguments);
+        mxCellEditorApplyValue.apply(this, arguments);
 
         if (
           value == "" &&
@@ -10319,8 +10403,10 @@ if (typeof m.mxVertexHandler != "undefined") {
         (color == null || color == m.mxConstants.NONE) &&
         state.cell.geometry != null &&
         state.cell.geometry.width > 0 &&
-        (m.mxUtils.getValue(state.style, m.mxConstants.STYLE_ROTATION, 0) != 0 ||
-          m.mxUtils.getValue(state.style, m.mxConstants.STYLE_HORIZONTAL, 1) == 0)
+        (m.mxUtils.getValue(state.style, m.mxConstants.STYLE_ROTATION, 0) !=
+          0 ||
+          m.mxUtils.getValue(state.style, m.mxConstants.STYLE_HORIZONTAL, 1) ==
+            0)
       ) {
         color = m.mxUtils.getValue(
           state.style,
@@ -10354,7 +10440,7 @@ if (typeof m.mxVertexHandler != "undefined") {
       m.mxGraphHandler.prototype.isValidDropTarget;
     m.mxGraphHandler.prototype.isValidDropTarget = function (target, me) {
       return (
-        m.mxGraphHandlerIsValidDropTarget.apply(this, arguments) &&
+        mxGraphHandlerIsValidDropTarget.apply(this, arguments) &&
         !m.mxEvent.isAltDown(me.getEvent)
       );
     };
@@ -10790,7 +10876,11 @@ if (typeof m.mxVertexHandler != "undefined") {
             m.mxUtils.bind(this, function (index) {
               var rowState = rows[index];
 
-              var shape = new m.mxLine(new m.mxRectangle(), m.mxConstants.NONE, 1);
+              var shape = new m.mxLine(
+                new m.mxRectangle(),
+                m.mxConstants.NONE,
+                1,
+              );
               shape.isDashed = sel.isDashed;
               shape.svgStrokeTolerance++;
 
@@ -11172,7 +11262,8 @@ if (typeof m.mxVertexHandler != "undefined") {
     /**
      * Updates the hint for the current operation.
      */
-    m.mxEdgeHandler.prototype.removeHint = m.mxVertexHandler.prototype.removeHint;
+    m.mxEdgeHandler.prototype.removeHint =
+      m.mxVertexHandler.prototype.removeHint;
 
     /**
      * Defines the handles for the UI. Uses data-URIs to speed-up loading time where supported.
@@ -11243,18 +11334,19 @@ if (typeof m.mxVertexHandler != "undefined") {
     m.mxEdgeHandler.prototype.handleImage = HoverIcons.prototype.mainHandle;
     m.mxEdgeHandler.prototype.terminalHandleImage =
       HoverIcons.prototype.terminalHandle;
-    m.mxEdgeHandler.prototype.fixedHandleImage = HoverIcons.prototype.fixedHandle;
+    m.mxEdgeHandler.prototype.fixedHandleImage =
+      HoverIcons.prototype.fixedHandle;
     m.mxEdgeHandler.prototype.labelHandleImage =
       HoverIcons.prototype.secondaryHandle;
     m.mxOutline.prototype.sizerImage = HoverIcons.prototype.mainHandle;
 
     //if (window.Sidebar != null) {
-      Sidebar.prototype.triangleUp = HoverIcons.prototype.triangleUp;
-      Sidebar.prototype.triangleRight = HoverIcons.prototype.triangleRight;
-      Sidebar.prototype.triangleDown = HoverIcons.prototype.triangleDown;
-      Sidebar.prototype.triangleLeft = HoverIcons.prototype.triangleLeft;
-      Sidebar.prototype.refreshTarget = HoverIcons.prototype.refreshTarget;
-      Sidebar.prototype.roundDrop = HoverIcons.prototype.roundDrop;
+    Sidebar.prototype.triangleUp = HoverIcons.prototype.triangleUp;
+    Sidebar.prototype.triangleRight = HoverIcons.prototype.triangleRight;
+    Sidebar.prototype.triangleDown = HoverIcons.prototype.triangleDown;
+    Sidebar.prototype.triangleLeft = HoverIcons.prototype.triangleLeft;
+    Sidebar.prototype.refreshTarget = HoverIcons.prototype.refreshTarget;
+    Sidebar.prototype.roundDrop = HoverIcons.prototype.roundDrop;
     //}
 
     // Pre-fetches images (only needed for non data-uris)
@@ -11438,7 +11530,12 @@ if (typeof m.mxVertexHandler != "undefined") {
             m.mxEvent.isAltDown(me.getEvent()) &&
             this.graph.isToggleEvent(me.getEvent())
           ) {
-            var rect = new m.mxRectangle(this.x, this.y, this.width, this.height);
+            var rect = new m.mxRectangle(
+              this.x,
+              this.y,
+              this.width,
+              this.height,
+            );
             var cells = this.graph.getCells(
               rect.x,
               rect.y,
@@ -11474,7 +11571,12 @@ if (typeof m.mxVertexHandler != "undefined") {
               this.graph.model.endUpdate();
             }
           } else {
-            var rect = new m.mxRectangle(this.x, this.y, this.width, this.height);
+            var rect = new m.mxRectangle(
+              this.x,
+              this.y,
+              this.width,
+              this.height,
+            );
             this.graph.selectRegion(rect, me.getEvent());
           }
 
@@ -11580,7 +11682,7 @@ if (typeof m.mxVertexHandler != "undefined") {
         this.secondDiv = null;
       }
 
-      m.mxRubberbandReset.apply(this, arguments);
+      mxRubberbandReset.apply(this, arguments);
     };
 
     // Timer-based activation of outline connect in connection handler
@@ -11596,7 +11698,7 @@ if (typeof m.mxVertexHandler != "undefined") {
       terminalState,
       me,
     ) {
-      m.mxEdgeHandlerUpdatePreviewState.apply(this, arguments);
+      mxEdgeHandlerUpdatePreviewState.apply(this, arguments);
 
       if (terminalState != this.currentTerminalState) {
         startTime = new Date().getTime();
@@ -11623,7 +11725,7 @@ if (typeof m.mxVertexHandler != "undefined") {
             "outlineConnect",
             "1",
           ) != "0") &&
-          m.mxEdgeHandlerIsOutlineConnectEvent.apply(this, arguments))
+          mxEdgeHandlerIsOutlineConnectEvent.apply(this, arguments))
       );
     };
 
@@ -11699,7 +11801,8 @@ if (typeof m.mxVertexHandler != "undefined") {
     };
 
     // Special case for single edge label handle moving in which case the text bounding box is used
-    var mxGraphHandlerGetBoundingBox = m.mxGraphHandler.prototype.getBoundingBox;
+    var mxGraphHandlerGetBoundingBox =
+      m.mxGraphHandler.prototype.getBoundingBox;
     m.mxGraphHandler.prototype.getBoundingBox = function (cells) {
       if (cells != null && cells.length == 1) {
         var model = this.graph.getModel();
@@ -11725,7 +11828,8 @@ if (typeof m.mxVertexHandler != "undefined") {
     };
 
     // Ignores child cells with part style as guides
-    var mxGraphHandlerGetGuideStates = m.mxGraphHandler.prototype.getGuideStates;
+    var mxGraphHandlerGetGuideStates =
+      m.mxGraphHandler.prototype.getGuideStates;
 
     m.mxGraphHandler.prototype.getGuideStates = function () {
       var states = mxGraphHandlerGetGuideStates.apply(this, arguments);
@@ -11799,7 +11903,7 @@ if (typeof m.mxVertexHandler != "undefined") {
     m.mxVertexHandler.prototype.rotateClick = function () {
       var stroke = m.mxUtils.getValue(
         this.state.style,
-        m.mxConstants.STYLE_STROKECOLOR,      
+        m.mxConstants.STYLE_STROKECOLOR,
         m.mxConstants.NONE,
       );
       var fill = m.mxUtils.getValue(
@@ -11814,13 +11918,18 @@ if (typeof m.mxVertexHandler != "undefined") {
         fill == m.mxConstants.NONE
       ) {
         var angle = m.mxUtils.mod(
-          m.mxUtils.getValue(this.state.style, m.mxConstants.STYLE_ROTATION, 0) +
-            90,
+          m.mxUtils.getValue(
+            this.state.style,
+            m.mxConstants.STYLE_ROTATION,
+            0,
+          ) + 90,
           360,
         );
-        this.state.view.graph.setCellStyles(m.mxConstants.STYLE_ROTATION, angle, [
-          this.state.cell,
-        ]);
+        this.state.view.graph.setCellStyles(
+          m.mxConstants.STYLE_ROTATION,
+          angle,
+          [this.state.cell],
+        );
       } else {
         this.state.view.graph.turnShapes([this.state.cell]);
       }
@@ -12090,7 +12199,7 @@ if (typeof m.mxVertexHandler != "undefined") {
     };
 
     // Disables connection points
- /*
+    /*
 		var connectionHandlerInit = m.mxConnectionHandler.prototype.init;
 		
 		m.mxConnectionHandler.prototype.init = function()
@@ -12102,15 +12211,15 @@ if (typeof m.mxVertexHandler != "undefined") {
 				return this.graph.connectionHandler.isEnabled();
 			});
 		};
-	*/	
-				
-      var constraintHandler = new m.mxConnectionHandler(this, arguments);
+	*/
 
-      constraintHandler.isEnabled = m.mxUtils.bind(this, function () {
-        return this.graph.connectionHandler.isEnabled();
-      });
-      
- /*   
+    var constraintHandler = new m.mxConnectionHandler(this, arguments);
+
+    constraintHandler.isEnabled = m.mxUtils.bind(this, function () {
+      return this.graph.connectionHandler.isEnabled();
+    });
+
+    /*   
     m.mxConnectionHandler.prototype.init = function () {
       this.constraintHandler = new m.mxConnectionHandler(this, arguments);
 
@@ -12325,4 +12434,3 @@ if (typeof m.mxVertexHandler != "undefined") {
 
 /*GS*/
 //Graph.prototype = new m.mxGraph();
-

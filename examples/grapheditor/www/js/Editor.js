@@ -4,55 +4,53 @@
 /**
  * Editor constructor executed on page load.
  */
-import * as m   from "../../../../../dist/mxgraph.es.js";
-import {Graph}   from "./Graph.js";
+import * as m from "../../../../../dist/mxgraph.es.js";
+import { Graph } from "./Graph.js";
 
 export class Editor extends m.mxEventSource {
+  constructor(chromeless, themes, model, graph, editable) {
+    super();
+    this.chromeless = chromeless != null ? chromeless : this.chromeless;
+    this.initStencilRegistry();
+    this.graph = graph || this.createGraph(themes, model);
+    this.editable = editable != null ? editable : !chromeless;
+    this.undoManager = this.createUndoManager();
+    this.status = "";
+    this.pageCounter = 0;
 
-constructor(chromeless, themes, model, graph, editable) {
-	super();
-  this.chromeless = chromeless != null ? chromeless : this.chromeless;
-  this.initStencilRegistry();
-  this.graph = graph || this.createGraph(themes, model);
-  this.editable = editable != null ? editable : !chromeless;
-  this.undoManager = this.createUndoManager();
-  this.status = "";
-  this.pageCounter = 0;
+    this.graph.getModel().addListener(
+      m.mxEvent.CHANGE,
+      m.mxUtils.bind(this, function () {
+        this.graphChangeListener.apply(this, arguments);
+      }),
+    );
 
-
-
-  this.graph.getModel().addListener(
-    m.mxEvent.CHANGE,
-    m.mxUtils.bind(this, function () {
-      this.graphChangeListener.apply(this, arguments);
-    }),
-  );
-
-  // Sets persistent graph state defaults
-  this.graph.resetViewOnRootChange = false;
-  this.init();
-}
+    // Sets persistent graph state defaults
+    this.graph.resetViewOnRootChange = false;
+    this.init();
+  }
 
   getOrCreateFilename() {
     return (
-      this.filename || m.mxResources.get("drawing", [Editor.pageCounter]) + ".xml"
+      this.filename ||
+      m.mxResources.get("drawing", [Editor.pageCounter]) + ".xml"
     );
-  };
+  }
 
-  getFilename(){
+  getFilename() {
     return this.filename;
-  };
+  }
 
   // Sets the status and fires a statusChanged event
   setStatus(value) {
     this.status = value;
     this.fireEvent(new m.mxEventObject("statusChanged"));
-  };
+  }
 
   // Returns the current status
   getStatus() {
     return this.status;
-  };
+  }
 
   // Updates modified state if graph changes
   graphChangeListener(sender, eventObject) {
@@ -61,9 +59,9 @@ constructor(chromeless, themes, model, graph, editable) {
     if (edit == null || !edit.ignoreEdit) {
       this.setModified(true);
     }
-  };
+  }
 
-/*
+  /*
   this.graph.getModel().addListener(
     m.mxEvent.CHANGE,
     m.mxUtils.bind(this, function () {
@@ -75,7 +73,7 @@ constructor(chromeless, themes, model, graph, editable) {
   this.graph.resetViewOnRootChange = false;
   this.init();
   */
-};
+}
 
 /**
  * Counts open editor tabs (must be global for cross-window access)
@@ -746,7 +744,7 @@ export function OpenFile(done) {
   this.consumer = null;
   this.done = done;
   this.args = null;
-};
+}
 
 /**
  * Registers the editor from the new window.
@@ -1065,7 +1063,7 @@ Dialog.prototype.close = function (cancel, isEsc) {
 /**
  *
  */
-export function ErrorDialog (
+export function ErrorDialog(
   editorUi,
   title,
   message,
@@ -1078,9 +1076,6 @@ export function ErrorDialog (
   buttonText3,
   fn3,
 ) {
-
-
-
   hide = hide != null ? hide : true;
 
   var div = document.createElement("div");
@@ -1170,7 +1165,7 @@ export function ErrorDialog (
   div.appendChild(btns);
 
   this.container = div;
-};
+}
 
 /**
  * Constructs a new print dialog.
@@ -1357,10 +1352,13 @@ PrintDialog.prototype.create = function (editorUi) {
   }
 
   if (PrintDialog.previewEnabled) {
-    var previewBtn = m.mxUtils.button(m.mxResources.get("preview"), function () {
-      editorUi.hideDialog();
-      preview(false);
-    });
+    var previewBtn = m.mxUtils.button(
+      m.mxResources.get("preview"),
+      function () {
+        editorUi.hideDialog();
+        preview(false);
+      },
+    );
     previewBtn.className = "geBtn";
     td.appendChild(previewBtn);
   }
@@ -1461,7 +1459,7 @@ PrintDialog.previewEnabled = true;
  * Constructs a new page setup dialog.
  */
 //var PageSetupDialog = function (editorUi) {
-export function  PageSetupDialog (editorUi) {
+export function PageSetupDialog(editorUi) {
   var graph = editorUi.editor.graph;
   var row, td;
 
@@ -1515,7 +1513,10 @@ export function  PageSetupDialog (editorUi) {
   var newBackgroundColor = graph.background;
 
   function updateBackgroundColor() {
-    if (newBackgroundColor == null || newBackgroundColor == m.mxConstants.NONE) {
+    if (
+      newBackgroundColor == null ||
+      newBackgroundColor == m.mxConstants.NONE
+    ) {
       backgroundButton.style.backgroundColor = "";
       backgroundButton.style.backgroundImage =
         "url('" + Dialog.prototype.noColorImage + "')";
@@ -1664,7 +1665,7 @@ export function  PageSetupDialog (editorUi) {
 
   table.appendChild(tbody);
   this.container = table;
-};
+}
 
 /**
  *
@@ -2142,7 +2143,9 @@ var FilenameDialog = function (
               dropElt = null;
             }
 
-            if (m.mxUtils.indexOf(evt.dataTransfer.types, "text/uri-list") >= 0) {
+            if (
+              m.mxUtils.indexOf(evt.dataTransfer.types, "text/uri-list") >= 0
+            ) {
               nameInput.value = decodeURIComponent(
                 evt.dataTransfer.getData("text/uri-list"),
               );
@@ -2317,7 +2320,10 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
     typeOption.setAttribute("value", i);
     m.mxUtils.write(
       typeOption,
-      m.mxResources.get(types[i].description) + " (." + types[i].extension + ")",
+      m.mxResources.get(types[i].description) +
+        " (." +
+        types[i].extension +
+        ")",
     );
     typeSelect.appendChild(typeOption);
   }
@@ -2425,7 +2431,10 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
             m.mxEvent.addGestureListeners(
               this.backgroundPageShape.node,
               m.mxUtils.bind(this, function (evt) {
-                graph.fireMouseEvent(m.mxEvent.MOUSE_DOWN, new m.mxMouseEvent(evt));
+                graph.fireMouseEvent(
+                  m.mxEvent.MOUSE_DOWN,
+                  new m.mxMouseEvent(evt),
+                );
               }),
               m.mxUtils.bind(this, function (evt) {
                 // Hides the tooltip if mouse is outside container
@@ -2444,7 +2453,10 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
                 }
               }),
               m.mxUtils.bind(this, function (evt) {
-                graph.fireMouseEvent(m.mxEvent.MOUSE_UP, new m.mxMouseEvent(evt));
+                graph.fireMouseEvent(
+                  m.mxEvent.MOUSE_UP,
+                  new m.mxMouseEvent(evt),
+                );
               }),
             );
           }
@@ -2807,7 +2819,8 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
     if (
       this.dialect != m.mxConstants.DIALECT_SVG &&
       this.view.backgroundPageShape != null &&
-      (!this.useScrollbarsForPanning || !m.mxUtils.hasScrollbars(this.container))
+      (!this.useScrollbarsForPanning ||
+        !m.mxUtils.hasScrollbars(this.container))
     ) {
       this.view.backgroundPageShape.node.style.marginLeft = dx + "px";
       this.view.backgroundPageShape.node.style.marginTop = dy + "px";
@@ -2912,4 +2925,3 @@ FilenameDialog.createFileTypes = function (editorUi, nameInput, types) {
     return cell;
   };
 })();
-

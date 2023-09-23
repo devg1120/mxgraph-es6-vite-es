@@ -5,29 +5,30 @@
  * Construcs a new toolbar for the given editor.
  */
 
-import * as m   from "../../../../../dist/mxgraph.es.js";
-import {EditorUi}  from "./EditorUi.js";
+import * as m from "../../../../../dist/mxgraph.es.js";
+//import { EditorUi } from "./EditorUi.js";
 
-export function Toolbar(editorUi, container) {
-  this.editorUi = editorUi;
-  this.container = container;
-  this.staticElements = [];
-  this.init();
+export class Toolbar {
+  constructor(editorUi, container) {
+    this.compactUi = true;
+    this.editorUi = editorUi;
+    this.container = container;
+    this.staticElements = [];
+    this.init();
 
-  // Global handler to hide the current menu
-  this.gestureHandler = m.mxUtils.bind(this, function (evt) {
-    if (
-      this.editorUi.currentMenu != null &&
-      m.mxEvent.getSource(evt) != this.editorUi.currentMenu.div
-    ) {
-      this.hideMenu();
-    }
-  });
+    // Global handler to hide the current menu
+    this.gestureHandler = m.mxUtils.bind(this, function (evt) {
+      if (
+        this.editorUi.currentMenu != null &&
+        m.mxEvent.getSource(evt) != this.editorUi.currentMenu.div
+      ) {
+        this.hideMenu();
+      }
+    });
 
-  m.mxEvent.addGestureListeners(document, this.gestureHandler);
-}
-
-
+    m.mxEvent.addGestureListeners(document, this.gestureHandler);
+  }
+} // end class
 
 /**
  * Image for the dropdown arrow.
@@ -41,8 +42,8 @@ Toolbar.prototype.dropdownImage = !m.mxClient.IS_SVG
  */
 Toolbar.prototype.dropdownImageHtml =
   '<img border="0" style="position:absolute;right:4px;top:' +
-//  (!EditorUi.compactUi ? 8 : 6) +
-	8 +    /*GS-PD*/
+  //(!EditorUi.compactUi ? 8 : 6) +
+  (!Toolbar.compactUi ? 8 : 6) +
   'px;" src="' +
   Toolbar.prototype.dropdownImage +
   '" valign="middle"/>';
@@ -106,7 +107,8 @@ Toolbar.prototype.init = function () {
   viewMenu.style.position = "relative";
   viewMenu.style.overflow = "hidden";
 
-  if (EditorUi.compactUi) {
+  //if (EditorUi.compactUi) {
+  if (Toolbar.compactUi) {
     viewMenu.style.width = m.mxClient.IS_QUIRKS ? "58px" : "50px";
   } else {
     viewMenu.style.width = m.mxClient.IS_QUIRKS ? "62px" : "36px";
@@ -138,7 +140,8 @@ Toolbar.prototype.init = function () {
       "%" +
       this.dropdownImageHtml;
 
-    if (EditorUi.compactUi) {
+    //if (EditorUi.compactUi) {
+    if (Toolbar.compactUi) {
       viewMenu.getElementsByTagName("img")[0].style.right = "1px";
       viewMenu.getElementsByTagName("img")[0].style.top = "5px";
     }
@@ -549,7 +552,8 @@ Toolbar.prototype.addTableDropDown = function () {
   menuElt.style.width = m.mxClient.IS_QUIRKS ? "50px" : "30px";
 
   // Fix for item size in kennedy theme
-  if (EditorUi.compactUi) {
+  //if (EditorUi.compactUi) {
+  if (Toolbar.compactUi) {
     menuElt.getElementsByTagName("img")[0].style.left = "22px";
     menuElt.getElementsByTagName("img")[0].style.top = "5px";
   }
@@ -582,7 +586,8 @@ Toolbar.prototype.addDropDownArrow = function (
   atlasLeft,
 ) {
   atlasDelta = atlasDelta != null ? atlasDelta : 32;
-  left = EditorUi.compactUi ? left : atlasLeft;
+  //left = EditorUi.compactUi ? left : atlasLeft;
+  left = Toolbar.compactUi ? left : atlasLeft;
 
   menu.style.whiteSpace = "nowrap";
   menu.style.overflow = "hidden";
@@ -601,11 +606,13 @@ Toolbar.prototype.addDropDownArrow = function (
     : atlasWidth - atlasDelta + "px";
 
   if (m.mxClient.IS_QUIRKS) {
-    menu.style.height = EditorUi.compactUi ? "24px" : "26px";
+    //menu.style.height = EditorUi.compactUi ? "24px" : "26px";
+    menu.style.height = Toolbar.compactUi ? "24px" : "26px";
   }
 
   // Fix for item size in kennedy theme
-  if (EditorUi.compactUi) {
+  //if (EditorUi.compactUi) {
+  if (Toolbar.compactUi) {
     menu.getElementsByTagName("img")[0].style.left = "24px";
     menu.getElementsByTagName("img")[0].style.top = "5px";
     menu.style.width = m.mxClient.IS_QUIRKS ? width + "px" : width - 10 + "px";
@@ -655,7 +662,8 @@ Toolbar.prototype.createTextToolbar = function () {
   styleElt.style.overflow = "hidden";
   styleElt.innerHTML = m.mxResources.get("style") + this.dropdownImageHtml;
 
-  if (EditorUi.compactUi) {
+  //if (EditorUi.compactUi) {
+  if (Toolbar.compactUi) {
     styleElt.style.paddingRight = "18px";
     styleElt.getElementsByTagName("img")[0].style.right = "1px";
     styleElt.getElementsByTagName("img")[0].style.top = "5px";
@@ -676,7 +684,8 @@ Toolbar.prototype.createTextToolbar = function () {
 
   this.setFontName(Menus.prototype.defaultFont);
 
-  if (EditorUi.compactUi) {
+  //if (EditorUi.compactUi) {
+  if (Toolbar.compactUi) {
     this.fontMenu.style.paddingRight = "18px";
     this.fontMenu.getElementsByTagName("img")[0].style.right = "1px";
     this.fontMenu.getElementsByTagName("img")[0].style.top = "5px";
@@ -697,7 +706,8 @@ Toolbar.prototype.createTextToolbar = function () {
 
   this.setFontSize(Menus.prototype.defaultFontSize);
 
-  if (EditorUi.compactUi) {
+  //if (EditorUi.compactUi) {
+  if (Toolbar.compactUi) {
     this.sizeMenu.style.paddingRight = "18px";
     this.sizeMenu.getElementsByTagName("img")[0].style.right = "1px";
     this.sizeMenu.getElementsByTagName("img")[0].style.top = "5px";
@@ -853,7 +863,8 @@ Toolbar.prototype.createTextToolbar = function () {
     this.dropdownImageHtml;
   alignMenu.style.width = m.mxClient.IS_QUIRKS ? "50px" : "30px";
 
-  if (EditorUi.compactUi) {
+  //if (EditorUi.compactUi) {
+  if (Toolbar.compactUi) {
     alignMenu.getElementsByTagName("img")[0].style.left = "22px";
     alignMenu.getElementsByTagName("img")[0].style.top = "5px";
   }
@@ -927,7 +938,8 @@ Toolbar.prototype.createTextToolbar = function () {
     this.dropdownImageHtml;
   formatMenu.style.width = m.mxClient.IS_QUIRKS ? "50px" : "30px";
 
-  if (EditorUi.compactUi) {
+  //if (EditorUi.compactUi) {
+  if (Toolbar.compactUi) {
     formatMenu.getElementsByTagName("img")[0].style.left = "22px";
     formatMenu.getElementsByTagName("img")[0].style.top = "5px";
   }
@@ -994,7 +1006,8 @@ Toolbar.prototype.createTextToolbar = function () {
   insertMenu.style.width = m.mxClient.IS_QUIRKS ? "36px" : "16px";
 
   // Fix for item size in kennedy theme
-  if (EditorUi.compactUi) {
+  //if (EditorUi.compactUi) {
+  if (Toolbar.compactUi) {
     insertMenu.getElementsByTagName("img")[0].style.left = "24px";
     insertMenu.getElementsByTagName("img")[0].style.top = "5px";
     insertMenu.style.width = m.mxClient.IS_QUIRKS ? "50px" : "30px";
@@ -1274,7 +1287,8 @@ Toolbar.prototype.createTextToolbar = function () {
   elt.style.width = m.mxClient.IS_QUIRKS ? "50px" : "30px";
 
   // Fix for item size in kennedy theme
-  if (EditorUi.compactUi) {
+  //if (EditorUi.compactUi) {
+  if (Toolbar.compactUi) {
     elt.getElementsByTagName("img")[0].style.left = "22px";
     elt.getElementsByTagName("img")[0].style.top = "5px";
   }

@@ -4,8 +4,8 @@
  *
  * Constructs the actions object for the given UI.
  */
-import * as m   from "../../../../../dist/mxgraph.es.js";
-import {Editor} from "./Editor.js";
+import * as m from "../../../../../dist/mxgraph.es.js";
+import { Editor } from "./Editor.js";
 
 /*
 export function Actions(editorUi) {
@@ -15,15 +15,14 @@ export function Actions(editorUi) {
 }
 */
 
-export class  Actions extends m.mxEventSource {
-
+export class Actions extends m.mxEventSource {
   constructor(editorUi) {
-   super();
-  this.editorUi = editorUi;
-  this.actions = new Object();
-  this.init();
+    super();
+    this.editorUi = editorUi;
+    this.actions = new Object();
+    this.init();
   }
-}; //class end
+} //class end
 /**
  * Adds the default actions.
  */
@@ -241,7 +240,12 @@ Actions.prototype.init = function () {
         var geo = graph.getCellGeometry(cell);
 
         if (geo != null) {
-          ui.copiedSize = new m.mxRectangle(geo.x, geo.y, geo.width, geo.height);
+          ui.copiedSize = new m.mxRectangle(
+            geo.x,
+            geo.y,
+            geo.width,
+            geo.height,
+          );
         }
       }
     },
@@ -679,57 +683,61 @@ Actions.prototype.init = function () {
     "insertLink",
     new Action(m.mxResources.get("link") + "...", function () {
       if (graph.isEnabled() && !graph.isCellLocked(graph.getDefaultParent())) {
-        ui.showLinkDialog("", m.mxResources.get("insert"), function (link, docs) {
-          link = m.mxUtils.trim(link);
+        ui.showLinkDialog(
+          "",
+          m.mxResources.get("insert"),
+          function (link, docs) {
+            link = m.mxUtils.trim(link);
 
-          if (link.length > 0) {
-            var icon = null;
-            var title = graph.getLinkTitle(link);
+            if (link.length > 0) {
+              var icon = null;
+              var title = graph.getLinkTitle(link);
 
-            if (docs != null && docs.length > 0) {
-              icon = docs[0].iconUrl;
-              title = docs[0].name || docs[0].type;
-              title = title.charAt(0).toUpperCase() + title.substring(1);
+              if (docs != null && docs.length > 0) {
+                icon = docs[0].iconUrl;
+                title = docs[0].name || docs[0].type;
+                title = title.charAt(0).toUpperCase() + title.substring(1);
 
-              if (title.length > 30) {
-                title = title.substring(0, 30) + "...";
+                if (title.length > 30) {
+                  title = title.substring(0, 30) + "...";
+                }
               }
-            }
 
-            var linkCell = new m.mxCell(
-              title,
-              new m.mxGeometry(0, 0, 100, 40),
-              "fontColor=#0000EE;fontStyle=4;rounded=1;overflow=hidden;" +
-                (icon != null
-                  ? "shape=label;imageWidth=16;imageHeight=16;spacingLeft=26;align=left;image=" +
-                    icon
-                  : "spacing=10;"),
-            );
-            linkCell.vertex = true;
-
-            var pt = graph.getCenterInsertPoint(
-              graph.getBoundingBoxFromGeometry([linkCell], true),
-            );
-            linkCell.geometry.x = pt.x;
-            linkCell.geometry.y = pt.y;
-
-            graph.setLinkForCell(linkCell, link);
-            graph.cellSizeUpdated(linkCell, true);
-
-            graph.getModel().beginUpdate();
-            try {
-              linkCell = graph.addCell(linkCell);
-              graph.fireEvent(
-                new m.mxEventObject("cellsInserted", "cells", [linkCell]),
+              var linkCell = new m.mxCell(
+                title,
+                new m.mxGeometry(0, 0, 100, 40),
+                "fontColor=#0000EE;fontStyle=4;rounded=1;overflow=hidden;" +
+                  (icon != null
+                    ? "shape=label;imageWidth=16;imageHeight=16;spacingLeft=26;align=left;image=" +
+                      icon
+                    : "spacing=10;"),
               );
-            } finally {
-              graph.getModel().endUpdate();
-            }
+              linkCell.vertex = true;
 
-            graph.setSelectionCell(linkCell);
-            graph.scrollCellToVisible(graph.getSelectionCell());
-          }
-        });
+              var pt = graph.getCenterInsertPoint(
+                graph.getBoundingBoxFromGeometry([linkCell], true),
+              );
+              linkCell.geometry.x = pt.x;
+              linkCell.geometry.y = pt.y;
+
+              graph.setLinkForCell(linkCell, link);
+              graph.cellSizeUpdated(linkCell, true);
+
+              graph.getModel().beginUpdate();
+              try {
+                linkCell = graph.addCell(linkCell);
+                graph.fireEvent(
+                  new m.mxEventObject("cellsInserted", "cells", [linkCell]),
+                );
+              } finally {
+                graph.getModel().endUpdate();
+              }
+
+              graph.setSelectionCell(linkCell);
+              graph.scrollCellToVisible(graph.getSelectionCell());
+            }
+          },
+        );
       }
     }),
   ).isEnabled = isGraphEnabled;
@@ -897,7 +905,10 @@ Actions.prototype.init = function () {
 
     graph.stopEditing();
 
-    if (state != null && state.style[m.mxConstants.STYLE_WHITE_SPACE] == "wrap") {
+    if (
+      state != null &&
+      state.style[m.mxConstants.STYLE_WHITE_SPACE] == "wrap"
+    ) {
       value = null;
     }
 
@@ -1290,81 +1301,87 @@ Actions.prototype.init = function () {
   );
 
   // Font style actions
-  var toggleFontStyle = m.mxUtils.bind(this, function (key, style, fn, shortcut) {
-    return this.addAction(
-      key,
-      function () {
-        if (fn != null && graph.cellEditor.isContentEditing()) {
-          fn();
-        } else {
-          graph.stopEditing(false);
+  var toggleFontStyle = m.mxUtils.bind(
+    this,
+    function (key, style, fn, shortcut) {
+      return this.addAction(
+        key,
+        function () {
+          if (fn != null && graph.cellEditor.isContentEditing()) {
+            fn();
+          } else {
+            graph.stopEditing(false);
 
-          graph.getModel().beginUpdate();
-          try {
-            var cells = graph.getSelectionCells();
-            graph.toggleCellStyleFlags(
-              m.mxConstants.STYLE_FONTSTYLE,
-              style,
-              cells,
-            );
-
-            // Removes bold and italic tags and CSS styles inside labels
-            if ((style & m.mxConstants.FONT_BOLD) == m.mxConstants.FONT_BOLD) {
-              graph.updateLabelElements(
-                graph.getSelectionCells(),
-                function (elt) {
-                  elt.style.fontWeight = null;
-
-                  if (elt.nodeName == "B") {
-                    graph.replaceElement(elt);
-                  }
-                },
+            graph.getModel().beginUpdate();
+            try {
+              var cells = graph.getSelectionCells();
+              graph.toggleCellStyleFlags(
+                m.mxConstants.STYLE_FONTSTYLE,
+                style,
+                cells,
               );
-            } else if (
-              (style & m.mxConstants.FONT_ITALIC) ==
-              m.mxConstants.FONT_ITALIC
-            ) {
-              graph.updateLabelElements(
-                graph.getSelectionCells(),
-                function (elt) {
-                  elt.style.fontStyle = null;
 
-                  if (elt.nodeName == "I") {
-                    graph.replaceElement(elt);
-                  }
-                },
-              );
-            } else if (
-              (style & m.mxConstants.FONT_UNDERLINE) ==
-              m.mxConstants.FONT_UNDERLINE
-            ) {
-              graph.updateLabelElements(
-                graph.getSelectionCells(),
-                function (elt) {
-                  elt.style.textDecoration = null;
+              // Removes bold and italic tags and CSS styles inside labels
+              if (
+                (style & m.mxConstants.FONT_BOLD) ==
+                m.mxConstants.FONT_BOLD
+              ) {
+                graph.updateLabelElements(
+                  graph.getSelectionCells(),
+                  function (elt) {
+                    elt.style.fontWeight = null;
 
-                  if (elt.nodeName == "U") {
-                    graph.replaceElement(elt);
-                  }
-                },
-              );
-            }
+                    if (elt.nodeName == "B") {
+                      graph.replaceElement(elt);
+                    }
+                  },
+                );
+              } else if (
+                (style & m.mxConstants.FONT_ITALIC) ==
+                m.mxConstants.FONT_ITALIC
+              ) {
+                graph.updateLabelElements(
+                  graph.getSelectionCells(),
+                  function (elt) {
+                    elt.style.fontStyle = null;
 
-            for (var i = 0; i < cells.length; i++) {
-              if (graph.model.getChildCount(cells[i]) == 0) {
-                graph.autoSizeCell(cells[i], false);
+                    if (elt.nodeName == "I") {
+                      graph.replaceElement(elt);
+                    }
+                  },
+                );
+              } else if (
+                (style & m.mxConstants.FONT_UNDERLINE) ==
+                m.mxConstants.FONT_UNDERLINE
+              ) {
+                graph.updateLabelElements(
+                  graph.getSelectionCells(),
+                  function (elt) {
+                    elt.style.textDecoration = null;
+
+                    if (elt.nodeName == "U") {
+                      graph.replaceElement(elt);
+                    }
+                  },
+                );
               }
+
+              for (var i = 0; i < cells.length; i++) {
+                if (graph.model.getChildCount(cells[i]) == 0) {
+                  graph.autoSizeCell(cells[i], false);
+                }
+              }
+            } finally {
+              graph.getModel().endUpdate();
             }
-          } finally {
-            graph.getModel().endUpdate();
           }
-        }
-      },
-      null,
-      null,
-      shortcut,
-    );
-  });
+        },
+        null,
+        null,
+        shortcut,
+      );
+    },
+  );
 
   toggleFontStyle(
     "bold",
@@ -1821,7 +1838,11 @@ Actions.prototype.init = function () {
                   style[m.mxConstants.STYLE_SHAPE] != "image" &&
                   style[m.mxConstants.STYLE_SHAPE] != "label"
                 ) {
-                  graph.setCellStyles(m.mxConstants.STYLE_SHAPE, "image", cells);
+                  graph.setCellStyles(
+                    m.mxConstants.STYLE_SHAPE,
+                    "image",
+                    cells,
+                  );
                 } else if (newValue.length == 0) {
                   graph.setCellStyles(m.mxConstants.STYLE_SHAPE, null, cells);
                 }
@@ -2001,18 +2022,17 @@ function Action(label, funct, enabled, iconCls, shortcut) {
   this.visible = true;
 }
 */
-export class  Action extends m.mxEventSource {
-
+export class Action extends m.mxEventSource {
   constructor(label, funct, enabled, iconCls, shortcut) {
-   super();
-  this.label = label;
-  this.funct = this.createFunction(funct);
-  this.enabled = enabled != null ? enabled : true;
-  this.iconCls = iconCls;
-  this.shortcut = shortcut;
-  this.visible = true;
+    super();
+    this.label = label;
+    this.funct = this.createFunction(funct);
+    this.enabled = enabled != null ? enabled : true;
+    this.iconCls = iconCls;
+    this.shortcut = shortcut;
+    this.visible = true;
   }
-}; //class end
+} //class end
 
 // Action inherits from mxEventSource
 //m.mxUtils.extend(Action, m.mxEventSource);

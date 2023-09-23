@@ -5,10 +5,10 @@
  * Constructs a new open dialog.
  */
 
-import * as m   from "../../../../../dist/mxgraph.es.js";
+import * as m from "../../../../../dist/mxgraph.es.js";
 
 //export var OpenDialog = function () {
-export  function OpenDialog() {
+export function OpenDialog() {
   var iframe = document.createElement("iframe");
   iframe.style.backgroundColor = "transparent";
   iframe.allowTransparency = "true";
@@ -35,7 +35,7 @@ export  function OpenDialog() {
   iframe.setAttribute("src", OPEN_FORM);
 
   this.container = iframe;
-};
+}
 
 /**
  * Constructs a new color dialog.
