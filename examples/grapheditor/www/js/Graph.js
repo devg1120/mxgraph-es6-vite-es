@@ -298,6 +298,8 @@ export class Graph extends m.mxGraph {
     this.domainUrl = "";
     this.domainPathUrl = "";
 
+        console.log("baseUrl",this.baseUrl);
+
     if (p > 0) {
       var d = b.indexOf("/", p + 2);
 

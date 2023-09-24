@@ -58,7 +58,6 @@ export class mxImageShape extends mxRectangleShape {
         c.rect(x, y, w, h);
         c.fillAndStroke();
       }
-
       c.image(x, y, w, h, this.image, this.preserveImageAspect, false, false);
       var stroke = mxUtils.getValue(this.style, mxConstants.STYLE_IMAGE_BORDER, null);
 

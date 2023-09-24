@@ -465,6 +465,7 @@ export class mxGraphView extends mxEventSource {
 
     if (cell != null) {
       state = this.getState(cell);
+      console.log("state",state);
 
       if (state != null) {
         var model = this.graph.getModel();

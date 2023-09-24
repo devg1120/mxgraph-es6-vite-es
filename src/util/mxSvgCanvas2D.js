@@ -559,7 +559,7 @@ export class mxSvgCanvas2D extends mxAbstractCanvas2D {
     this.node = n;
   }
 
-  image(x, y, w, h, src, aspect, flipH, flipV) {
+static  image(x, y, w, h, src, aspect, flipH, flipV) {
     src = this.converter.convert(src);
     aspect = aspect != null ? aspect : true;
     flipH = flipH != null ? flipH : false;
@@ -577,6 +577,7 @@ export class mxSvgCanvas2D extends mxAbstractCanvas2D {
       node.setAttribute('xlink:href', src);
     } else {
       node.setAttributeNS(mxConstants.NS_XLINK, 'xlink:href', src);
+
     }
 
     if (!aspect) {

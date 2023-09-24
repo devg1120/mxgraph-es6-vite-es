@@ -44,6 +44,7 @@ export class mxCellRenderer {
       var stencil = mxStencilRegistry.getStencil(state.style[mxConstants.STYLE_SHAPE]);
 
       if (stencil != null) {
+
         shape = new mxShape(stencil);
       } else {
         var ctor = this.getShapeConstructor(state);
@@ -64,6 +65,7 @@ export class mxCellRenderer {
 
   getShapeConstructor(state) {
     var ctor = this.getShape(state.style[mxConstants.STYLE_SHAPE]);
+    //var ctor = this.getShape("image");
 
     if (ctor == null) {
       ctor = state.view.graph.getModel().isEdge(state.cell) ? this.defaultEdgeShape : this.defaultVertexShape;

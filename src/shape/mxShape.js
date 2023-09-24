@@ -1,3 +1,5 @@
+
+
 import { mxEvent } from '@mxgraph/util/mxEvent';
 import { mxPoint } from '@mxgraph/util/mxPoint';
 import { mxVmlCanvas2D } from '@mxgraph/util/mxVmlCanvas2D';
@@ -6,6 +8,8 @@ import { mxRectangle } from '@mxgraph/util/mxRectangle';
 import { mxClient } from '@mxgraph/mxClient';
 import { mxConstants } from '@mxgraph/util/mxConstants';
 import { mxUtils } from '@mxgraph/util/mxUtils';
+
+//import { mxImageShape } from '@mxgraph/shape/mxImageShape';
 
 export class mxShape {
   dialect = null;
@@ -73,12 +77,12 @@ export class mxShape {
 
     if (container != null && container.ownerSVGElement != null) {
       node = this.createSvg(container);
+
     } else if (this.dialect != mxConstants.DIALECT_VML && this.isHtmlAllowed()) {
       node = this.createHtml(container);
     } else {
       node = this.createVml(container);
     }
-
     return node;
   }
 
@@ -103,6 +107,8 @@ export class mxShape {
   }
 
   redraw() {
+
+
     this.updateBoundsFromPoints();
 
     if (this.visible && this.checkBounds()) {
@@ -238,6 +244,7 @@ export class mxShape {
     var canvas = null;
 
     if (this.node.ownerSVGElement != null) {
+
       canvas = this.createSvgCanvas();
     }
 
@@ -267,6 +274,7 @@ export class mxShape {
 
   createSvgCanvas() {
     var canvas = new mxSvgCanvas2D(this.node, false);
+
     canvas.strokeTolerance = this.pointerEvents ? this.svgStrokeTolerance : 0;
     canvas.pointerEventsValue = this.svgPointerEvents;
     var off = this.getSvgScreenOffset();
@@ -447,6 +455,8 @@ export class mxShape {
   }
 
   paint(c) {
+
+
     var strokeDrawn = false;
 
     if (c != null && this.outline) {
@@ -517,7 +527,9 @@ export class mxShape {
 
         this.paintEdgeShape(c, pts);
       } else {
+
         this.paintVertexShape(c, x, y, w, h);
+        //mxImageShape.paintVertexShape(c, x, y, w, h);
       }
     }
 
@@ -577,6 +589,7 @@ export class mxShape {
   }
 
   paintVertexShape(c, x, y, w, h) {
+
     this.paintBackground(c, x, y, w, h);
 
     if (

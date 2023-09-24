@@ -1,4 +1,4 @@
-/**
+/*, id, title*
  * Copyright (c) 2006-2012, JGraph Ltd
  */
 /**
@@ -8,6 +8,7 @@
 import * as m from "../../../../../dist/mxgraph.es.js";
 import { Editor } from "./Editor.js";
 import { Graph } from "./Graph.js";
+
 
 export class Sidebar {
   constructor(editorUi, container) {
@@ -98,7 +99,9 @@ export class Sidebar {
  * Adds all palettes to the sidebar.
  */
 Sidebar.prototype.init = function () {
-  var dir = STENCIL_PATH;
+  //var dir = STENCIL_PATH;
+  var dir = "stencils";  /* GS */
+  //var dir = "/www/stencils";  /* GS */
 
   this.addSearchPalette(true);
   this.addGeneralPalette(true);
@@ -228,7 +231,8 @@ Sidebar.prototype.dropTargetDelay = 200;
 /**
  * Specifies the URL of the gear image.
  */
-Sidebar.prototype.gearImage = STENCIL_PATH + "/clipart/Gear_128x128.png";
+//Sidebar.prototype.gearImage = STENCIL_PATH + "/clipart/Gear_128x128.png";
+Sidebar.prototype.gearImage = "/stencils/clipart/Gear_128x128.png";
 
 /**
  * Specifies the width of the thumbnails.
@@ -1599,7 +1603,6 @@ Sidebar.prototype.addGeneralPalette = function (expand) {
       }),
     ),
   ];
-
   this.addPaletteFunctions(
     "general",
     m.mxResources.get("general"),
@@ -5043,6 +5046,7 @@ Sidebar.prototype.createThumb = function (
     !m.mxClient.NO_FO &&
     this.graph.view.getCanvas().ownerSVGElement != null
   ) {
+
     node = this.graph.view.getCanvas().ownerSVGElement.cloneNode(true);
   }
   // LATER: Check if deep clone can be used for quirks if container in DOM
@@ -5074,6 +5078,7 @@ Sidebar.prototype.createThumb = function (
   node.style.visibility = "";
   node.style.minWidth = "";
   node.style.minHeight = "";
+
 
   parent.appendChild(node);
 
@@ -5113,6 +5118,7 @@ Sidebar.prototype.createItem = function (
   height,
   allowCellsInserted,
 ) {
+
   var elt = document.createElement("a");
   elt.className = "geItem";
   elt.style.overflow = "hidden";
@@ -5961,8 +5967,6 @@ Sidebar.prototype.createDragSource = function (
   var currentStyleTarget = null;
   var activeTarget = false;
 
-  //console.dir(this);
-  //console.dir(this.refreshTarget);
   var arrowUp = createArrow(this.triangleUp, m.mxResources.get("connect"));
   var arrowRight = createArrow(
     this.triangleRight,
@@ -6791,6 +6795,7 @@ Sidebar.prototype.createVertexTemplateEntry = function (
   showTitle,
   tags,
 ) {
+
   tags =
     tags != null && tags.length > 0
       ? tags
@@ -6827,6 +6832,7 @@ Sidebar.prototype.createVertexTemplate = function (
   showTitle,
   allowCellsInserted,
 ) {
+
   var cells = [
     new m.mxCell(
       value != null ? value : "",
@@ -6891,7 +6897,6 @@ Sidebar.prototype.createVertexTemplateFromCells = function (
   allowCellsInserted,
 ) {
   // Use this line to convert calls to this function with lots of boilerplate code for creating cells
-  //console.trace('xml', Graph.compress(mxUtils.getXml(this.graph.encodeCells(cells))), cells);
   return this.createItem(
     cells,
     title,
@@ -7149,6 +7154,7 @@ Sidebar.prototype.addImagePalette = function (
 
   for (var i = 0; i < items.length; i++) {
     m.mxUtils.bind(this, function (item, title, tmpTags) {
+	    //console.log("Sidebar.prototype.addImagePalette",item,title,tmpTags);
       if (tmpTags == null) {
         var slash = item.lastIndexOf("/");
         var dot = item.lastIndexOf(".");
@@ -7157,6 +7163,8 @@ Sidebar.prototype.addImagePalette = function (
           .replace(/[-_]/g, " ");
       }
 
+	    //console.log("Sidebar.prototype.addImagePalette  ",prefix,item,postfix,title,tmpTags);
+	    
       fns.push(
         this.createVertexTemplateEntry(
           "image;html=1;image=" + prefix + item + postfix,
@@ -7217,6 +7225,8 @@ Sidebar.prototype.addStencilPalette = function (
   customFns,
   groupId,
 ) {
+
+
   scale = scale != null ? scale : 1;
 
   if (this.addStencilsToIndex) {

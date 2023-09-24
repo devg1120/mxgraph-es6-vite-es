@@ -1680,6 +1680,8 @@ export class mxGraph extends mxEventSource {
   }
 
   addCells(cells, parent, index, source, target, absolute) {
+	          console.log("addCells", cells[0]);      
+
     if (parent == null) {
       parent = this.getDefaultParent();
     }
@@ -1794,6 +1796,7 @@ export class mxGraph extends mxEventSource {
             absolute
           )
         );
+	  console.log("done");
       } finally {
         this.model.endUpdate();
       }
